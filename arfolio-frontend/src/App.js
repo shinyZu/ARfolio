@@ -11,6 +11,7 @@ import Register from "./pages/Register/Register";
 import Home from "./pages/Home/Home";
 import BasicDetails from "./pages/PortfolioForm/BasicDetails/BasicDetails";
 import EducationDetails from "./pages/PortfolioForm/Education/EducationDetails";
+import ExperienceDetails from "./pages/PortfolioForm/Experience/ExperienceDetails";
 
 const App = () => {
   const handleLogin = (isSuccess, userRole) => {
@@ -55,6 +56,11 @@ const App = () => {
         <Route
           path="/education"
           element={<EducationDetails />}
+        />
+        
+        <Route
+          path="/experiences"
+          element={<ExperienceDetails />}
         />
 
       </Routes>

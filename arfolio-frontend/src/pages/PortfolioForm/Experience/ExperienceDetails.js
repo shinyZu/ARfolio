@@ -21,7 +21,7 @@ import Footer from "../../../components/Footer/Footer";
 import MySnackBar from "../../../components/common/MySnackBar/MySnackbar";
 import ConfirmDialog from "../../../components/common/ConfirmDialog/ConfirmDialog";
 import FileChooser from "../../../components/common/FileChooser/FileChooser";
-import EducationForm from "../../../components/Education/EducationForm";
+import ExperienceForm from "../../../components/Experience/ExperienceForm";
 
 import { styleSheet } from "./styles";
 import { withStyles } from "@mui/styles";
@@ -32,14 +32,12 @@ import upload_bg from "../../../assets/images/Portfolio/choose_image.jpg";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-const EducationDetails = (props) => {
+const ExperienceDetails = (props) => {
   const { classes } = props;
   const navigate = useNavigate();
 
   const location = useLocation();
   const receivedData = location.state; // The data sent from the previous page
-
-  const [educationList, setEducationList] = useState([]);
 
 //   const addEducationForm = () => {
 //     console.log("function addEducationForm")
@@ -54,9 +52,6 @@ const EducationDetails = (props) => {
 
 //   const [educationForms, setEducationForms] = useState([<EducationForm indexValue={1} addForm={addEducationForm} />]);
 
-
-
-
 const [currentIndex, setCurrentIndex] = useState(1);
 
 const addEducationForm = () => {
@@ -64,14 +59,14 @@ const addEducationForm = () => {
     setCurrentIndex(newIndexValue);
 
     const newForms = [
-        ...educationForms,
-        <EducationForm key={newIndexValue} indexValue={newIndexValue} addForm={addEducationForm} />
+        ...experienceForms,
+        <ExperienceForm key={newIndexValue} indexValue={newIndexValue} addForm={addEducationForm} />
     ];
 
-    setEducationForms(newForms);
+    setExperienceForms(newForms);
 };
 
-const [educationForms, setEducationForms] = useState([<EducationForm key={1} indexValue={1} addForm={addEducationForm} />]);
+const [experienceForms, setExperienceForms] = useState([<ExperienceForm key={1} indexValue={1} addForm={addEducationForm} />]);
 
 
 const [isDisabled, setIsDisabled] = useState(false);
@@ -105,7 +100,6 @@ const [isDisabled, setIsDisabled] = useState(false);
     }
   };
 
-  console.log(educationForms)
   return (
     <div id="portfolio-form">
       <Header />
@@ -176,13 +170,13 @@ const [isDisabled, setIsDisabled] = useState(false);
                         // justifyContent="center"
                     >
                         <Typography variant="h4" className={classes.sub_title}>
-                            Education
+                            Work Experience
                         </Typography>
                     </Grid>
                     
-                    {/* <EducationForm /> */}
+                    {/* <ExperienceForm /> */}
 
-                    {educationForms.map((form, index) => (
+                    {experienceForms.map((form, index) => (
                         <Fragment key={form.key}>
                             {form}
                         </Fragment>
@@ -210,7 +204,7 @@ const [isDisabled, setIsDisabled] = useState(false);
                         style={{ width: "20%", height: "100%", marginRight:"2vw" }}
                         className={classes.btn_back}
                         onClick={() => {
-                            navigate("/basic");
+                            navigate("/education");
                         }}
                     />
 
@@ -222,7 +216,7 @@ const [isDisabled, setIsDisabled] = useState(false);
                         style={{ width: "20%", height: "100%" }}
                         className={classes.btn_next}
                         onClick={() => {
-                            navigate("/experiences");
+                            navigate("/projects");
                         }}
                     />
                 </Grid>
@@ -251,4 +245,4 @@ const [isDisabled, setIsDisabled] = useState(false);
 };
 
 // export default MyButton;
-export default withStyles(styleSheet)(EducationDetails);
+export default withStyles(styleSheet)(ExperienceDetails);
