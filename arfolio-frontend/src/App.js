@@ -5,9 +5,11 @@ import {
   Routes,
   Navigate
 } from "react-router-dom";
+
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Home from "./pages/Home/Home";
+import PortfolioForm from "./pages/PortfolioForm/PortfolioForm";
 
 const App = () => {
   const handleLogin = (isSuccess, userRole) => {
@@ -38,9 +40,15 @@ const App = () => {
           path="/login"
           element={<Login onLogin={handleLogin} />}
         />
+        
         <Route
           path="/register"
           element={<Register onLogin={handleLogin} />}
+        />
+        
+        <Route
+          path="/form"
+          element={<PortfolioForm />}
         />
 
       </Routes>
