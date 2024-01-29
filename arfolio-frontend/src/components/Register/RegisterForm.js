@@ -123,7 +123,7 @@ const RegisterForm = (props) => {
 
   return (
     // <div className={styles.login_container}>
-    <div className={classes.login_container}>
+    <div id="register-form" className={classes.login_container}>
       <div className={styles.glass_container}>
         <h1 className={classes.login_text}>
           REGISTER

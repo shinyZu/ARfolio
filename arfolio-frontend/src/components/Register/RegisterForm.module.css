@@ -27,8 +27,8 @@ label {
   font-family: "Acme", sans-serif !important;
 }
 
-input[type="text"],
-input[type="password"] {
+#register-form > input[type="text"],
+#register-form > input[type="password"] {
   width: 95%;
   padding: 8px;
   border: 0px solid #ccc;

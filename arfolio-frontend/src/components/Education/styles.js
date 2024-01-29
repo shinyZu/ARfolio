@@ -1,12 +1,12 @@
 export const styleSheet = {
     box_container: {
-      // border: "2px solid green",
+    //   border: "2px solid green",
       maxWidth: "1300px",
       margin: "auto auto 150px auto",
     },
   
     main_container: {
-      // border: "2px solid red",
+    //   border: "2px solid red",
       marginTop: "5vh",
       // height: "70vh",
     },
@@ -22,6 +22,7 @@ export const styleSheet = {
   
     details_container: {
     //   border: "2px solid blue",
+      // maxWidth: "1000px !important",
       marginTop: "5vh",
     },
   
@@ -33,13 +34,14 @@ export const styleSheet = {
     
     sub_title_container: {
       //   border: "2px solid blue",
-      color: "#40407a !important",
+    //   color: "#40407a !important",
     },
     
     sub_title: {
-      // border: "2px solid deeppink",
-      fontFamily: '"Acme", sans-serif !important',
-      marginBottom: "3vh ",
+        // border: "2px solid deeppink",
+        fontFamily: '"Acme", sans-serif !important',
+        marginBottom: "3vh ",
+        color: "#40407a !important",
     },
   
     basic_details_row: {
@@ -96,35 +98,18 @@ export const styleSheet = {
       padding: "10px 60px !important",
       boxShadow: "5px 5px 10px 2px rgb(7 12 8 / 50%) !important",
     },
-  
-    //   -------Order Summary -----------------
 
-    place_order_btn_container: {
-      // border: "2px solid blue",
-      height: "8vh",
-      marginTop: "2vh !important",
-    },
-  
-    btn_place_order: {
-      border: "1px #AC7088 !important",
-      backgroundColor: "#AC7088 !important",
-      color: "white !important",
-      fontFamily: '"Acme", sans-serif !important',
-      marginTop: "10px",
-      "&:hover": {
-        cursor: "pointer",
-        backgroundColor: "#99627A !important",
-      },
-      padding: "10px 60px !important",
-      boxShadow: "5px 5px 10px 2px rgb(7 12 8 / 50%) !important",
-    },
-  
-    btn_place_order_disabled: {
+    btn_back: {
       border: "1px #95a5a6 !important",
       backgroundColor: "#95a5a6 !important",
       color: "white !important",
       fontFamily: '"Acme", sans-serif !important',
+      "&:hover": {
+        cursor: "pointer",
+        backgroundColor: "#7f8c8d !important",
+      },
       padding: "10px 60px !important",
+      boxShadow: "5px 5px 10px 2px rgb(7 12 8 / 50%) !important",
     },
   };
   

@@ -101,7 +101,7 @@ const LoginForm = (props) => {
   };
 
   return (
-    <div className={classes.login_container}>
+    <div id="login-form" className={classes.login_container}>
       <div className={styles.glass_container}>
         <h1 className={classes.login_text}>
           {/* Unlock the Access to Quality Education Resources! */}

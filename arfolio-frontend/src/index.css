@@ -50,8 +50,9 @@ body {
 } */
 
 input[type="text"]:not(#f_login):not(#f_pwd) {
-  color: white;
+  /* color: white; */
   border: white;
+  font-family: "Acme", sans-serif !important;
 }
 
 .css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus {
@@ -63,6 +64,6 @@ input[type="text"]:not(#f_login):not(#f_pwd) {
 }
 
 .css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input {
-  color: white !important;
+  /* color: black !important; */
   font-family: "Acme", sans-serif !important;
 }

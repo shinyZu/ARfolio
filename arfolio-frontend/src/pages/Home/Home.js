@@ -91,7 +91,7 @@ const Home = (props) => {
                 </Grid>
 
                 <Grid item xs={12} className={classes.container_1_left_3}>
-                  <Link to="/form">
+                  <Link to="/basic">
                     <MyButton
                       label="Start Now"
                       size="small"
