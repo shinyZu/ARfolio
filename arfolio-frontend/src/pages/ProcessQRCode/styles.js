@@ -32,5 +32,18 @@ export const styleSheet = {
         marginTop:"3vh !important",
         textAlign: "center",
     },
+    btn_download: {
+        border: "1px #273c75 !important",
+        backgroundColor: "#273c75 !important",
+        color: "white !important",
+        fontFamily: '"Acme", sans-serif !important',
+        marginTop: "10px",
+        "&:hover": {
+            cursor: "pointer",
+            backgroundColor: "#192a56 !important",
+        },
+        padding: "10px 60px !important",
+        boxShadow: "5px 5px 10px 2px rgb(7 12 8 / 50%) !important",
+    },
     
 };

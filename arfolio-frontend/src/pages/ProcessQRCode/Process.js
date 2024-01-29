@@ -77,7 +77,7 @@ const Process = (props) => {
                     variant="outlined"
                     type="button"
                     style={{ width: "20%", height: "100%" }}
-                    className={classes.btn_next}
+                    className={classes.btn_download}
                     // onClick={() => {}}
                 />
             </Grid>

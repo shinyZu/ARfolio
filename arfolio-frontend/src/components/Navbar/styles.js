@@ -59,4 +59,9 @@ export const styleSheet = {
     // padding: "5px 15px!important",
     boxShadow: "5px 5px 10px 2px rgb(7 12 8 / 50%) !important",
   },
+  logo_container: {
+    "&:hover": {
+      cursor: "pointer",
+    },
+  },
 };

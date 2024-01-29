@@ -207,7 +207,9 @@ const CustomerNavbar = (props) => {
             alt="Remy Sharp"
             src={logo}
             large
-            style={{ marginRight: "10px", width:"5vw", height:"5vw" }}
+            style={{ marginRight: "10px", width:"5vw", height:"5vw"}}
+            onClick={()=>{navigate("/home")}}
+            className={classes.logo_container}
           />
           <Typography
             variant="h6"
@@ -244,6 +246,7 @@ const CustomerNavbar = (props) => {
               color: "inherit",
               textDecoration: "none",
             }}
+            
           >
             LOGO
           </Typography>
