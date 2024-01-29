@@ -1,0 +1,159 @@
+<!doctype HTML>
+<html>
+    <head>
+
+        <title> NFT </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+        <style>
+            .arjs-loader {
+              height: 100%;
+              width: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              background-color: rgba(0, 0, 0, 0.8);
+              z-index: 9999;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+          
+            .arjs-loader div {
+              text-align: center;
+              font-size: 1.25em;
+              color: white;
+            }
+        </style>
+     
+        <!-- <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script> -->
+        <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.5.5/aframe/build/aframe-ar.js"></script>
+
+        <!-- gltf model -->
+        <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
+        
+        <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+        <script src="gesture-detector.js"></script>
+        <script src="gesture-handler.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1.3.0/dist/aframe-master.min.js"></script>
+        <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    </head>
+
+    <body style='margin : 0px; overflow: hidden;'>
+        <!-- we add detectionMode and matrixCodeType to tell AR.js to recognize barcode markers -->
+        <a-scene
+            vr-mode-ui="enabled: true;"
+            renderer="logarithmicDepthBuffer: true; precision: medium;"
+            embedded
+            arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: true;"
+        >
+            <a-assets>
+                <img id="profile-img" src="images/profile.jpg">
+
+                <a-asset-item
+                  id="lady"
+                  response-type="arraybuffer"
+                src="https://cdn.glitch.global/7c3b587b-34f5-4b52-8c91-3a879ecf89d8/office_lady.glb?v=1697707080101"
+                ></a-asset-item>
+            </a-assets>
+
+            <a-nft
+                type="nft"
+                url="trex/scene.gltf"
+                smooth="true"
+                smoothCount="10"
+                smoothTolerance=".01"
+                smoothThreshold="5"
+            >
+                <!-- <a-gltf-model src="#lady"></a-gltf-model> -->
+
+                <!-- <a-entity
+                    position="0 0 0"
+                    scale="0.05 0.05 0.05"
+                    gltf-model="https://cdn.glitch.global/7c3b587b-34f5-4b52-8c91-3a879ecf89d8/office_lady.glb?v=1697707080101"
+                ></a-entity> -->
+
+                <a-plane scale="3 3 1" rotation="-90 0 0" material="transparent: true; src: #profile-img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-plane>
+            </a-nft>
+
+            <!-- use this <a-entity camera> to support multiple-markers, otherwise use <a-marker-camera> instead of </a-marker> -->
+            <a-entity camera></a-entity>
+            <!-- <a-camera-static/> -->
+            <!-- <a-camera/> -->
+        </a-scene>
+
+        <script>
+                window.addEventListener("arjs-nft-loaded", (event) => {
+                 // Hide loading overlay
+                 console.log("Marker identifieddddddd")
+                });
+        </script>
+    </body>
+
+
+
+    <body style="margin : 0px; overflow: hidden;">
+        <!-- minimal loader shown until image descriptors are loaded -->
+        <div class="arjs-loader">
+          <div>Loading, please wait...</div>
+        </div>
+        <a-scene
+          vr-mode-ui="enabled: false;"
+          renderer="logarithmicDepthBuffer: true; precision: medium;"
+          embedded
+          arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;"
+        >
+
+            <a-assets>
+                <img id="profile-img" src="images/profile.jpg">
+
+                <a-asset-item
+                id="lady"
+                response-type="arraybuffer"
+                src="https://cdn.glitch.global/7c3b587b-34f5-4b52-8c91-3a879ecf89d8/office_lady.glb?v=1697707080101"
+                ></a-asset-item>
+            </a-assets>
+
+            <!-- we use cors proxy to avoid cross-origin problems ATTENTION! you need to set up your server -->
+            <!-- <a-nft
+                type="nft"
+                url="./trex/trex-image/trex"
+                smooth="true"
+                smoothCount="10"
+                smoothTolerance=".01"
+                smoothThreshold="5"
+            >
+                <a-entity
+                gltf-model="./trex/scene.gltf"
+                scale="5 5 5"
+                position="150 300 -100"
+                >
+                </a-entity>
+                <a-plane scale="3 3 1" rotation="-90 0 0" material="transparent: true; src: #profile-img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-plane>
+          </a-nft> -->
+
+          <a-nft
+            type="nft"
+            url="http://192.168.1.6:8002/trex/trex-image/trex"
+            smooth="true"
+            smoothCount="10"
+            smoothTolerance="0.01"
+            smoothThreshold="5">
+            <!-- Your content -->
+            <a-plane scale="3 3 1" rotation="-90 0 0" material="transparent: true; src: #profile-img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-plane>
+        </a-nft>
+          <a-entity camera></a-entity>
+        </a-scene>
+
+        <script>
+            window.addEventListener("arjs-nft-loaded", (event) => {
+             // Hide loading overlay
+             console.log("Marker identifieddddddd")
+            });
+    </script>
+      </body>
+</html>

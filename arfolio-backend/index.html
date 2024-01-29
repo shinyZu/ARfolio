@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+        <title> ARfolio </title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,height=device-height">
+	      <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="stylesheet" href="styles.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+     
+        <!-- <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script> -->
+        <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.5.5/aframe/build/aframe-ar.js"></script>
+
+        <!-- gltf model -->
+        <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
+        
+        <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+        <script src="gesture-detector.js"></script>
+        <script src="gesture-handler.js"></script>
+
+        <script>
+            // Profile Video Handler
+            AFRAME.registerComponent('video-vidhandler-biography', {
+                init: function() {
+		        console.log('video init entered');
+                    this.toggle = false;
+                    this.vid = document.querySelector("#profile_vid");
+                    this.vid.pause();
+                },
+                tick: function() {
+                    if (this.el.object3D.visible == true) {
+                        if (!this.toggle) {
+                            this.toggle = true;
+                            this.vid.play();
+                        }
+                    } else {
+                        this.toggle = false;
+                        this.vid.pause();
+                    }
+                }
+            });
+        </script>
+    </head>
+    <body>
+
+          <a-scene >
+
+            <a-assets>
+
+                <!-- Biography Video -->
+                <video  preload="none"  id="profile_vid" response-type="arraybuffer" loop="true" crossorigin webkit-playsinline playsinline controls>
+                    <source  src="assets/videos/biography.mp4">
+                </video>
+
+                <!-- Profile Image -->
+                <img id="profile_img" src="assets/images/profile_img.jpg">
+                <!-- <a-image id="profile-img" src="images/profile.jpg" position="0 0.5 0" scale="0.4 0.4 0.4"></a-image> -->
+
+                <!-- Business Card Image -->
+                <img id="card_img" src="assets/images/card.jpg">
+                
+                <!-- QR Image -->
+                <img id="qr_img" src="assets/images/markers/pattern-qr-code.png">
+
+            </a-assets>
+
+            <!-- Profile Video Marker -->
+            <a-marker id="marker1" type='pattern' url='assets/images/patterns/pattern-qr-code.patt' video-vidhandler-biography>
+              <a-plane scale="4.884 2.846 1" position="-5.11471 1.59569 -3.17426" rotation="-70.669760367026 126.20713240685181 -126.04154760405902" material="transparent: true; src: #birthday" controls="" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" visible=""></a-plane>
+            </a-marker>
+
+            <a-marker-camera id="marker1" type='pattern' url='assets/images/patterns/pattern-qr-code.patt' >
+              
+              <!-- Profile Video -->
+              <a-plane scale="4.884 2.846 1" position="-4.05674 0.657 -3.04515" rotation="-90 0 0" material="transparent: true; src: #profile_vid" controls="" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" visible=""></a-plane>
+
+              <!-- Profile Box -->
+              <a-box position="-0.252 2.7176 -4.65454" color="white" material="transparent: true; src: #profile_img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-box>
+
+              <!-- Profile Image -->
+              <a-plane scale="3 3 1" position="0.02957 0.59161 -2.97096" rotation="-90 0 0" material="transparent: true; src: #profile_img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-plane>
+
+              <!-- ARfolio Card -->
+              <a-plane scale="3 3 1" position="0.07472 0.62013 0.09543" rotation="-90 0 0" material="transparent: true; src: #qr_img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-plane>
+
+            </a-marker-camera> 
+
+          <!-- Camera -->
+          <!-- <a-entity camera></a-entity> -->
+          <!-- <a-camera-static/> -->
+          <!-- <a-camera/> -->
+        </a-scene>
+    </body>
+</html>

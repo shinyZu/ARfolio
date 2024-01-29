@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+        <title> ARfolio2 </title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,height=device-height">
+	      <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="stylesheet" href="styles.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+     
+        <!-- <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script> -->
+        <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.5.5/aframe/build/aframe-ar.js"></script>
+
+        <!-- gltf model -->
+        <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
+        
+        <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+        <script src="gesture-detector.js"></script>
+        <script src="gesture-handler.js"></script>
+
+        <script>
+            // Profile Video Handler
+            AFRAME.registerComponent('video-vidhandler-biography', {
+                init: function() {
+		        console.log('video init entered');
+                    this.toggle = false;
+                    this.vid = document.querySelector("#profile_vid");
+                    this.vid.pause();
+                },
+                tick: function() {
+                    if (this.el.object3D.visible == true) {
+                        if (!this.toggle) {
+                            this.toggle = true;
+                            this.vid.play();
+                        }
+                    } else {
+                        this.toggle = false;
+                        this.vid.pause();
+                    }
+                }
+            });
+
+            // Profile Video 2 Handler
+            AFRAME.registerComponent('video-vidhandler-biography2', {
+                init: function() {
+		        console.log('video 2 init entered');
+                    this.toggle = false;
+                    this.vid = document.querySelector("#profile_vid2");
+                    this.vid.pause();
+                },
+                tick: function() {
+                    if (this.el.object3D.visible == true) {
+                        if (!this.toggle) {
+                            this.toggle = true;
+                            this.vid.play();
+                        }
+                    } else {
+                        this.toggle = false;
+                        this.vid.pause();
+                    }
+                }
+            });
+
+        </script>
+    </head>
+    <body>
+
+          <a-scene
+            arjs
+            embedded
+            renderer="logarithmicDepthBuffer: true;"
+            vr-mode-ui="enabled: true"
+            gesture-detector
+            id="scene"
+          >
+
+            <a-assets>
+
+                <!-- Profile Video -->
+                <video  preload="none"  id="profile_vid" response-type="arraybuffer" loop="true" crossorigin webkit-playsinline playsinline controls>
+                    <source  src="assets/videos/biography.mp4">
+                </video>
+
+                 <!-- Profile  Video -->
+                 <video preload="none"  id="profile_vid2" response-type="arraybuffer" loop="true" crossorigin webkit-playsinline playsinline controls>
+                    <source  src="assets/videos/biography.mp4">
+                </video>
+
+                <!-- Profile Image -->
+                <img id="profile-img" src="assets/images/profile_img.jpg">
+                <!-- <a-image id="profile-img" src="images/profile.jpg" position="0 0.5 0" scale="0.4 0.4 0.4"></a-image> -->
+
+                <!-- Business card Image -->
+                <img id="card_img" src="assets/images/card.jpg">
+                
+                <!-- QR Image -->
+                <img id="qr_img" src="assets/images/markers/pattern-qr-code.png">
+            </a-assets>
+
+            <!-- Profile Video Marker -->
+            <a-marker id="marker1" type='pattern' url='assets/images/patterns/pattern-qr-code.patt' video-vidhandler-biography>
+              <a-plane scale="4.884 2.846 1" position="-5.11471 1.59569 -3.17426" rotation="-70.669760367026 126.20713240685181 -126.04154760405902" material="transparent: true; src: #profile_vid" controls="" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" visible=""></a-plane>
+            </a-marker>
+
+             <!-- Invitation Video Marker -->
+            <a-marker id="marker1" type='pattern' url='markers/images/patterns/pattern-qr-code.patt' video-vidhandler-biography2>
+                <a-plane scale="4.95797 2.84 3.81127" position="4.2334 0.18959 -4.84731" rotation="-90 90 -90" material="transparent: true; src: #profile_vid2" controls="" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-plane> 
+            </a-marker>
+              
+            <!-- ARFolio Card Marker -->
+            <a-marker id="marker1" type='pattern' url='assets/images/patterns/pattern-qr-code.patt'>
+              <a-plane scale = "3 3" position='0 0 -5' rotation="-90 0 0" material='transparent:true;src:#card_img' controls></a-plane>
+              <!-- <a-gltf-model id="lady" src="#lady" animation-mixer="" position="-3 1 1.64771" rotation="-90 90 -90" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" gltf-model="#lady"></a-gltf-model> -->
+            </a-marker>
+
+            <!-- Profile Img in Cube -->
+            <a-marker-camera id="marker1" type='pattern' url='assets/images/patterns/pattern-qr-code.patt' >
+            <!-- <a-marker id="marker6" type='pattern' url='markers/pattern-qs-mark.patt' > -->
+              
+              <!-- Video -->
+              <a-plane scale="4.884 2.846 1" position="-4.05674 0.657 -3.04515" rotation="-90 0 0" material="transparent: true; src: #profile_vid" controls="" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" visible=""></a-plane>
+
+              <!-- Video 2 -->
+              <a-plane src="#profile_vid2" scale="4.95797 2.84 3.81127" position="4.2334 0.57735 -2.97174" rotation="-89.63409042806111 10.072598038399873 -10.079473531941442" material="transparent: true; src: #invitation" controls="" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" visible></a-plane>
+
+              <!-- Profile Box -->
+              <!-- <a-box position='-1 3 1' color="white" material='transparent:true;src:#profile-img'></a-box> -->
+              <a-box position="-0.252 2.7176 -4.65454" color="white" material="transparent: true; src: #profile_img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-box>
+
+              <!-- Profile Image -->
+              <!-- <a-plane scale = "3 3" position='4 0 -3' rotation="-90 0 0" material='transparent:true;src:#profile-img'></a-plane> -->
+              <a-plane scale="3 3 1" position="0.02957 0.59161 -2.97096" rotation="-90 0 0" material="transparent: true; src: #profile_img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-plane>
+
+              <!-- ARfolio Card -->
+              <!-- <a-plane scale = "3 3" position='0 0 0' rotation="-90 0 0" material='transparent:true;src:#arfolio-img'></a-plane> -->
+              <a-plane scale="3 3 1" position="0.07472 0.62013 0.09543" rotation="-90 0 0" material="transparent: true; src: #card_img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-plane>
+
+            </a-marker-camera> 
+
+          <!-- Camera -->
+          <a-entity camera></a-entity>
+          <!-- <a-camera-static/> -->
+          <!-- <a-camera/> -->
+        </a-scene>
+    </body>
+</html>
