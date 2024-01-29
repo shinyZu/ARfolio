@@ -3,8 +3,11 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
+  Navigate
 } from "react-router-dom";
 import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
+import Home from "./pages/Home/Home";
 
 const App = () => {
   const handleLogin = (isSuccess, userRole) => {
@@ -27,7 +30,18 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" exact element={<Login onLogin={handleLogin} />} />
+        <Route path="/" exact element={<Navigate replace to="/home" />} />
+
+        <Route path="/home" element={<Home handleLogin={handleLogin} />} />
+        
+        <Route
+          path="/login"
+          element={<Login onLogin={handleLogin} />}
+        />
+        <Route
+          path="/register"
+          element={<Register onLogin={handleLogin} />}
+        />
 
       </Routes>
     </Router>

@@ -24,7 +24,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 15px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar:hover {
@@ -32,15 +32,17 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #63a4c5;
+  /* background-color: #487eb0; */
+  background-color: #39518d;
+  border-radius: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #39518d;
+  /* background-color: #487eb0; */
 }
 
 ::-webkit-scrollbar-corner {
-  background-color: #205a76;
+  /* background-color: #39518d; */
 }
 
 /* .font__family {
@@ -54,4 +56,13 @@ input[type="text"]:not(#f_login):not(#f_pwd) {
 
 .css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus {
   color: white;
+}
+
+.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:invalid {
+  color: white;
+}
+
+.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input {
+  color: white !important;
+  font-family: "Acme", sans-serif !important;
 }

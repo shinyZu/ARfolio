@@ -1,12 +1,12 @@
-import login_background from "../../assets/images/Login/bg_login_gradient_4.jpg";
+import login_background from "../../assets/images/Login/bg_login_gradient_2.jpeg";
 
 export const styleSheet = {
   login_container_1: {
     // border: "2px solid green",
     height: "100vh",
-    backgroundColor: "#2c3e50",
+    backgroundColor: "#34495e",
     backgroundImage: `url(${login_background})`,
-    backgroundSize: "cover",    
+    backgroundSize: "cover",
     backgroundPosition: "center",
     display: "flex",
     justifyContent: "center",

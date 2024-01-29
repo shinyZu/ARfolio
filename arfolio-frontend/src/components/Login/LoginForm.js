@@ -9,7 +9,7 @@ import styles from "./LoginForm.module.css";
 import MySnackBar from "../../components/common/MySnackBar/MySnackbar";
 
 // import LoginService from "../../services/sLoginService";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 const LoginForm = (props) => {
   const { classes, onLogin } = props;
@@ -86,14 +86,14 @@ const LoginForm = (props) => {
   };
 
   const checkIfCustomerOrAdmin = (token) => {
-      // const decodedToken = jwtDecode(token);
-      // if (decodedToken.user_role === "Admin") {
-      //   props.onLogin(true, decodedToken.user_role);
-      //   // navigate("/admin/panel");
-      // } else {
-      //   props.onLogin(true, decodedToken.user_role);
-      //   // navigate("/home");
-      // }
+      const decodedToken = jwtDecode(token);
+      if (decodedToken.user_role === "Admin") {
+        props.onLogin(true, decodedToken.user_role);
+        // navigate("/admin/panel");
+      } else {
+        props.onLogin(true, decodedToken.user_role);
+        // navigate("/home");
+      }
   };
 
   const openRegisterForm = (e) => {
