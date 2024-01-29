@@ -191,7 +191,7 @@ const ProjectDetails = (props) => {
                         style={{ width: "20%", height: "100%", marginRight:"2vw" }}
                         className={classes.btn_back}
                         onClick={() => {
-                            navigate("/education");
+                            navigate("/projects");
                         }}
                     />
 
@@ -203,7 +203,7 @@ const ProjectDetails = (props) => {
                         style={{ width: "20%", height: "100%" }}
                         className={classes.btn_next}
                         onClick={() => {
-                            navigate("/projects");
+                            navigate("/links");
                         }}
                     />
                 </Grid>

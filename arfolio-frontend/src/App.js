@@ -13,6 +13,8 @@ import BasicDetails from "./pages/PortfolioForm/BasicDetails/BasicDetails";
 import EducationDetails from "./pages/PortfolioForm/Education/EducationDetails";
 import ExperienceDetails from "./pages/PortfolioForm/Experience/ExperienceDetails";
 import ProjectDetails from "./pages/PortfolioForm/Projects/ProjectDetails";
+import ImportantLinks from "./pages/PortfolioForm/Links/ImportantLinks";
+import ProcessQRCode from "./pages/ProcessQRCode/Process";
 
 const App = () => {
   const handleLogin = (isSuccess, userRole) => {
@@ -67,6 +69,16 @@ const App = () => {
         <Route
           path="/projects"
           element={<ProjectDetails />}
+        />
+        
+        <Route
+          path="/links"
+          element={<ImportantLinks />}
+        />
+        
+        <Route
+          path="/process-arfolio"
+          element={<ProcessQRCode />}
         />
 
       </Routes>
