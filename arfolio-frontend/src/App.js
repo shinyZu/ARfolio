@@ -12,6 +12,7 @@ import Home from "./pages/Home/Home";
 import BasicDetails from "./pages/PortfolioForm/BasicDetails/BasicDetails";
 import EducationDetails from "./pages/PortfolioForm/Education/EducationDetails";
 import ExperienceDetails from "./pages/PortfolioForm/Experience/ExperienceDetails";
+import ProjectDetails from "./pages/PortfolioForm/Projects/ProjectDetails";
 
 const App = () => {
   const handleLogin = (isSuccess, userRole) => {
@@ -61,6 +62,11 @@ const App = () => {
         <Route
           path="/experiences"
           element={<ExperienceDetails />}
+        />
+        
+        <Route
+          path="/projects"
+          element={<ProjectDetails />}
         />
 
       </Routes>

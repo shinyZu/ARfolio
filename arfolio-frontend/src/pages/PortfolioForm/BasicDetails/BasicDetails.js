@@ -122,9 +122,9 @@ const BasicDetails = (props) => {
                 <Grid
                     container
                     rowGap={2}
-                    xl={6}
-                    lg={6}
-                    md={6}
+                    xl={10}
+                    lg={10}
+                    md={10}
                     sm={12}
                     xs={12}
                     className={classes.details_container}
@@ -135,9 +135,9 @@ const BasicDetails = (props) => {
     
                     <Grid
                         container
-                        xl={12}
-                        lg={12}
-                        md={12}
+                        xl={8}
+                        lg={8}
+                        md={8}
                         sm={12}
                         xs={12}
                         className={classes.basic_details_container}
@@ -347,13 +347,14 @@ const BasicDetails = (props) => {
 
                     <Grid
                         container
-                        xl={12}
-                        lg={12}
-                        md={12}
+                        xl={8}
+                        lg={8}
+                        md={8}
                         sm={12}
                         xs={12}
                         display="flex"
                         justifyContent="space-between"
+                        style={{marginBottom:"2vh"}}
                     >
                         <Grid
                             container
@@ -436,10 +437,9 @@ const BasicDetails = (props) => {
                     {/* -------------------- Uploads --------------------- */}
                     <Grid
                         container
-                        // rowGap={2}
-                        xl={12}
-                        lg={12}
-                        md={12}
+                        xl={8}
+                        lg={8}
+                        md={8}
                         sm={12}
                         xs={12}
                         className={classes.upload_main_container}
@@ -582,9 +582,9 @@ const BasicDetails = (props) => {
                     {/* ------- Next button ------- */}
                     <Grid
                         container
-                        xl={12}
-                        lg={12}
-                        md={12}
+                        xl={8}
+                        lg={8}
+                        md={8}
                         sm={12}
                         xs={12}
                         className={classes.btn_next_container}
