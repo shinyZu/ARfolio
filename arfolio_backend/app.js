@@ -14,19 +14,17 @@ connection.establishConnection; // invoke the method to establish connection wit
 
 const baseURL = "/arfolio/api/v1/";
 
-// const token = require("./routes/token");
-// const login = require("./routes/login");
-// const user = require("./routes/user");
-// const stationery = require("./routes/stationery");
-// const category = require("./routes/category");
-// const orders = require("./routes/orders");
-// const orderDetails = require("./routes/orderDetail");
-// const billingDetail = require("./routes/billingDetail");
+const token = require("./routes/token");
+const login = require("./routes/login");
+const user = require("./routes/user");
+// const education = require("./routes/education");
+// const experience = require("./routes/experience");
+// const project = require("./routes/project");
+// const linkhub = require("./routes/linkhub");
 
-// app.use(`${baseURL}token`, token);
-// // app.use(`${baseURL}login`, login);
-// app.use(`${baseURL}login`, login.router);
-// app.use(`${baseURL}user`, user);
+app.use(`${baseURL}token`, token);
+app.use(`${baseURL}login`, login.router);
+app.use(`${baseURL}users`, user);
 // app.use(`${baseURL}stationery`, stationery.router);
 // app.use(`${baseURL}category`, category);
 // app.use(`${baseURL}orders`, orders);
