@@ -29,6 +29,46 @@ router.get("/getAll", cors(), authenticateAdminToken, async (req, res) => {
     }
 });
 
+// Search user by Id
+// Authorized only for Admins
+router.get("/admin/:id", cors(), authenticateAdminToken, async (req, res) => {
+  try {
+    const user = await User.findOne({ user_id: req.params.id });
+    if (user == null) {
+      return res.status(404).send({ status: 404, message: "User not found." });
+    }
+    return res.send({
+      status: 200,
+      data: user,
+    });
+  } catch (err) {
+    return res.status(400).send({ status: 400, message: err.message });
+  }
+});
+
+// Search user by Id
+// Authorized only for Customers to get their own details
+router.get("/:id", cors(), authenticateCustomerToken, async (req, res) => {
+  try {
+    const user = await User.findOne({ user_id: req.params.id });
+    if (req.email == user.email) {
+      if (user == null) {
+        return res
+          .status(404)
+          .send({ status: 404, message: "User not found." });
+      }
+      return res.send({
+        status: 200,
+        data: user,
+      });
+    } else {
+      return res.status(403).send({ status: 403, messge: "Access denied." });
+    }
+  } catch (err) {
+    return res.status(400).send({ status: 400, message: err.message });
+  }
+});
+
 // Register User - in use
 router.post("/register", cors(), async (req, res) => {
     const body = req.body;
@@ -104,6 +144,38 @@ router.post("/register", cors(), async (req, res) => {
     } catch (err) {
       return res.status(400).send({statuus: 400, message: err.message});
     }
+});
+
+// Update User
+// Authorized only for Customers to get their own details
+router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
+  const body = req.body;
+  const user = await User.findOne({ user_id: req.params.id });
+
+  if (req.email == user.email) {
+    if (user == null) {
+      return res.status(404).send({ status: 404, message: "User not found." });
+    }
+    user.first_name = body.first_name;
+    user.last_name = body.last_name;
+    user.email = body.email;
+    user.password = body.password;
+    user.city = body.city;
+    user.country = body.country;
+    user.contact_no = body.contact_no;
+    user.gender = body.gender;
+    user.user_role = body.user_role;
+
+    // Update the user in the database
+    const updatedUser = await user.save();
+    return res.send({
+      status: 200,
+      user: updatedUser,
+      message: "User updated successfully!",
+    });
+  } else {
+    return res.status(403).send({ status: 403, messge: "Access denied." });
+  }
 });
 
 // Delete Customer Account
