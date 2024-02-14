@@ -55,7 +55,7 @@ router.post("/", cors(), async (req, res) => {
       userExist.user_id,
       req.body.email,
       userExist.password,
-      // userExist.user_role,
+      userExist.user_role,
       res
     );
     console.log("=============== tokenData in login.js: ===============");
