@@ -8,32 +8,58 @@ var cors = require("cors");
 const router = express.Router();
 
 const User = require("../models/user.models");
+const Login = require("../models/login.models");
 
 // Generate Token - test
 router.post("/generateToken", cors(), async (req, res) => {
   // Validate User Here - if a user exists in the db with the given credentials
   console.log(req.body.email);
 
-  // Then generate JWT Token
-  let jwtSecretKey = process.env.JWT_SECRET_KEY;
+  const userExist = await User.findOne({ email: req.body.email });
+  const userAlreadyLogged = await Login.findOne({ email: req.body.email });
 
-  const salt = await bcrypt.genSalt(10);
-  hashedPassword = await bcrypt.hash(req.body.password, salt);
+  if (userExist && userAlreadyLogged) {
+      // Then generate JWT Token
+      let jwtSecretKey = process.env.JWT_SECRET_KEY;
 
-  let data = {
-    time: Date(),
-    user_id: 12,
-    email: req.body.email,
-    password: hashedPassword,
-  };
+      // const salt = await bcrypt.genSalt(10);
+      // hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-  const token = jwt.sign(data, jwtSecretKey);
+      const validPassword = await bcrypt.compare(
+        req.body.password,
+        userExist.password
+      );
+  
+      if (!validPassword)
+        return res
+          .status(400)
+          .send({ status: 400, message: "Invalid password." });
 
-  // Format the token as a Bearer token
-  const bearerToken = `Bearer ${token}`;
+      let data = {
+        time: Date(),
+        user_id: userExist.user_id,
+        email: req.body.email,
+        password: userExist.password,
+        user_role: userExist.user_role,
+      };
 
-  //res.send(bearerToken);
-  res.json({ token: bearerToken });
+      const token = jwt.sign(data, jwtSecretKey);
+
+      // Format the token as a Bearer token
+      const bearerToken = `Bearer ${token}`;
+
+      //res.send(bearerToken);
+      return res.json({ token: bearerToken });
+  
+    } else if (!userAlreadyLogged) {
+      return res
+      .status(400)
+      .send({ status: 400, message: "User not logged in." });
+    } else {
+      return res
+        .status(400)
+        .send({ status: 400, message: "User not found." });
+    }
 });
 
 // Validate Token - test

@@ -22,7 +22,19 @@ const baseURL = "/arfolio/api/v1/";
 // Authorized only for Admins
 router.get("/getAll", cors(), authenticateAdminToken, async (req, res) => {
     try {
-      const users = await User.find();
+      // const users = await User.find();
+
+      const users = await User.aggregate([
+        {
+          $lookup: {
+            from: "educations", // the collection name in MongoDB
+            localField: "user_id", // the field from the User collection
+            foreignField: "user_id", // the corresponding field in the Education collection
+            as: "Education" // the name of the field where the joined data will be placed
+          }
+        }
+      ]);
+
       return res.status(200).json({ status: 200, data: users });
     } catch (error) {
       return res.status(500).send({ status: 500, message: error });
@@ -158,8 +170,8 @@ router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
     }
     user.first_name = body.first_name;
     user.last_name = body.last_name;
-    user.email = body.email;
-    user.password = body.password;
+    // user.email = body.email;
+    // user.password = body.password;
     user.city = body.city;
     user.country = body.country;
     user.contact_no = body.contact_no;

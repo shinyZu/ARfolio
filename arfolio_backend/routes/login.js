@@ -13,7 +13,6 @@ const router = express.Router();
 const Login = require("../models/login.models");
 const User = require("../models/user.models");
 
-
 // Get all signed in users - Admin
 router.get("/", cors(), authenticateAdminToken, async (req, res) => {
     try {
