@@ -12,10 +12,6 @@ const router = express.Router();
 
 const Education = require("../models/education.models");
 
-// -------------------
-const baseURL = "/arfolio/api/v1/";
-// -------------------
-
 // Get all education - in use
 router.get("/getAll", cors(), async (req, res) => {
     try {
@@ -27,6 +23,7 @@ router.get("/getAll", cors(), async (req, res) => {
 });
 
 // Get next education id - in use
+// Authorized for Customers
 router.get("/next/id", cors(), authenticateCustomerToken, async (req, res) => {
     try {
       // Get the last inserted education from the database
@@ -165,10 +162,10 @@ router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
         educationExist.user_id = verified.user_id;
     
         // Update the education in the database
-        const updatedCategory = await educationExist.save();
+        const updatedEducation = await educationExist.save();
         return res.status(200).send({
             status: 200,
-            user: updatedCategory,
+            user: updatedEducation,
             message: "Education updated successfully!",
         });
     } catch (err) {
@@ -202,4 +199,5 @@ router.delete("/:id", cors(), authenticateCustomerToken, async (req, res) => {
         return res.status(400).send({ status: 400, message: err.message });
         }
 });
+
 module.exports = router;
