@@ -109,7 +109,7 @@ router.post("/", cors(), authenticateCustomerToken, async (req, res) => {
         }
         console.log("nextExperienceId: " + nextExperienceId);
     
-        // Create a new category instance
+        // Create a new experience instance
         const newExperience = new Experience({
             experience_id: nextExperienceId,
             job_title: body.job_title,
@@ -124,7 +124,7 @@ router.post("/", cors(), authenticateCustomerToken, async (req, res) => {
             user_id: verified.user_id,
         });
     
-        // Save the category to the database
+        // Save the experience to the database
         const saveExperience = await newExperience.save();
         res.status(201).send({
             status: 201,

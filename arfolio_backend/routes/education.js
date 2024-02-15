@@ -109,7 +109,7 @@ router.post("/", cors(), authenticateCustomerToken, async (req, res) => {
         }
         console.log("nextEducationId: " + nextEducationId);
     
-        // Create a new category instance
+        // Create a new education instance
         const newEducation = new Education({
             education_id: nextEducationId,
             school: body.school,
@@ -123,7 +123,7 @@ router.post("/", cors(), authenticateCustomerToken, async (req, res) => {
             user_id: verified.user_id,
         });
     
-        // Save the category to the database
+        // Save the education to the database
         const savedEducation = await newEducation.save();
         res.status(201).send({
             status: 201,

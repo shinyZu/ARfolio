@@ -109,7 +109,7 @@ router.post("/", cors(), authenticateCustomerToken, async (req, res) => {
         }
         console.log("nextProjectId: " + nextProjectId);
     
-        // Create a new category instance
+        // Create a new project instance
         const newProject = new Project({
             project_id: nextProjectId,
             project_title: body.project_title,
@@ -122,7 +122,7 @@ router.post("/", cors(), authenticateCustomerToken, async (req, res) => {
             user_id: verified.user_id,
         });
     
-        // Save the category to the database
+        // Save the project to the database
         const saveProject = await newProject.save();
         res.status(201).send({
             status: 201,
@@ -133,7 +133,6 @@ router.post("/", cors(), authenticateCustomerToken, async (req, res) => {
       return res.status(400).send({ status: 400, message: err.message });
     }
 }); 
-
 
 // Update project - in use
 // Authorized for Customers

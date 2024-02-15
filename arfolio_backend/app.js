@@ -20,7 +20,7 @@ const user = require("./routes/user");
 const education = require("./routes/education");
 const experience = require("./routes/experience");
 const project = require("./routes/project");
-// const linkhub = require("./routes/linkhub");
+const linkhub = require("./routes/linkhub");
 
 app.use(`${baseURL}token`, token);
 app.use(`${baseURL}login`, login.router);
@@ -28,6 +28,7 @@ app.use(`${baseURL}users`, user);
 app.use(`${baseURL}education`, education);
 app.use(`${baseURL}experience`, experience);
 app.use(`${baseURL}project`, project);
+app.use(`${baseURL}linkhub`, linkhub);
 
 app.get(`${baseURL}/`, (req, res) => {
   console.log(req);
