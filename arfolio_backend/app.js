@@ -19,7 +19,7 @@ const login = require("./routes/login");
 const user = require("./routes/user");
 const education = require("./routes/education");
 const experience = require("./routes/experience");
-// const project = require("./routes/project");
+const project = require("./routes/project");
 // const linkhub = require("./routes/linkhub");
 
 app.use(`${baseURL}token`, token);
@@ -27,11 +27,7 @@ app.use(`${baseURL}login`, login.router);
 app.use(`${baseURL}users`, user);
 app.use(`${baseURL}education`, education);
 app.use(`${baseURL}experience`, experience);
-// app.use(`${baseURL}stationery`, stationery.router);
-// app.use(`${baseURL}category`, category);
-// app.use(`${baseURL}orders`, orders);
-// app.use(`${baseURL}orderdetails`, orderDetails);
-// app.use(`${baseURL}billingdetails`, billingDetail);
+app.use(`${baseURL}project`, project);
 
 app.get(`${baseURL}/`, (req, res) => {
   console.log(req);

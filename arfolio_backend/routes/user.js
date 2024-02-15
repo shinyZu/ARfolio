@@ -42,6 +42,14 @@ router.get("/getAll", cors(), authenticateAdminToken, async (req, res) => {
             foreignField: "user_id", 
             as: "Experiences"
           }
+        },
+        {
+          $lookup: {
+            from: "projects", 
+            localField: "user_id", 
+            foreignField: "user_id", 
+            as: "Projects"
+          }
         }
       ]);
 

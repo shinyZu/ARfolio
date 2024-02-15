@@ -35,12 +35,12 @@ const projectSchema = new mongoose.Schema({
   
   end_month: {
     type: String,
-    required: true,
+    required: false,
   },
   
   end_year: {
     type: String,
-    required: true,
+    required: false,
   },
 
   user_id: {
