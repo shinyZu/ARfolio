@@ -71,45 +71,55 @@ router.get("/getAll", cors(), authenticateAdminToken, async (req, res) => {
 // Authorized only for Admins
 router.get("/admin/:id", cors(), authenticateAdminToken, async (req, res) => {
   try {
-    const user = await User.findOne({ user_id: req.params.id });
-    if (user == null) {
-      return res.status(404).send({ status: 404, message: "User not found." });
-    }
-
-    /* const userId = req.params.id;
-    console.log("Looking for userId:", userId); // Debugging log
-
     const pipeline = [
-      {
-        $match: { user_id: userId } // Or use _id: new mongoose.Types.ObjectId(userId) if matching against MongoDB's _id
-      },
-      {
-        $lookup: {
-          from: "educations", // Ensure this matches the actual name of your collection in MongoDB
-          localField: "user_id", // This should be the field in the User document that references the user's ID
-          foreignField: "user_id", // This should be the field in the Education document that references the user's ID
-          as: "Education" // The result of the lookup will be stored in this field
+        {
+            $match: {
+                user_id: Number(req.params.id) // Filter to get the specific user by user_id
+            }
+        },
+        {
+            $lookup: {
+                from: "educations", 
+                localField: "user_id", 
+                foreignField: "user_id", 
+                as: "Education"
+            }
+        },
+        {
+            $lookup: {
+                from: "experiences", 
+                localField: "user_id", 
+                foreignField: "user_id", 
+                as: "Experiences"
+            }
+        },
+        {
+            $lookup: {
+                from: "projects", 
+                localField: "user_id", 
+                foreignField: "user_id", 
+                as: "Projects"
+            }
+        },
+        {
+            $lookup: {
+                from: "linkhubs", 
+                localField: "user_id", 
+                foreignField: "user_id", 
+                as: "Links"
+            }
         }
-      },
-      {
-        $limit: 1 // Since you're expecting to find only one user
-      }
     ];
 
-    const result = await User.aggregate(pipeline);
-    console.log("Aggregation result:", result); // Debugging log
+    const user = await User.aggregate(pipeline);
 
-    // if (user == null) {
-    if (result.length === 0) {
-      return res.status(404).send({ status: 404, message: "User not found." });
+    if (user.length === 0) {
+        return res.status(404).send({ status: 404, message: "User not found." });
     }
 
-    // Since the aggregation returns an array, you'll need to get the first element.
-    const user = result[0]; */
-    
-    return res.send({ status: 200, data: user,});
-  } catch (err) {
-    return res.status(400).send({ status: 400, message: err.message });
+    return res.status(200).json({ status: 200, data: user });
+  } catch (error) {
+      return res.status(500).send({ status: 500, message: error.message });
   }
 });
 
@@ -117,68 +127,57 @@ router.get("/admin/:id", cors(), authenticateAdminToken, async (req, res) => {
 // Authorized only for Customers to get their own details
 router.get("/:id", cors(), authenticateCustomerToken, async (req, res) => {
   try {
-    const user = await User.findOne({ user_id: req.params.id });
-    if (req.email == user.email) {
-      if (user == null) {
-        return res
-          .status(404)
-          .send({ status: 404, message: "User not found." });
-      }
-      return res.send({
-        status: 200,
-        data: user,
-      });
-    } else {
-      return res.status(403).send({ status: 403, messge: "Access denied." });
-    }
-  } catch (err) {
-    return res.status(400).send({ status: 400, message: err.message });
-  }
-});
-
-// TODO - return Users with Education, Experience,....
-/* router.get("/:id", cors(), authenticateCustomerToken, async (req, res) => {
-  try {
-    // const userId = req.params.id; // Capture the userId from the URL parameter
-    const userId = new mongoose.Types.ObjectId(req.params.userId); // Convert to ObjectId
-
     const pipeline = [
-      {
-        $match: {
-          user_id: userId // Assuming user_id is the field you use to identify users in the User collection
-        }
-      },
-      {
-        $lookup: {
-          from: 'educations', // Assumes your education details are stored in a collection named 'educations'
-          let: { userId: '$user_id' }, // Use the user_id from the matched User document
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  // Ensure the education document's user_id matches the User document's user_id
-                  $eq: ['$user_id', '$$userId']
-                }
-              }
+        {
+            $match: {
+                user_id: Number(req.params.id) // Filter to get the specific user by user_id
             }
-          ],
-          as: 'EducationDetails' // The resulting array of matched education documents will be stored in this field
+        },
+        {
+            $lookup: {
+                from: "educations", 
+                localField: "user_id", 
+                foreignField: "user_id", 
+                as: "Education"
+            }
+        },
+        {
+            $lookup: {
+                from: "experiences", 
+                localField: "user_id", 
+                foreignField: "user_id", 
+                as: "Experiences"
+            }
+        },
+        {
+            $lookup: {
+                from: "projects", 
+                localField: "user_id", 
+                foreignField: "user_id", 
+                as: "Projects"
+            }
+        },
+        {
+            $lookup: {
+                from: "linkhubs", 
+                localField: "user_id", 
+                foreignField: "user_id", 
+                as: "Links"
+            }
         }
-      }
     ];
 
-    const usersWithEducation = await User.aggregate(pipeline);
+    const user = await User.aggregate(pipeline);
 
-    if (usersWithEducation.length === 0) {
-      return res.status(404).send({ status: 404, message: "User not found or has no education details." });
+    if (user.length === 0) {
+        return res.status(404).send({ status: 404, message: "User not found." });
     }
 
-    return res.status(200).json({ status: 200, data: usersWithEducation });
+    return res.status(200).json({ status: 200, data: user });
   } catch (error) {
-    console.error("Error fetching user education details:", error);
-    return res.status(500).send({ status: 500, message: "Internal server error" });
+      return res.status(500).send({ status: 500, message: error.message });
   }
-}); */
+});
 
 // Register User - in use
 router.post("/register", cors(), async (req, res) => {
