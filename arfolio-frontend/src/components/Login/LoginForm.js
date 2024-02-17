@@ -8,7 +8,7 @@ import { withStyles } from "@mui/styles";
 import styles from "./LoginForm.module.css";
 import MySnackBar from "../../components/common/MySnackBar/MySnackbar";
 
-// import LoginService from "../../services/sLoginService";
+import LoginService from "../../services/LoginService";
 import {jwtDecode} from "jwt-decode";
 
 const LoginForm = (props) => {
@@ -16,7 +16,7 @@ const LoginForm = (props) => {
   const navigate = useNavigate();
 
   const [loginFormData, setLoginFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
 
@@ -39,7 +39,7 @@ const LoginForm = (props) => {
     setEmailValid(isValidEmail);
     setLoginFormData({
       ...loginFormData,
-      username: emailValue,
+      email: emailValue,
     });
   };
 
@@ -58,31 +58,31 @@ const LoginForm = (props) => {
     console.log(loginFormData);
     console.log(isEmailValid && isPasswordValid);
 
-    // let res = await LoginService.login(loginFormData);
-    // console.log(res);
+    let res = await LoginService.login(loginFormData);
+    console.log(res);
 
-    // if (res.status === 200) {
-    //   if (res.data.data) {
-    //     console.log(res.data.data.access_token);
-    //     localStorage.setItem(
-    //       "token",
-    //       JSON.stringify(res.data.data.access_token)
-    //     );
-    //     // alert(res.data.message);
-    //     checkIfCustomerOrAdmin(res.data.data.access_token);
-    //     // props.onLogin(isEmailValid && isPasswordValid);
-    //     // navigate("/home");
-    //   }
-    // } else {
-    //   // TOD0
-    //   // alert(res.response.data.message);
-    //   setOpenAlert({
-    //     open: true,
-    //     alert: res.response.data.message,
-    //     severity: "error",
-    //     variant: "standard",
-    //   });
-    // }
+    if (res.status === 200) {
+      if (res.data.data) {
+        console.log(res.data.data.access_token);
+        localStorage.setItem(
+          "token",
+          JSON.stringify(res.data.data.access_token)
+        );
+        // alert(res.data.message);
+        checkIfCustomerOrAdmin(res.data.data.access_token);
+        // props.onLogin(isEmailValid && isPasswordValid);
+        // navigate("/home");
+      }
+    } else {
+      // TOD0
+      // alert(res.response.data.message);
+      setOpenAlert({
+        open: true,
+        alert: res.response.data.message,
+        severity: "error",
+        variant: "standard",
+      });
+    }
   };
 
   const checkIfCustomerOrAdmin = (token) => {
@@ -119,7 +119,7 @@ const LoginForm = (props) => {
             style={{ marginBottom: "20px", color:"#fff" }}
             validators={["matchRegexp:^[A-z|0-9]{4,}@(gmail)(.com|.lk)$"]}
             errorMessages={["Invalid email address"]}
-            value={loginFormData.username}
+            value={loginFormData.email}
             onChange={handleEmailChange}
           />
           <TextValidator

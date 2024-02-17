@@ -25,13 +25,11 @@ import logo from "../../assets/images/Navbar/logo.png";
 import { styleSheet } from "./styles";
 import { withStyles } from "@mui/styles";
 
-// import LoginService from "../../services/LoginService";
+import LoginService from "../../services/LoginService";
 import {jwtDecode} from "jwt-decode";
 
 const footer_bg_texture =
   "https://www.transparenttextures.com/patterns/nistri.png";
-
-const pages = ["Home", "Shop", "About Us", "Contact Us", "Cart"];
 
 const CustomerNavbar = (props) => {
   const { classes } = props;
@@ -43,8 +41,6 @@ const CustomerNavbar = (props) => {
 
   const [settings, setSettings] = useState([
     "Profile",
-    "Account",
-    "Order History",
     "Logout",
   ]);
 
@@ -98,13 +94,13 @@ const CustomerNavbar = (props) => {
     if (isLogged) {
       setSettings((prevSettings) => {
         const updatedSettings = [...prevSettings]; // Create a copy of the original array
-        updatedSettings[3] = "Logout"; // Update the second index with the new value
+        updatedSettings[2] = "Logout"; // Update the second index with the new value
         return updatedSettings; // Return the updated array
       });
     } else {
       setSettings((prevSettings) => {
         const updatedSettings = [...prevSettings];
-        updatedSettings[3] = "Login";
+        updatedSettings[2] = "Login";
         return updatedSettings;
       });
     }
@@ -116,7 +112,7 @@ const CustomerNavbar = (props) => {
         // setIsAdmin(true);
         setSettings((prevSettings) => {
           const updatedSettings = [...prevSettings];
-          updatedSettings[2] = "Admin Panel";
+          updatedSettings[1] = "Admin Panel";
           return updatedSettings;
         });
       } else {
@@ -124,7 +120,7 @@ const CustomerNavbar = (props) => {
         console.log("--------update with Order History-------------");
         setSettings((prevSettings) => {
           const updatedSettings = [...prevSettings];
-          updatedSettings[2] = "Order History";
+          updatedSettings[1] = "My Cards";
           return updatedSettings;
         });
       }
@@ -153,8 +149,9 @@ const CustomerNavbar = (props) => {
     setAnchorElUser(null);
   };
 
-  const goToOrderHistory = () => {
-    navigate("/order/history");
+  const goToMyCards = () => {
+    // navigate("/order/history");
+    navigate("/home");
   };
 
   const changePage = (e, v) => {
@@ -166,28 +163,28 @@ const CustomerNavbar = (props) => {
   const handleLogout = () => {
     let token = localStorage.getItem("token");
     const decodedToken = jwtDecode(token);
-    console.log(decodedToken.username);
-    logoutUser(decodedToken.username);
+    console.log(decodedToken.email);
+    logoutUser(decodedToken.email);
   };
 
-  const logoutUser = async (username) => {
-    // let res = await LoginService.logout(username);
-    // console.log(res);
+  const logoutUser = async (email) => {
+    let res = await LoginService.logout(email);
+    console.log(res);
 
-    // if (res.status === 200) {
-    //   if (res.data.data) {
-    //     // remove tokn from LS
-    //     localStorage.removeItem("token");
-    //     // alert(res.data.message);
+    if (res.status === 200) {
+      if (res.data.data) {
+        // remove tokn from LS
+        localStorage.removeItem("token");
+        // alert(res.data.message);
 
-    //     console.log("------right before returning false from Navbar------");
-    //     handleCloseUserMenu();
-    //     setIsLogged(false);
-    //     navigate("/home");
-    //   }
-    // } else {
-    //   alert(res.response.data.message);
-    // }
+        console.log("------right before returning false from Navbar------");
+        handleCloseUserMenu();
+        setIsLogged(false);
+        navigate("/home");
+      }
+    } else {
+      alert(res.response.data.message);
+    }
   };
 
   return (
@@ -314,8 +311,8 @@ const CustomerNavbar = (props) => {
                 {/* If a Customer is logged in */}
 
                 {settings.map((setting) =>
-                  isCustomer && setting === "Order History" ? (
-                    <MenuItem key={setting} onClick={goToOrderHistory}>
+                  isCustomer && setting === "My Cards" ? (
+                    <MenuItem key={setting} onClick={goToMyCards}>
                       <Typography textAlign="center">{setting}</Typography>
                     </MenuItem>
                   ) : isAdmin && setting === "Admin Panel" ? (
