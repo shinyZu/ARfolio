@@ -25,26 +25,11 @@ router.get("/getAll", cors(), async (req, res) => {
 // Get next experience id - in use
 // Authorized for Customers
 router.get("/next/id", cors(), authenticateCustomerToken, async (req, res) => {
-    try {
-      // Get the last inserted experience from the database
-      const lastId = await Experience.findOne(
-        {},
-        {},
-        { sort: { experience_id: -1 } }
-      );
-      let nextId = 1;
-  
-      if (lastId) {
-        nextId = lastId.experience_id + 1;
-      }
-  
-      res.send({
-        status: 200,
-        data: { next_experience_id: nextId },
-      });
-    } catch (error) {
-      res.status(500).send({status: 500, message: error});
-    }
+  let nextId = await generateNextExperienceId();
+  return res.send({
+    status: 200,
+    data: { next_experience_id: nextId },
+  });
 }); 
 
 // Search experience by Id
@@ -202,4 +187,26 @@ router.delete("/:id", cors(), authenticateCustomerToken, async (req, res) => {
         }
 });
 
-module.exports = router;
+const generateNextExperienceId = async () => {
+  try {
+    // Get the last inserted experience from the database
+    const lastId = await Experience.findOne(
+      {},
+      {},
+      { sort: { experience_id: -1 } }
+    );
+    let nextId = 1;
+
+    if (lastId) {
+      nextId = lastId.experience_id + 1;
+    }
+
+    
+    console.log("=======next experience id===========", nextId)
+    return nextId;
+  } catch (error) {
+    res.status(500).send({status: 500, message: error});
+  }
+}
+
+module.exports = {router, generateNextExperienceId};

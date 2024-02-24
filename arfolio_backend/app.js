@@ -25,10 +25,10 @@ const linkhub = require("./routes/linkhub");
 app.use(`${baseURL}token`, token);
 app.use(`${baseURL}login`, login.router);
 app.use(`${baseURL}users`, user);
-app.use(`${baseURL}education`, education);
-app.use(`${baseURL}experience`, experience);
-app.use(`${baseURL}project`, project);
-app.use(`${baseURL}linkhub`, linkhub);
+app.use(`${baseURL}education`, education.router);
+app.use(`${baseURL}experience`, experience.router);
+app.use(`${baseURL}project`, project.router);
+app.use(`${baseURL}linkhub`, linkhub.router);
 
 app.get(`${baseURL}/`, (req, res) => {
   console.log(req);

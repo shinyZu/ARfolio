@@ -144,5 +144,25 @@ router.delete("/:id", cors(), authenticateCustomerToken, async (req, res) => {
         }
 });
 
+const generateNextLinkHubId = async () => {
+    try {
+      // Get the last inserted project from the database
+      const lastId = await LinkHub.findOne(
+        {},
+        {},
+        { sort: { linkhub_id: -1 } }
+      );
+      let nextId = 1;
+  
+      if (lastId) {
+        nextId = lastId.linkhub_id + 1;
+      }
+  
+      console.log("=======next linkhub id===========", nextId)
+      return nextId;
+    } catch (error) {
+      res.status(500).send({status: 500, message: error});
+    }
+  }
 
-module.exports = router;
+module.exports = {router, generateNextLinkHubId};

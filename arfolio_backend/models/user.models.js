@@ -8,12 +8,22 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
 
+  title: {
+    type: String,
+    required: true,
+  },
+
   first_name: {
     type: String,
     required: true,
   },
 
   last_name: {
+    type: String,
+    required: true,
+  },
+
+  job_title: {
     type: String,
     required: true,
   },

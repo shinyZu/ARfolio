@@ -191,7 +191,7 @@ const ProjectDetails = (props) => {
                         style={{ width: "20%", height: "100%", marginRight:"2vw" }}
                         className={classes.btn_back}
                         onClick={() => {
-                            navigate("/projects");
+                            navigate("/experiences");
                         }}
                     />
 

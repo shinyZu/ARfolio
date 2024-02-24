@@ -17,9 +17,7 @@ const Home = (props) => {
   const { classes } = props;
   const navigate = useNavigate();
 
-  const [categories, setCategories] = useState([]);
-  const [newArrivals, setNewArrivals] = useState([]);
-  const [categoryTitle, setCategoryTitle] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState([]);
 
   useEffect(() => {
     console.log("---handling login in Home-----");
@@ -37,6 +35,7 @@ const Home = (props) => {
     if (token) {
       const decodedToken = jwtDecode(token);
       let user_role = decodedToken.user_role;
+      setIsLoggedIn(true);
 
       if (user_role === "Admin") {
         console.log("-------is Admin in Home------");
@@ -49,6 +48,7 @@ const Home = (props) => {
       }
     } else {
       console.log("-------Both in Home------");
+      setIsLoggedIn(false);
       props.handleLogin(false, "Both");
     }
   });
@@ -91,9 +91,9 @@ const Home = (props) => {
                 </Grid>
 
                 <Grid item xs={12} className={classes.container_1_left_3}>
-                  <Link to="/basic">
+                  <Link to={isLoggedIn ? "/basic" : "/login"}>
                     <MyButton
-                      label="Start Now"
+                      label={isLoggedIn ? "Start Now" : "Login"}
                       size="small"
                       variant="outlined"
                       type="button"

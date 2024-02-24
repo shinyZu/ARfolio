@@ -28,6 +28,8 @@ import {jwtDecode} from "jwt-decode";
 
 import upload_bg from "../../../assets/images/Portfolio/choose_image.jpg";
 
+import UserService from "../../../services/UserService";
+
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const BasicDetails = (props) => {
@@ -35,7 +37,15 @@ const BasicDetails = (props) => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const receivedData = location.state; // The data sent from the previous page
+
+  // Call updateUser API only if Next button is clicked, if back button(of EducationDetails.js) is clicked, dont call the API.
+  const [isUpdateUser, setIsUpdateUser] = useState(()=>{
+    if(location.state && !location.state.proceedUpdateUser){
+        return false;
+    } else {
+        return true;
+    }
+  });
 
   const [gender, setGender] = useState("Male");
 
@@ -50,10 +60,10 @@ const BasicDetails = (props) => {
     contact_no: "",
     address: "",
     gender: "",
-    male: true,
+    isMale: false,
+    isFemale: false,
+    isOther: false,
   });
-
-  const [isDisabled, setIsDisabled] = useState(false);
 
   // Alerts & Confirmation dialog boxes
   const [openAlert, setOpenAlert] = useState({
@@ -71,18 +81,137 @@ const BasicDetails = (props) => {
     action: "",
   });
 
+  const [user, setUser] = useState([]);
+  const [updatedUser, setUpdatedUser] = useState({});
+
+  useEffect(()=>{
+    getSingleUserById(); 
+  },[])
+
+  useEffect(() => {
+    // localStorage.setItem("payload", JSON.stringify(updatedUser));
+    if (!isUpdateUser) {
+        console.log("Dont call the  API");
+        return;
+    }
+    updateBasicDetails();
+  }, [updatedUser]); 
+  
+  const getSingleUserById = async (i) => {
+    console.log("=======get single user details========")
+    let decodedToken = decodeToken();
+    let res = await UserService.getUserById(decodedToken.user_id);
+
+    if (res.status == 200) {
+      if (res.data.data != []) {
+        console.log(res.data.data);
+        setUser([]);
+        res.data.data.map((user, index) => {
+            setUser((prev) => {
+                return [
+                    ...prev,
+                    {
+                        user_id: user.user_id,
+                        title: user.title,
+                        first_name: user.first_name,
+                        last_name: user.last_name,
+                        job_title: user.job_title,
+                        email: user.email,
+                        country: user.country,
+                        city: user.city,
+                        contact_no: user.contact_no,
+                        gender: user.gender,
+                        user_role: user.user_role,
+                        Education: user.Education,
+                        Experiences: user.Experiences,
+                        Projects: user.Projects,
+                        Links: user.Links,
+                    },
+                ];
+            });
+            setBasicInfoForm({
+                full_name: user.title + user.first_name + " " + user.last_name,
+                job_title: user.job_title,
+                email: user.email,
+                contact_no: user.contact_no,
+                address: user.city + ", " + user.country,
+                gender: user.gender,
+                isMale: user.gender === "Male" ? true : false,
+                isFemale: user.gender === "Female" ? true : false,
+                isOther: user.gender != "Female" || user.gender != "Male"  ? true : false,
+            });
+            setGender((user.gender).toLowerCase());
+        });
+      }
+    }
+  }
+
   // Function to decode the JWT token
   const decodeToken = () => {
     try {
-      const token = localStorage.getItem("token");
-      const decodedToken = jwtDecode(token);
-      console.log(decodedToken);
-      return decodedToken;
+        const token = localStorage.getItem("token");
+        const decodedToken = jwtDecode(token);
+        console.log(decodedToken);
+        return decodedToken;
     } catch (error) {
-      console.error("Error decoding JWT token:", error);
-      return null;
+        console.error("Error decoding JWT token:", error);
+        return null;
     }
   };
+
+  const processPayload = () => {
+    console.log("------------------Processing payload---------------")
+    let user = basicInfoForm;
+
+    let full_name = user.full_name.split(' ');
+    let title = full_name[0].split(".")[0]+".";
+    let first_name = full_name[0].split(".")[1]
+    let last_name = full_name[1]
+
+    let address = user.address.split(", ");
+    let city = address[0];
+    let country = address[1];
+
+    let decodedToken = decodeToken();
+
+    setUpdatedUser(
+        {
+            user_id: decodedToken.user_id,
+            title: title,
+            first_name: first_name,
+            last_name: last_name,
+            job_title: user.job_title,
+            email: user.email,
+            country: country,
+            city: city,
+            contact_no: user.contact_no,
+            gender: user.gender,
+            user_role: decodedToken.user_role,
+            // Education: [],
+            // Experiences: [],
+            // Projects: [],
+            // Links: [],
+        }
+    )
+    setIsUpdateUser(true);
+  }
+
+  const updateBasicDetails = async () => {
+    console.log("------------------updating BasicDetails-----------------")
+    let decodedToken = decodeToken();
+    let res = await UserService.updateUser(updatedUser);
+
+    if (res.status === 200) {
+        console.log("User details updated successfully!")
+    } else {
+        setOpenAlert({
+            open: true,
+            alert: "Error",
+            severity: "error",
+            variant: "standard",
+        });
+    }
+  }
 
   return (
     <div id="portfolio-form">
@@ -380,12 +509,33 @@ const BasicDetails = (props) => {
                                 value={gender}
                                 // onChange={handlePaymentType}
                                 onChange={(e) => {
-                                let type = e.target.value;
-                                if (type === "male") {
-                                    setGender("Male")
-                                } else {
-                                    
-                                }
+                                    let type = e.target.value;
+                                    if (type === "male") {
+                                        // setGender("Male")
+                                        setBasicInfoForm({
+                                            ...basicInfoForm,
+                                            isMale: true,
+                                            isFemale:false,
+                                            isOther:false
+                                        });
+                                    } else if (type === "female") {
+                                        // setGender("Female")
+                                        setBasicInfoForm({
+                                            ...basicInfoForm,
+                                            isMale: false,
+                                            isFemale:true,
+                                            isOther:false
+                                        });
+                                    } else {
+                                        // setGender("Other")
+                                        setBasicInfoForm({
+                                            ...basicInfoForm,
+                                            isMale: false,
+                                            isFemale:false,
+                                            isOther:true
+                                        });
+                                    }
+                                    setGender(type)
                                 }}
                             >
                                 <FormControlLabel
@@ -598,8 +748,11 @@ const BasicDetails = (props) => {
                             type="button"
                             style={{ width: "20%", height: "100%" }}
                             className={classes.btn_next}
-                            onClick={() => {
-                                navigate("/education");
+                            onClick={async () => {
+                                processPayload();
+                                setTimeout(() => {
+                                    navigate("/education"/* , { state: { basicData: user } } */);
+                                }, 500);
                             }}
                         />
                     </Grid>

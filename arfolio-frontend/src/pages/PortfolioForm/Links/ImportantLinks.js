@@ -361,7 +361,7 @@ const ImportantLinks = (props) => {
                     display="flex"
                     justifyContent="flex-end"
                 >
-                    {/* <MyButton
+                    <MyButton
                         label="Back"
                         size="small"
                         variant="outlined"
@@ -371,7 +371,7 @@ const ImportantLinks = (props) => {
                         onClick={() => {
                             navigate("/projects");
                         }}
-                    /> */}
+                    />
 
                     <MyButton
                         label="Process"

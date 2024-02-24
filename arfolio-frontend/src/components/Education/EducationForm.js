@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useImperativeHandle, forwardRef } from "react";
 
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -15,19 +15,28 @@ import MyTextField from "../common/MyTextField/MyTextField";
 import { styleSheet } from "./styles";
 import { withStyles } from "@mui/styles";
 
-const EducationForm = (props) => {
+
+const EducationForm = forwardRef((props, ref) => {
   const { classes } = props;
 
-  const [educationForm, setEducationForm] = useState({
-    degree: "",
-    school: "",
-    city: "",
-    country: "",
-    start_month: "",
-    start_year: "",
-    end_month: "",
-    end_year: "",
-  });
+  console.log(props.data)
+
+  const [educationList, setEducationList] = useState([]);
+  const [educationForm, setEducationForm] = useState(props.data);
+//   const [educationForm, setEducationForm] = useState(
+//         [
+//             {
+//                 degree: "",
+//                 school: "",
+//                 city: "",
+//                 country: "",
+//                 start_month: "",
+//                 start_year: "",
+//                 end_month: "",
+//                 end_year: "",
+//             },
+//         ]
+//     );
 
   const [selectedMonth, setSelectedMonth] = useState('');
 
@@ -40,13 +49,32 @@ const EducationForm = (props) => {
   const [selectedYear, setSelectedYear] = useState('');
 
   // Generate an array of years from 1990 to the current year
-  const years = Array.from({ length: new Date().getFullYear() - 1989 }, (_, index) => 1990 + index);
+  // const years = Array.from({ length: new Date().getFullYear() - 1989 }, (_, index) => 1990 + index);
+
+  // Generate an array of years from 1990 to the current year in descending order
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1989 }, (_, index) => currentYear - index);
 
   useEffect(() => {
-      console.log(props)
-    // Set the current year as the default selected year
     setSelectedYear(new Date().getFullYear().toString());
-  }, []); // Run only once on component mount
+  },[]);
+
+  // Function you want the parent to call
+  const processEducationList = () => {
+    console.log('Processing education list...');
+    setEducationList(prevList => [...prevList, educationForm]);
+    props.addForm([...educationList, educationForm]);
+  }
+
+  const getEducationList = () => {
+    setEducationList(prevList => [...prevList, educationForm]);
+    return [...educationList, educationForm];
+  }
+
+  // Use useImperativeHandle to expose functions to the parent component
+  useImperativeHandle(ref, ()=>({
+    getEducationList,
+  }))
 
   return (
       <>
@@ -64,49 +92,49 @@ const EducationForm = (props) => {
                 style={{marginBottom:"2vh"}}
             >
                 <Typography variant="h5" className={classes.sub_title} style={{color:"#40739e", marginTop:"2vh"}}>
-                    {`Education ${props.indexValue}`}
+                    {`Education ${props.indexValue+1}`}
                 </Typography>
             </Grid>
 
             {/* -------- Row 1 - Degree ------------- */}
             <Grid
-                            container
-                            xl={12}
-                            lg={12}
-                            md={12}
-                            sm={12}
-                            xs={12}
-                            className={classes.basic_details_row}
-                            display="flex"
-                            justifyContent="center"
-                        >
-                            <Grid
-                                item
-                                xl={12}
-                                lg={12}
-                                md={12}
-                                sm={12}
-                                xs={12}
-                            //   className={classes.basic_details_row}
-                            >
-                                <MyTextField
-                                    variant="outlined"
-                                    type="text"
-                                    id="degree"
-                                    label="Degree"
-                                    InputLabelProps={{ shrink: true }}
-                                    placeholder="Degree / Field of Study"
-                                    value={educationForm.degree}
-                                    onChange={(e) => {
-                                        setEducationForm({
-                                        ...educationForm,
-                                        degree: e.target.value,
-                                        });
-                                    }}
-                                    // onChange={(e) => setFirstName(e.target.value)}
-                                    style={{ width: "100%", paddingTop: "5px"}}
-                                />
-                            </Grid>
+                container
+                xl={12}
+                lg={12}
+                md={12}
+                sm={12}
+                xs={12}
+                className={classes.basic_details_row}
+                display="flex"
+                justifyContent="center"
+            >
+                <Grid
+                    item
+                    xl={12}
+                    lg={12}
+                    md={12}
+                    sm={12}
+                    xs={12}
+                //   className={classes.basic_details_row}
+                >
+                    <MyTextField
+                        variant="outlined"
+                        type="text"
+                        id="degree"
+                        label="Degree"
+                        InputLabelProps={{ shrink: true }}
+                        placeholder="Degree / Field of Study"
+                        value={educationForm.degree}
+                        onChange={(e) => {
+                            setEducationForm({
+                                ...educationForm,
+                                degree: e.target.value,
+                            });
+                        }}
+                        // onChange={(e) => setFirstName(e.target.value)}
+                        style={{ width: "100%", paddingTop: "5px"}}
+                    />
+                </Grid>
             </Grid>
 
             {/* -------- Row 2 - School------------- */}
@@ -138,8 +166,8 @@ const EducationForm = (props) => {
                         value={educationForm.school}
                         onChange={(e) => {
                             setEducationForm({
-                            ...educationForm,
-                            school: e.target.value,
+                                ...educationForm,
+                                school: e.target.value,
                             });
                         }}
                         style={{ width: "100%", paddingTop: "5px", color:"#000" }}
@@ -176,8 +204,8 @@ const EducationForm = (props) => {
                         value={educationForm.city}
                         onChange={(e) => {
                             setEducationForm({
-                            ...educationForm,
-                            city: e.target.value,
+                                ...educationForm,
+                                city: e.target.value,
                             });
                         }}
                         // onChange={(e) => setStreetAddress(e.target.value)}
@@ -202,8 +230,8 @@ const EducationForm = (props) => {
                         value={educationForm.country}
                         onChange={(e) => {
                             setEducationForm({
-                            ...educationForm,
-                            country: e.target.value,
+                                ...educationForm,
+                                country: e.target.value,
                             });
                         }}
                         // onChange={(e) => setCity(e.target.value)}
@@ -249,30 +277,34 @@ const EducationForm = (props) => {
                     sm={12}
                     xs={12}
                 >
-                        <Autocomplete
+                    <Autocomplete
                         // className={classes.category_dropdown}
-                        disablePortal
                         id="start_month"
+                        name="start_month"
                         options={months}
-                        value={selectedMonth}
-                        // getOptionLabel={(option) => option.categoryTitle}
-                        // inputValue={categoryName}
+                        getOptionLabel={(option) => option}
+                        value={educationForm.start_month}
+                        disablePortal
                         // sx={{ width: 600 }}
+                        size="small"
+                        disabledItemsFocusable
+                        onChange={(e,v)=>{
+                            console.log(v)
+                            console.log( e.target.value)
+                            setEducationForm({
+                                ...educationForm,
+                                // start_month: e.target.value,
+                                start_month: v == null ? "" : v
+                            });
+                        }}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
                                 label="Month"
                                 styles={{ color: "red" }}
+                                value={educationForm.start_month}
                             />
                         )}
-                        size="small"
-                        disabledItemsFocusable
-                        onChange={(e)=>{
-                            setEducationForm({
-                                ...educationForm,
-                                start_month: e.target.value,
-                            });
-                        }}
                     />
                 </Grid>
 
@@ -284,26 +316,32 @@ const EducationForm = (props) => {
                     sm={12}
                     xs={12}
                 >
-                        <Autocomplete
-                        disablePortal
+                     <Autocomplete
+                        // className={classes.category_dropdown}
                         id="start_year"
+                        name="start_year"
                         options={years.map(year => year.toString())}
-                        value={selectedYear}
+                        getOptionLabel={(option) => option}
+                        // value={selectedYear}
+                        value={educationForm.start_year}
+                        disablePortal
+                        size="small"
+                        disabledItemsFocusable
+                        onChange={(e,v)=>{
+                            setEducationForm({
+                                ...educationForm,
+                                // start_year: e.target.value,
+                                start_year: v == null ? "" : v
+                            });
+                        }}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                label="Year"
+                                label="Month"
                                 styles={{ color: "red" }}
+                                value={educationForm.start_year}
                             />
                         )}
-                        size="small"
-                        disabledItemsFocusable
-                        onChange={(e)=>{
-                            setEducationForm({
-                                ...educationForm,
-                                start_year: e.target.value,
-                            });
-                        }}
                     />
                 </Grid>
 
@@ -355,25 +393,32 @@ const EducationForm = (props) => {
                     sm={12}
                     xs={12}
                 >
-                        <Autocomplete
-                        disablePortal
+                    <Autocomplete
+                        // className={classes.category_dropdown}
                         id="end_month"
+                        name="end_month"
                         options={months}
+                        getOptionLabel={(option) => option}
+                        value={educationForm.end_month}
+                        disablePortal
+                        // sx={{ width: 600 }}
+                        size="small"
+                        disabledItemsFocusable
+                        onChange={(e,v)=>{
+                            setEducationForm({
+                                ...educationForm,
+                                // end_month: e.target.value,
+                                end_month: v == null ? "" : v
+                            });
+                        }}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
                                 label="Month"
                                 styles={{ color: "red" }}
+                                value={educationForm.end_month}
                             />
                         )}
-                        size="small"
-                        disabledItemsFocusable
-                        onChange={(e)=>{
-                            setEducationForm({
-                                ...educationForm,
-                                end_month: e.target.value,
-                            });
-                        }}
                     />
                 </Grid>
 
@@ -385,29 +430,36 @@ const EducationForm = (props) => {
                     sm={12}
                     xs={12}
                 >
-                        <Autocomplete
-                        disablePortal
+                     <Autocomplete
+                        // className={classes.category_dropdown}
                         id="end_year"
+                        name="end_year"
                         options={years.map(year => year.toString())}
-                        value={selectedYear}
+                        getOptionLabel={(option) => option}
+                        // value={selectedYear}
+                        value={educationForm.end_year}
+                        disablePortal
+                        size="small"
+                        disabledItemsFocusable
+                        onChange={(e,v)=>{
+                            setEducationForm({
+                                ...educationForm,
+                                // end_year: e.target.value,
+                                end_year: v == null ? "" : v
+                            });
+                        }}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                label="Year"
+                                label="Month"
                                 styles={{ color: "red" }}
+                                value={educationForm.end_year}
                             />
                         )}
-                        size="small"
-                        disabledItemsFocusable
-                        onChange={(e)=>{
-                            setEducationForm({
-                                ...educationForm,
-                                end_year: e.target.value,
-                            });
-                        }}
                     />
                 </Grid>
 
+                {/*  Add / Delete Icons */}
                 <Grid
                     item
                     container
@@ -425,7 +477,13 @@ const EducationForm = (props) => {
                             <AddCircleIcon
                                 style={{color:"#1abc9c"}}
                                 fontSize="large"
-                                onClick={props.addForm}
+                                onClick={()=>{
+                                    // let arr = [];
+                                    // arr.push(educationForm);
+                                    // setEducationList(arr);
+                                    // props.addForm(educationList)
+                                    processEducationList();
+                                }}
                             />
                         </IconButton>
                     </Tooltip>
@@ -434,9 +492,7 @@ const EducationForm = (props) => {
                             <DeleteIcon
                                 style={{color:"#e74c3c"}}
                                 fontSize="large"
-                                onClick={() => {
-                                    console.log("delete education");
-                                }}
+                                onClick={props.removeForm}
                             />
                         </IconButton>
                     </Tooltip>
@@ -445,6 +501,6 @@ const EducationForm = (props) => {
         </Fragment>
     </>
   );
-};
+});
 
 export default withStyles(styleSheet)(EducationForm);

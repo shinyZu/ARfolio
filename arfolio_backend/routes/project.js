@@ -25,26 +25,11 @@ router.get("/getAll", cors(), async (req, res) => {
 // Get next project id - in use
 // Authorized for Customers
 router.get("/next/id", cors(), authenticateCustomerToken, async (req, res) => {
-    try {
-      // Get the last inserted project from the database
-      const lastId = await Project.findOne(
-        {},
-        {},
-        { sort: { project_id: -1 } }
-      );
-      let nextId = 1;
-  
-      if (lastId) {
-        nextId = lastId.project_id + 1;
-      }
-  
-      res.send({
-        status: 200,
-        data: { next_project_id: nextId },
-      });
-    } catch (error) {
-      res.status(500).send({status: 500, message: error});
-    }
+  let nextId = await generateNextProjectId();
+  return res.send({
+    status: 200,
+    data: { next_project_id: nextId },
+  });
 }); 
 
 // Search project by Id
@@ -198,4 +183,25 @@ router.delete("/:id", cors(), authenticateCustomerToken, async (req, res) => {
         }
 });
 
-module.exports = router;
+const generateNextProjectId = async () => {
+  try {
+    // Get the last inserted project from the database
+    const lastId = await Project.findOne(
+      {},
+      {},
+      { sort: { project_id: -1 } }
+    );
+    let nextId = 1;
+
+    if (lastId) {
+      nextId = lastId.project_id + 1;
+    }
+
+    console.log("=======next project id===========", nextId)
+    return nextId;
+  } catch (error) {
+    res.status(500).send({status: 500, message: error});
+  }
+}
+
+module.exports = {router, generateNextProjectId};
