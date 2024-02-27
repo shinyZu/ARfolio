@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useRef } from "react";
 import { Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -28,7 +28,8 @@ import { withStyles } from "@mui/styles";
 
 import {jwtDecode} from "jwt-decode";
 
-import upload_bg from "../../../assets/images/Portfolio/choose_image.jpg";
+import UserService from "../../../services/UserService";
+import ProjectService from "../../../services/ProjectService";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -37,29 +38,12 @@ const ProjectDetails = (props) => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const receivedData = location.state; // The data sent from the previous page
 
-  const [currentIndex, setCurrentIndex] = useState(1);
+  // Create a ref to hold the child component reference
+  const childRef = useRef();
 
-  const addEducationForm = () => {
-      const newIndexValue = currentIndex + 1;
-      setCurrentIndex(newIndexValue);
-
-      const newForms = [
-          ...experienceForms,
-          <ProjectForm key={newIndexValue} indexValue={newIndexValue} addForm={addEducationForm} />
-      ];
-
-      setExperienceForms(newForms);
-  };
-
-  const [experienceForms, setExperienceForms] = useState([<ProjectForm key={1} indexValue={1} addForm={addEducationForm} />]);
-
-
-  const [isDisabled, setIsDisabled] = useState(false);
-
-  // Alerts & Confirmation dialog boxes
-  const [openAlert, setOpenAlert] = useState({
+   // Alerts & Confirmation dialog boxes
+   const [openAlert, setOpenAlert] = useState({
     open: "",
     alert: "",
     severity: "",
@@ -74,6 +58,16 @@ const ProjectDetails = (props) => {
     action: "",
   });
 
+  const [projectForms, setProjectForms] =  useState([{id:0,}]);
+
+  const [user, setUser] = useState([]);
+  const [updatedProjectList, setUpdatedProjectList] = useState([{id:0,}]);
+  const [decodedToken, setDecodedToken] = useState({});
+
+  useEffect(()=>{
+    getSingleUserById();
+  },[])
+
   // Function to decode the JWT token
   const decodeToken = () => {
     try {
@@ -86,6 +80,106 @@ const ProjectDetails = (props) => {
       return null;
     }
   };
+
+  const getSingleUserById = async (i) => {
+
+    let decodedToken = decodeToken();
+    let res = await UserService.getUserById(decodedToken.user_id);
+
+    if (res.status == 200) {
+      if (res.data.data != []) {
+        console.log(res.data.data);
+        setUser(res.data.data);
+        setUpdatedProjectList(res.data.data[0].Projects);
+        const projectsWithIds = res.data.data[0].Projects.map((item, index) => ({
+          ...item,
+          id: index
+        }));
+
+        setProjectForms(projectsWithIds);
+      }
+    }
+  }
+
+  // Add button in child component - ProjectForm
+  const addProjectForm = () => {
+    const newProject = {
+      id: projectForms.length,
+      project_title: "",
+      project_link: "",
+      description: "",
+      start_month: "",
+      start_year: "",
+      end_month: "",
+      end_year: "",
+    };
+    setProjectForms([...projectForms, newProject]);
+  };
+
+  // Delete button in child component - ProjectForm
+  const removeProjectForm = async (id) => {
+    // Check if the length of projectForms is 1
+    if (projectForms.length === 1) {
+      console.log("Cannot remove the last project form.");
+      return; 
+    }
+
+    // Proceed with the removal if there are more than 1 project forms
+    setProjectForms(projectForms.filter(project => project.project_id !== id));
+    
+    // Assuming deleteProject is an API call or similar asynchronous operation
+    await deleteProject(id);
+  };
+
+  // Handler to update individual project items
+  const handleUpdateProject = (updatedProject) => {
+    console.log("==================updatedProject============", updatedProject);
+    setProjectForms(currentList =>
+      currentList.map( project =>
+        project.project_id === updatedProject.project_id ? updatedProject : project
+      )
+    );
+  };
+
+  // trigger on clicking Next button
+  const updateAllProjects = async () => {
+    console.log('Updated project list:', projectForms);
+    await updateProjectDetails(projectForms);
+  };
+
+  // API call to update exisiting & newly created experiences
+  const updateProjectDetails = async (projectForms) => {
+    let res = await ProjectService.updateProjectsAsBulk(projectForms);
+
+    if (res.status === 200) {
+        console.log("Projects details updated successfully!")
+    } else {
+        setOpenAlert({
+            open: true,
+            alert: "Error",
+            severity: "error",
+            variant: "standard",
+        });
+    }
+  }
+
+  // API call to delete project
+  const deleteProject = async(id) => {
+    let res = await ProjectService.deleteProject(id);
+
+    if (res.status === 200) {
+        console.log("Projects deleted successfully!")
+    } else {
+      console.log("Error")
+        // setOpenAlert({
+        //     open: true,
+        //     alert: "Error",
+        //     severity: "error",
+        //     variant: "standard",
+        // });
+    }
+
+  }
 
   return (
     <div id="portfolio-form">
@@ -119,7 +213,7 @@ const ProjectDetails = (props) => {
                 </Typography>
             </Grid>
 
-            {/* ----------Education--------------------- */}
+            {/* ----------Projects--------------------- */}
 
             <Grid
                 container
@@ -133,7 +227,7 @@ const ProjectDetails = (props) => {
                 display="flex"
                 justifyContent="center"
             >
-                {/* ------------------ Education Details ----------------------- */}
+                {/* ------------------ Projects Details ----------------------- */}
 
                 <Grid
                     container
@@ -157,16 +251,22 @@ const ProjectDetails = (props) => {
                         // justifyContent="center"
                     >
                         <Typography variant="h4" className={classes.sub_title}>
-                            Projects
+                            Work Projects
                         </Typography>
                     </Grid>
                     
-                    {/* <ExperienceForm /> */}
+                    {/* <ProjectForm /> */}
 
-                    {experienceForms.map((form, index) => (
-                        <Fragment key={form.key}>
-                            {form}
-                        </Fragment>
+                    {projectForms.map((form, index) => (
+                         <ProjectForm
+                            ref={childRef}
+                            key={form.project_id}
+                            indexValue={form.id}
+                            addForm={addProjectForm}
+                            removeForm={() => removeProjectForm(form.project_id)}
+                            onUpdate={handleUpdateProject}
+                            data={form}
+                        />
                     ))}
 
                 </Grid>
@@ -203,7 +303,10 @@ const ProjectDetails = (props) => {
                         style={{ width: "20%", height: "100%" }}
                         className={classes.btn_next}
                         onClick={() => {
+                          updateAllProjects();
+                          setTimeout(() => {
                             navigate("/links");
+                          }, 500);
                         }}
                     />
                 </Grid>
