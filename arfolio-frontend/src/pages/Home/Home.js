@@ -92,6 +92,7 @@ const Home = (props) => {
 
                 <Grid item xs={12} className={classes.container_1_left_3}>
                   <Link to={isLoggedIn ? "/basic" : "/login"}>
+                  {/* <Link to={isLoggedIn ? { pathname: "/basic", state:  { proceedUpdateUser: false } } : "/login"}> */}
                     <MyButton
                       label={isLoggedIn ? "Start Now" : "Login"}
                       size="small"

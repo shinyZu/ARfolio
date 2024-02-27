@@ -19,24 +19,13 @@ import { withStyles } from "@mui/styles";
 const EducationForm = forwardRef((props, ref) => {
   const { classes } = props;
 
-  console.log(props.data)
+  console.log(props)
 
   const [educationList, setEducationList] = useState([]);
   const [educationForm, setEducationForm] = useState(props.data);
-//   const [educationForm, setEducationForm] = useState(
-//         [
-//             {
-//                 degree: "",
-//                 school: "",
-//                 city: "",
-//                 country: "",
-//                 start_month: "",
-//                 start_year: "",
-//                 end_month: "",
-//                 end_year: "",
-//             },
-//         ]
-//     );
+  console.log(educationForm)
+
+//   const [editEducation, setEditEducation] = useState(education);
 
   const [selectedMonth, setSelectedMonth] = useState('');
 
@@ -57,7 +46,49 @@ const EducationForm = forwardRef((props, ref) => {
 
   useEffect(() => {
     setSelectedYear(new Date().getFullYear().toString());
+    setEducationForm(props.data);
   },[]);
+
+  // Initialize with education data prop when the component mounts or the prop changes
+  useEffect(() => {
+    setEducationForm(props.data); 
+  }, [props.data]);
+
+  // Handle changes to the input fields
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    let updated = {
+        ...educationForm,
+        [name]: value,
+    }
+    setEducationForm(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+    // setEducationForm(updated)
+    props.onUpdate(updated);
+  };
+  
+  // Handle changes to the dropdowns
+  const handleAutoCompleteChange = (e, name) => {
+    const { innerText } = e.target;
+    let updated = {
+        ...educationForm,
+        [name]: innerText,
+    }
+    // setEducationForm(prevState => ({
+    //     ...educationForm,
+    //     [name]: innerText,
+    // }));
+    setEducationForm(updated)
+    props.onUpdate(updated);
+  };
+
+  // Call onUpdate (passed from parent) with the updated education object
+  const handleUpdate = () => {
+      props.onUpdate(educationForm);
+  };
 
   // Function you want the parent to call
   const processEducationList = () => {
@@ -72,13 +103,17 @@ const EducationForm = forwardRef((props, ref) => {
   }
 
   // Use useImperativeHandle to expose functions to the parent component
+//   useImperativeHandle(ref, ()=>({
+//     getEducationList,
+//   }))
+
   useImperativeHandle(ref, ()=>({
-    getEducationList,
+    handleUpdate,
   }))
 
   return (
       <>
-        <Fragment key={props.indexValue}>
+        <Fragment>
             <Grid
                 item
                 xl={12}
@@ -125,13 +160,14 @@ const EducationForm = forwardRef((props, ref) => {
                         InputLabelProps={{ shrink: true }}
                         placeholder="Degree / Field of Study"
                         value={educationForm.degree}
-                        onChange={(e) => {
-                            setEducationForm({
-                                ...educationForm,
-                                degree: e.target.value,
-                            });
-                        }}
-                        // onChange={(e) => setFirstName(e.target.value)}
+                        name="degree"
+                        // onChange={(e) => {
+                        //     setEducationForm({
+                        //         ...educationForm,
+                        //         degree: e.target.value,
+                        //     });
+                        // }}
+                        onChange={handleChange}
                         style={{ width: "100%", paddingTop: "5px"}}
                     />
                 </Grid>
@@ -164,12 +200,14 @@ const EducationForm = forwardRef((props, ref) => {
                         label="School"
                         placeholder="University / School / Institute"
                         value={educationForm.school}
-                        onChange={(e) => {
-                            setEducationForm({
-                                ...educationForm,
-                                school: e.target.value,
-                            });
-                        }}
+                        // onChange={(e) => {
+                        //     setEducationForm({
+                        //         ...educationForm,
+                        //         school: e.target.value,
+                        //     });
+                        // }}
+                        name="school"
+                        onChange={handleChange}
                         style={{ width: "100%", paddingTop: "5px", color:"#000" }}
                     />
                 </Grid>
@@ -202,13 +240,14 @@ const EducationForm = forwardRef((props, ref) => {
                         label="City"
                         placeholder="City"
                         value={educationForm.city}
-                        onChange={(e) => {
-                            setEducationForm({
-                                ...educationForm,
-                                city: e.target.value,
-                            });
-                        }}
-                        // onChange={(e) => setStreetAddress(e.target.value)}
+                        // onChange={(e) => {
+                        //     setEducationForm({
+                        //         ...educationForm,
+                        //         city: e.target.value,
+                        //     });
+                        // }}
+                        name="city"
+                        onChange={handleChange}
                         style={{ width: "100%", paddingTop: "5px" }}
                     />
                 </Grid>
@@ -228,13 +267,14 @@ const EducationForm = forwardRef((props, ref) => {
                         label="Country"
                         placeholder="Country"
                         value={educationForm.country}
-                        onChange={(e) => {
-                            setEducationForm({
-                                ...educationForm,
-                                country: e.target.value,
-                            });
-                        }}
-                        // onChange={(e) => setCity(e.target.value)}
+                        // onChange={(e) => {
+                        //     setEducationForm({
+                        //         ...educationForm,
+                        //         country: e.target.value,
+                        //     });
+                        // }}
+                        name="country"
+                        onChange={handleChange}
                         style={{ width: "100%", paddingTop: "5px" }}
                     />
                 </Grid>
@@ -288,15 +328,16 @@ const EducationForm = forwardRef((props, ref) => {
                         // sx={{ width: 600 }}
                         size="small"
                         disabledItemsFocusable
-                        onChange={(e,v)=>{
-                            console.log(v)
-                            console.log( e.target.value)
-                            setEducationForm({
-                                ...educationForm,
-                                // start_month: e.target.value,
-                                start_month: v == null ? "" : v
-                            });
-                        }}
+                        // onChange={(e,v)=>{
+                        //     console.log(v)
+                        //     console.log( e.target.value)
+                        //     setEducationForm({
+                        //         ...educationForm,
+                        //         // start_month: e.target.value,
+                        //         start_month: v == null ? "" : v
+                        //     });
+                        // }}
+                        onChange={(e,v)=>{handleAutoCompleteChange(e, "start_month")}}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -327,13 +368,14 @@ const EducationForm = forwardRef((props, ref) => {
                         disablePortal
                         size="small"
                         disabledItemsFocusable
-                        onChange={(e,v)=>{
-                            setEducationForm({
-                                ...educationForm,
-                                // start_year: e.target.value,
-                                start_year: v == null ? "" : v
-                            });
-                        }}
+                        // onChange={(e,v)=>{
+                        //     setEducationForm({
+                        //         ...educationForm,
+                        //         // start_year: e.target.value,
+                        //         start_year: v == null ? "" : v
+                        //     });
+                        // }}
+                        onChange={(e,v)=>{handleAutoCompleteChange(e, "start_year")}}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -404,13 +446,14 @@ const EducationForm = forwardRef((props, ref) => {
                         // sx={{ width: 600 }}
                         size="small"
                         disabledItemsFocusable
-                        onChange={(e,v)=>{
-                            setEducationForm({
-                                ...educationForm,
-                                // end_month: e.target.value,
-                                end_month: v == null ? "" : v
-                            });
-                        }}
+                        // onChange={(e,v)=>{
+                        //     setEducationForm({
+                        //         ...educationForm,
+                        //         // end_month: e.target.value,
+                        //         end_month: v == null ? "" : v
+                        //     });
+                        // }}
+                        onChange={(e,v)=>{handleAutoCompleteChange(e, "end_month")}}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -441,13 +484,14 @@ const EducationForm = forwardRef((props, ref) => {
                         disablePortal
                         size="small"
                         disabledItemsFocusable
-                        onChange={(e,v)=>{
-                            setEducationForm({
-                                ...educationForm,
-                                // end_year: e.target.value,
-                                end_year: v == null ? "" : v
-                            });
-                        }}
+                        // onChange={(e,v)=>{
+                        //     setEducationForm({
+                        //         ...educationForm,
+                        //         // end_year: e.target.value,
+                        //         end_year: v == null ? "" : v
+                        //     });
+                        // }}
+                        onChange={(e,v)=>{handleAutoCompleteChange(e, "end_year")}}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -477,13 +521,10 @@ const EducationForm = forwardRef((props, ref) => {
                             <AddCircleIcon
                                 style={{color:"#1abc9c"}}
                                 fontSize="large"
-                                onClick={()=>{
-                                    // let arr = [];
-                                    // arr.push(educationForm);
-                                    // setEducationList(arr);
-                                    // props.addForm(educationList)
-                                    processEducationList();
-                                }}
+                                // onClick={()=>{
+                                //     processEducationList();
+                                // }}
+                                onClick={props.addForm}
                             />
                         </IconButton>
                     </Tooltip>

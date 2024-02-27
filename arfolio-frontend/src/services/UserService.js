@@ -40,9 +40,9 @@ class UserService {
         return await promise;
     };
 
-    updateUser = async (data) => {
+    updateUser = async (data, id) => {
       const token = JSON.parse(localStorage.getItem("token"));
-      let id = token.user_id;
+      // let id = token.user_id;
       console.log(id)
       const promise = new Promise((resolve, reject) => {
         axios

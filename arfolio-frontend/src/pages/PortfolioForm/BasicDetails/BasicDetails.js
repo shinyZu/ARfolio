@@ -37,12 +37,15 @@ const BasicDetails = (props) => {
   const navigate = useNavigate();
 
   const location = useLocation();
+  console.log(location)
 
   // Call updateUser API only if Next button is clicked, if back button(of EducationDetails.js) is clicked, dont call the API.
   const [isUpdateUser, setIsUpdateUser] = useState(()=>{
-    if(location.state && !location.state.proceedUpdateUser){
+    if(location.state && !location.state.proceedUpdateUser || location.state == null){
+        console.log("Don't update user==============")
         return false;
     } else {
+        console.log("Do update user==============")
         return true;
     }
   });
@@ -85,17 +88,18 @@ const BasicDetails = (props) => {
   const [updatedUser, setUpdatedUser] = useState({});
 
   useEffect(()=>{
+    console.log(location)
     getSingleUserById(); 
   },[])
 
-  useEffect(() => {
+ /*  useEffect(() => {
     // localStorage.setItem("payload", JSON.stringify(updatedUser));
-    if (!isUpdateUser) {
+    if (!isUpdateUser && updatedUser.user_id == undefined) {
         console.log("Dont call the  API");
         return;
     }
     updateBasicDetails();
-  }, [updatedUser]); 
+  }, [updatedUser]);  */
   
   const getSingleUserById = async (i) => {
     console.log("=======get single user details========")
@@ -159,7 +163,7 @@ const BasicDetails = (props) => {
     }
   };
 
-  const processPayload = () => {
+  const processPayload = async () => {
     console.log("------------------Processing payload---------------")
     let user = basicInfoForm;
 
@@ -174,32 +178,33 @@ const BasicDetails = (props) => {
 
     let decodedToken = decodeToken();
 
-    setUpdatedUser(
-        {
-            user_id: decodedToken.user_id,
-            title: title,
-            first_name: first_name,
-            last_name: last_name,
-            job_title: user.job_title,
-            email: user.email,
-            country: country,
-            city: city,
-            contact_no: user.contact_no,
-            gender: user.gender,
-            user_role: decodedToken.user_role,
-            // Education: [],
-            // Experiences: [],
-            // Projects: [],
-            // Links: [],
-        }
-    )
+    let obj = {
+        user_id: decodedToken.user_id,
+        title: title,
+        first_name: first_name,
+        last_name: last_name,
+        job_title: user.job_title,
+        email: user.email,
+        country: country,
+        city: city,
+        contact_no: user.contact_no,
+        gender: user.gender,
+        user_role: decodedToken.user_role,
+        // Education: [],
+        // Experiences: [],
+        // Projects: [],
+        // Links: [],
+    }
+
+    setUpdatedUser(obj);
+    await updateBasicDetails(obj);
     setIsUpdateUser(true);
   }
 
-  const updateBasicDetails = async () => {
+  const updateBasicDetails = async (updatedUser) => {
     console.log("------------------updating BasicDetails-----------------")
     let decodedToken = decodeToken();
-    let res = await UserService.updateUser(updatedUser);
+    let res = await UserService.updateUser(updatedUser, updatedUser.user_id);
 
     if (res.status === 200) {
         console.log("User details updated successfully!")

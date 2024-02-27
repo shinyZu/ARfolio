@@ -199,9 +199,9 @@ router.put("/update/bulk", cors(), authenticateCustomerToken, async (req, res) =
         let updatedEducation;
 
         if (educationList.length > 0) {
-          for (let i = 1; i < educationList.length; i++) {
+          for (let i = 0; i < educationList.length; i++) {
             let education = educationList[i];
-            
+
             if(education.education_id) { // Attempt to update an existing record
               updatedEducation = await Education.findOneAndUpdate({ user_id: verified.user_id, education_id: education.education_id }, education, { new: true });
     

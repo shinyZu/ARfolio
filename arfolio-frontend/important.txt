@@ -1,2 +1,8 @@
 nvm use v16.15.1
 PORT=3005 npm start
+
+
+Check
+=====
+education Next button - duplicates
+education add button functionality

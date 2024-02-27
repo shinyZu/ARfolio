@@ -16,6 +16,7 @@ const MyTextField = (props) => {
         style={props.style}
         disabled={props.disabled}
         inputProps={props.inputProps}
+        name={props.name}
       />
     </>
   );
