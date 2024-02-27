@@ -88,6 +88,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
+  image_name: {
+    type: String,
+    // required: true,
+  },
+
+  image_url: {
+    type: String,
+    // required: true,
+  },
 });
 
 // userSchema.pre("deleteOne", async function (next) {
