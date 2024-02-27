@@ -27,7 +27,8 @@ import { withStyles } from "@mui/styles";
 
 import {jwtDecode} from "jwt-decode";
 
-import upload_bg from "../../../assets/images/Portfolio/choose_image.jpg";
+import UserService from "../../../services/UserService";
+import LinkHubService from "../../../services/LinkHubService";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -36,19 +37,6 @@ const ImportantLinks = (props) => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const receivedData = location.state; // The data sent from the previous page
-
-  const [currentIndex, setCurrentIndex] = useState(1);
-
-  const [isDisabled, setIsDisabled] = useState(false);
-
-  const [linksForm, setLinksForm] = useState({
-    linkedin: "",
-    website: "",
-    github: "",
-    twitter: "",
-    instagram: "",
-  });
 
   // Alerts & Confirmation dialog boxes
   const [openAlert, setOpenAlert] = useState({
@@ -66,6 +54,51 @@ const ImportantLinks = (props) => {
     action: "",
   });
 
+  const [linksForm, setLinksForm] = useState({
+    linkedin: "",
+    website: "",
+    github: "",
+    twitter: "",
+    instagram: "",
+    spotify: "",
+    facebook: "",
+  });
+
+//   const [linksForm, setLinksForm] =  useState([{id:0,}]);
+
+  const [user, setUser] = useState([]);
+  const [updatedExperienceList, setUpdatedExperienceList] = useState([{id:0,}]);
+
+  useEffect(()=>{
+    getSingleUserById();
+  },[])
+
+  const getSingleUserById = async (i) => {
+
+    let decodedToken = decodeToken();
+    let res = await UserService.getUserById(decodedToken.user_id);
+
+    if (res.status == 200) {
+      if (res.data.data != []) {
+        console.log(res.data.data);
+        setUser(res.data.data);
+
+        let userLinks = res.data.data[0].Links[0]
+        
+        setLinksForm({
+            linkedin: userLinks.linkedin,
+            website: userLinks.website,
+            github: userLinks.github,
+            twitter: userLinks.twitter,
+            instagram: userLinks.instagram,
+            spotify: userLinks.spotify,
+            facebook: userLinks.facebook,
+        });
+
+      }
+    }
+  }
+
   // Function to decode the JWT token
   const decodeToken = () => {
     try {
@@ -78,6 +111,8 @@ const ImportantLinks = (props) => {
       return null;
     }
   };
+
+  console.log(linksForm)
 
   return (
     <div id="portfolio-form">
@@ -111,7 +146,7 @@ const ImportantLinks = (props) => {
                 </Typography>
             </Grid>
 
-            {/* ----------Education--------------------- */}
+            {/* ----------Links--------------------- */}
 
             <Grid
                 container
@@ -125,7 +160,7 @@ const ImportantLinks = (props) => {
                 display="flex"
                 justifyContent="center"
             >
-                {/* ------------------ Education Details ----------------------- */}
+                {/* ------------------ Link Details ----------------------- */}
 
                 <Grid
                     container
@@ -341,6 +376,84 @@ const ImportantLinks = (props) => {
                                     setLinksForm({
                                         ...linksForm,
                                         instagram: e.target.value,
+                                    });
+                                }}
+                                style={{ width: "100%", paddingTop: "5px"}}
+                            />
+                        </Grid>
+                    </Grid>
+
+                    {/* -------- Row 6 - Facebook ------------- */}
+                    <Grid
+                        container
+                        xl={12}
+                        lg={12}
+                        md={12}
+                        sm={12}
+                        xs={12}
+                        className={classes.basic_details_row}
+                        display="flex"
+                        justifyContent="center"
+                    >
+                        <Grid
+                            item
+                            xl={12}
+                            lg={12}
+                            md={12}
+                            sm={12}
+                            xs={12}
+                        >
+                            <MyTextField
+                                variant="outlined"
+                                type="text"
+                                id="instagram_url"
+                                label="Facebook"
+                                placeholder="Facebook Profile URL"
+                                InputLabelProps={{ shrink: true }}
+                                value={linksForm.facebook}
+                                onChange={(e) => {
+                                    setLinksForm({
+                                        ...linksForm,
+                                        facebook: e.target.value,
+                                    });
+                                }}
+                                style={{ width: "100%", paddingTop: "5px"}}
+                            />
+                        </Grid>
+                    </Grid>
+
+                    {/* -------- Row 7 - Spotify ------------- */}
+                    <Grid
+                        container
+                        xl={12}
+                        lg={12}
+                        md={12}
+                        sm={12}
+                        xs={12}
+                        className={classes.basic_details_row}
+                        display="flex"
+                        justifyContent="center"
+                    >
+                        <Grid
+                            item
+                            xl={12}
+                            lg={12}
+                            md={12}
+                            sm={12}
+                            xs={12}
+                        >
+                            <MyTextField
+                                variant="outlined"
+                                type="text"
+                                id="instagram_url"
+                                label="Spotify"
+                                placeholder="Spotify Profile URL"
+                                InputLabelProps={{ shrink: true }}
+                                value={linksForm.spotify}
+                                onChange={(e) => {
+                                    setLinksForm({
+                                        ...linksForm,
+                                        spotify: e.target.value,
                                     });
                                 }}
                                 style={{ width: "100%", paddingTop: "5px"}}

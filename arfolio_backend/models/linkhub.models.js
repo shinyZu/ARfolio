@@ -28,6 +28,11 @@ const linkHubSchema = new mongoose.Schema({
     required: false,
   },
   
+  twitter: {
+    type: String,
+    required: false,
+  },
+  
   spotify: {
     type: String,
     required: false,
