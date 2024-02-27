@@ -40,6 +40,25 @@ class EducationService {
         });
         return await promise;
     };
+    
+    deleteEducation = async (id) => {
+        const token = JSON.parse(localStorage.getItem("token"));
+        const promise = new Promise((resolve, reject) => {
+          axios
+            .delete("education/" + id, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((res) => {
+              return resolve(res);
+            })
+            .catch((er) => {
+              return resolve(er);
+            });
+        });
+        return await promise;
+    };
 
 }
 

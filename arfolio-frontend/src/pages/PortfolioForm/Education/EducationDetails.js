@@ -175,8 +175,10 @@ const EducationDetails = (props) => {
     setEducationForms([...educationForms, newEducation]);
   };
 
-  const removeEducationForm = (id) => {
+  const removeEducationForm = async (id) => {
+    console.log("deleted id ======",id)
     setEducationForms(educationForms.filter(education => education.education_id !== id));
+    await deleteEducation(id);
   };
 
   // Handler to update individual education items
@@ -251,6 +253,23 @@ const EducationDetails = (props) => {
             variant: "standard",
         });
     }
+  }
+
+  const deleteEducation = async(id) => {
+    console.log("------------------deleting Education Details-----------------", id)
+    let res = await EducationService.deleteEducation(id);
+
+    if (res.status === 200) {
+        console.log("Education deleted successfully!")
+    } else {
+        setOpenAlert({
+            open: true,
+            alert: "Error",
+            severity: "error",
+            variant: "standard",
+        });
+    }
+
   }
 
   console.log(educationForms);
