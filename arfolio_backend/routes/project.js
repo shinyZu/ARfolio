@@ -119,7 +119,7 @@ router.post("/", cors(), authenticateCustomerToken, async (req, res) => {
     }
 }); 
 
-// Update project - in use
+// Update project (as a single object) - in use
 // Authorized for Customers
 router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
     try {
@@ -154,6 +154,48 @@ router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
     } catch (err) {
       return res.status(400).send({ status: 400, message: err.message });
     }
+});
+
+// Update project (as a list) - in use
+// Authorized for Customers
+router.put("/update/bulk", cors(), authenticateCustomerToken, async (req, res) => {
+  try {
+      const verified = verifyToken(req.headers.authorization, res);
+
+      const projectList = req.body;
+      let updatedProject;
+
+      if (projectList.length > 0) {
+        for (let i = 0; i < projectList.length; i++) {
+          let project = projectList[i];
+
+          if(project.project_id) { // Attempt to update an existing record
+            updatedProject = await Project.findOneAndUpdate({ user_id: verified.user_id, project_id: project.project_id }, project, { new: true });
+  
+          } else { // Create a new record with a new project_id
+            const newProject = new Project({
+              ...project,
+              user_id: verified.user_id,
+              project_id: await generateNextProjectId() // Assuming this function generates a unique project_id
+            });
+            updatedProject = await newProject.save();
+          }
+        }
+      } 
+
+      const experienceFound = await Project.find({
+        user_id: verified.user_id,
+      });
+
+      // Update the education in the database
+      return res.status(200).send({
+          status: 200,
+          data: experienceFound,
+          message: "Project details updated successfully!",
+      });
+  } catch (err) {
+    return res.status(400).send({ status: 400, message: err.message });
+  }
 });
 
 // Delete project - in use
