@@ -120,7 +120,19 @@ const ExperienceDetails = (props) => {
 
   // Delete button in child component - ExperienceForm
   const removeExperienceForm = async (id) => {
+    // setExperienceForms(experienceForms.filter(experience => experience.experience_id !== id));
+    // await deleteExperience(id);
+
+    // Check if the length of experienceForms is 1
+    if (experienceForms.length === 1) {
+      console.log("Cannot remove the last experience form.");
+      return; 
+    }
+
+    // Proceed with the removal if there are more than 1 experience forms
     setExperienceForms(experienceForms.filter(experience => experience.experience_id !== id));
+    
+    // Assuming deleteExperience is an API call or similar asynchronous operation
     await deleteExperience(id);
   };
 
@@ -163,12 +175,13 @@ const ExperienceDetails = (props) => {
     if (res.status === 200) {
         console.log("Experience deleted successfully!")
     } else {
-        setOpenAlert({
-            open: true,
-            alert: "Error",
-            severity: "error",
-            variant: "standard",
-        });
+      console.log("Error")
+        // setOpenAlert({
+        //     open: true,
+        //     alert: "Error",
+        //     severity: "error",
+        //     variant: "standard",
+        // });
     }
 
   }

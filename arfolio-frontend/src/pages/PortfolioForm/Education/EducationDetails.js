@@ -124,7 +124,19 @@ const EducationDetails = (props) => {
 
   // Delete button in child component - EducationForm
   const removeEducationForm = async (id) => {
+    // setEducationForms(educationForms.filter(education => education.education_id !== id));
+    // await deleteEducation(id);
+
+    // Check if the length of educationForms is 1
+    if (educationForms.length === 1) {
+      console.log("Cannot remove the last education form.");
+      return; 
+    }
+
+    // Proceed with the removal if there are more than 1 education forms
     setEducationForms(educationForms.filter(education => education.education_id !== id));
+    
+    // Assuming deleteEducation is an API call or similar asynchronous operation
     await deleteEducation(id);
   };
 
