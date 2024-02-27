@@ -32,28 +32,15 @@ import { v4 as uuidv4 } from 'uuid';
 import UserService from "../../../services/UserService";
 import EducationService from "../../../services/EducationService";
 
-import upload_bg from "../../../assets/images/Portfolio/choose_image.jpg";
-
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const EducationDetails = (props) => {
   const { classes } = props;
-
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Create a ref to hold the child component reference
   const childRef = useRef();
-
-  const location = useLocation();
-
-  // Call updateUser API only if Next button is clicked, if back button(of EducationDetails.js) is clicked, dont call the API.
-  const [isUpdateEducation, setIsUpdateEducation] = useState(()=>{
-    if(location.state && !location.state.proceedUpdateEducation){
-        return false;
-    } else {
-        return true;
-    }
-  });
 
   // Alerts & Confirmation dialog boxes
   const [openAlert, setOpenAlert] = useState({
@@ -80,47 +67,6 @@ const EducationDetails = (props) => {
   useEffect(()=>{
     getSingleUserById();
   },[])
-
- /*  useEffect(() => {
-    console.log(updatedEducationList)
-    if (!isUpdateEducation) {
-        console.log("Dont call the  API");
-        return;
-    }
-    updateEducationDetails();
-  }, [updatedEducationList]);  */
-  
-  /* const addEducationForm = (list) => {
-    console.log(list)
-    setEducationForms([...educationForms, { id: educationForms.length }]);
-    // setEducationForms([...educationForms, { id: educationForms.length, ...list }]);
-    
-  }; */
-
-  //----------------latest-----------------------
-  /* const addEducationForm = (list) => {
-    console.log(list);
-
-    // Generate new items from the list with an id for each
-    const newList = list.map((item, index) => ({
-        ...item,
-        id: educationForms.length
-    }));
-
-    // Combine the existing educationForms with the new list and update the state
-    setEducationForms([...educationForms, ...newList]);
-  }; */
-
-  //----------------latest-----------------------
-  /* const removeEducationForm = (indexToRemove) => {
-    // Only allow removal if there are more than 1 items in the array
-    if (educationForms.length > 1) {
-      setEducationForms(educationForms.filter((_, index) => index !== indexToRemove));
-    } else {
-      // Optionally, alert the user that they cannot remove the last form
-      console.log("Cannot remove the last form. There must be at least one form.");
-    }
-  }; */
 
   // Function to decode the JWT token
   const decodeToken = () => {
@@ -158,6 +104,7 @@ const EducationDetails = (props) => {
     }
   }
 
+  // Add button in child component - EducationForm
   const addEducationForm = () => {
     const newEducation = {
       // Define the structure of a new education object
@@ -175,8 +122,8 @@ const EducationDetails = (props) => {
     setEducationForms([...educationForms, newEducation]);
   };
 
+  // Delete button in child component - EducationForm
   const removeEducationForm = async (id) => {
-    console.log("deleted id ======",id)
     setEducationForms(educationForms.filter(education => education.education_id !== id));
     await deleteEducation(id);
   };
@@ -193,23 +140,7 @@ const EducationDetails = (props) => {
 
   // trigger on clicking Next button
   const updateAllEducations = async () => {
-    // Here you would handle the batch update logic, possibly sending the updated educationList to a backend
     console.log('Updated education list:', educationForms);
-
-    let listToUpdate = [];
-    let listToSave = [];
-
-    educationForms.map((obj)=>{
-        if (obj._id) {
-          listToUpdate.push(obj)
-        } else {
-          listToSave.push(obj)
-        }
-    })
-
-    console.log("listToUpdate", listToUpdate);
-    console.log("listToSave", listToSave)
-
     await updateEducationDetails(educationForms);
     
     // if (childRef.current) {
@@ -219,28 +150,9 @@ const EducationDetails = (props) => {
     // }
   };
 
-  // Function to call the child's processEducationList function
-  const processPayload = async () => {
-    if (childRef.current) {
-      let list = childRef.current.getEducationList();
-      
-      const newList = list.map((item, index) => ({
-          ...item,
-          id: updatedEducationList.length
-      }));
-
-
-      let arr = [...updatedEducationList, ...newList]
-      setUpdatedEducationList(arr);
-      
-      await updateEducationDetails(arr);
-      setIsUpdateEducation(true);
-    }
-  }
-
+  // API call to update exisiting & newly created educations
   const updateEducationDetails = async (educationForms) => {
     console.log("------------------updating Education Details-----------------")
-    let decodedToken = decodeToken();
     let res = await EducationService.updateEducationAsBulk(educationForms);
 
     if (res.status === 200) {
@@ -255,6 +167,7 @@ const EducationDetails = (props) => {
     }
   }
 
+  // API call to delete education
   const deleteEducation = async(id) => {
     console.log("------------------deleting Education Details-----------------", id)
     let res = await EducationService.deleteEducation(id);
@@ -272,8 +185,24 @@ const EducationDetails = (props) => {
 
   }
 
-  console.log(educationForms);
-  console.log(updatedEducationList);
+  // Function to call the child's processEducationList function - not in use
+  const processPayload = async () => {
+    if (childRef.current) {
+      let list = childRef.current.getEducationList();
+      
+      const newList = list.map((item, index) => ({
+          ...item,
+          id: updatedEducationList.length
+      }));
+
+
+      let arr = [...updatedEducationList, ...newList]
+      setUpdatedEducationList(arr);
+      
+      await updateEducationDetails(arr);
+      // setIsUpdateEducation(true);
+    }
+  }
 
   return (
     <div id="portfolio-form">
@@ -353,15 +282,15 @@ const EducationDetails = (props) => {
 
                     {educationForms.map((form, index) => (
                         <EducationForm
-                          ref={childRef}
-                          // key={index}
-                          key={form.education_id}
-                          indexValue={form.id}
-                          addForm={addEducationForm}
-                          // removeForm={() => removeEducationForm(index)}
-                          removeForm={() => removeEducationForm(form.education_id)}
-                          onUpdate={handleUpdateEducation}
-                          data={form}
+                            ref={childRef}
+                            // key={index}
+                            key={form.education_id}
+                            indexValue={form.id}
+                            addForm={addEducationForm}
+                            // removeForm={() => removeEducationForm(index)}
+                            removeForm={() => removeEducationForm(form.education_id)}
+                            onUpdate={handleUpdateEducation}
+                            data={form}
                         />
                     ))}
 
@@ -387,7 +316,7 @@ const EducationDetails = (props) => {
                         style={{ width: "20%", height: "100%", marginRight:"2vw" }}
                         className={classes.btn_back}
                         onClick={() => {
-                            navigate("/basic", { state: { proceedUpdateUser: false } } );
+                            navigate("/basic"/* , { state: { proceedUpdateUser: false }} */ );
                         }}
                     />
 
@@ -404,7 +333,6 @@ const EducationDetails = (props) => {
                             navigate("/experiences");
                           }, 500);
                         }}
-                        // onClick={updateAllEducations}
                     />
                 </Grid>
             </Grid>

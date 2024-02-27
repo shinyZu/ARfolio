@@ -15,17 +15,12 @@ import MyTextField from "../common/MyTextField/MyTextField";
 import { styleSheet } from "./styles";
 import { withStyles } from "@mui/styles";
 
-
 const EducationForm = forwardRef((props, ref) => {
   const { classes } = props;
-
-  console.log(props)
 
   const [educationList, setEducationList] = useState([]);
   const [educationForm, setEducationForm] = useState(props.data);
   console.log(educationForm)
-
-//   const [editEducation, setEditEducation] = useState(education);
 
   const [selectedMonth, setSelectedMonth] = useState('');
 
@@ -91,25 +86,25 @@ const EducationForm = forwardRef((props, ref) => {
   };
 
   // Function you want the parent to call
-  const processEducationList = () => {
-    console.log('Processing education list...');
-    setEducationList(prevList => [...prevList, educationForm]);
-    props.addForm([...educationList, educationForm]);
-  }
+/* //   const processEducationList = () => {
+//     console.log('Processing education list...');
+//     setEducationList(prevList => [...prevList, educationForm]);
+//     props.addForm([...educationList, educationForm]);
+//   }
 
-  const getEducationList = () => {
-    setEducationList(prevList => [...prevList, educationForm]);
-    return [...educationList, educationForm];
-  }
+//   const getEducationList = () => {
+//     setEducationList(prevList => [...prevList, educationForm]);
+//     return [...educationList, educationForm];
+//   }
 
-  // Use useImperativeHandle to expose functions to the parent component
+    // Use useImperativeHandle to expose functions to the parent component
+    // useImperativeHandle(ref, ()=>({
+    //     getEducationList,
+    // }))
+
 //   useImperativeHandle(ref, ()=>({
-//     getEducationList,
-//   }))
-
-  useImperativeHandle(ref, ()=>({
-    handleUpdate,
-  }))
+//     handleUpdate,
+//   })) */
 
   return (
       <>
@@ -160,13 +155,13 @@ const EducationForm = forwardRef((props, ref) => {
                         InputLabelProps={{ shrink: true }}
                         placeholder="Degree / Field of Study"
                         value={educationForm.degree}
-                        name="degree"
                         // onChange={(e) => {
                         //     setEducationForm({
                         //         ...educationForm,
                         //         degree: e.target.value,
                         //     });
                         // }}
+                        name="degree"
                         onChange={handleChange}
                         style={{ width: "100%", paddingTop: "5px"}}
                     />
@@ -325,7 +320,6 @@ const EducationForm = forwardRef((props, ref) => {
                         getOptionLabel={(option) => option}
                         value={educationForm.start_month}
                         disablePortal
-                        // sx={{ width: 600 }}
                         size="small"
                         disabledItemsFocusable
                         // onChange={(e,v)=>{
@@ -521,9 +515,7 @@ const EducationForm = forwardRef((props, ref) => {
                             <AddCircleIcon
                                 style={{color:"#1abc9c"}}
                                 fontSize="large"
-                                // onClick={()=>{
-                                //     processEducationList();
-                                // }}
+                                // onClick={()=>{processEducationList();}}
                                 onClick={props.addForm}
                             />
                         </IconButton>

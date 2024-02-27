@@ -121,7 +121,7 @@ router.post("/", cors(), authenticateCustomerToken, async (req, res) => {
     }
 }); 
 
-// Update experience - in use
+// Update experience (as a single object) - in use
 // Authorized for Customers
 router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
     try {
@@ -158,6 +158,48 @@ router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
     } catch (err) {
       return res.status(400).send({ status: 400, message: err.message });
     }
+});
+
+// Update experience (as a list) - in use
+// Authorized for Customers
+router.put("/update/bulk", cors(), authenticateCustomerToken, async (req, res) => {
+  try {
+      const verified = verifyToken(req.headers.authorization, res);
+
+      const experienceList = req.body;
+      let updatedExperience;
+
+      if (experienceList.length > 0) {
+        for (let i = 0; i < experienceList.length; i++) {
+          let experience = experienceList[i];
+
+          if(experience.experience_id) { // Attempt to update an existing record
+            updatedExperience = await Experience.findOneAndUpdate({ user_id: verified.user_id, experience_id: experience.experience_id }, experience, { new: true });
+  
+          } else { // Create a new record with a new experience_id
+            const newExperience = new Experience({
+              ...experience,
+              user_id: verified.user_id,
+              experience_id: await generateNextExperienceId() // Assuming this function generates a unique experience_id
+            });
+            updatedExperience = await newExperience.save();
+          }
+        }
+      } 
+
+      const experienceFound = await Experience.find({
+        user_id: verified.user_id,
+      });
+
+      // Update the education in the database
+      return res.status(200).send({
+          status: 200,
+          data: experienceFound,
+          message: "Experience details updated successfully!",
+      });
+  } catch (err) {
+    return res.status(400).send({ status: 400, message: err.message });
+  }
 });
 
 // Delete experience - in use

@@ -18,16 +18,8 @@ import { withStyles } from "@mui/styles";
 const ExperienceForm = (props) => {
   const { classes } = props;
 
-  const [experienceForm, setExperienceForm] = useState({
-    employer_name: "",
-    job_title: "",
-    city: "",
-    country: "",
-    start_month: "",
-    start_year: "",
-    end_month: "",
-    end_year: "",
-  });
+  const [experienceForm, setExperienceForm] = useState(props.data);
+  console.log(experienceForm)
 
   const [selectedMonth, setSelectedMonth] = useState('');
 
@@ -39,14 +31,46 @@ const ExperienceForm = (props) => {
 
   const [selectedYear, setSelectedYear] = useState('');
 
-  // Generate an array of years from 1990 to the current year
-  const years = Array.from({ length: new Date().getFullYear() - 1989 }, (_, index) => 1990 + index);
+  // Generate an array of years from 1990 to the current year in descending order
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1989 }, (_, index) => currentYear - index);
 
   useEffect(() => {
-      console.log(props)
-    // Set the current year as the default selected year
     setSelectedYear(new Date().getFullYear().toString());
-  }, []); // Run only once on component mount
+    setExperienceForm(props.data);
+  },[]);
+
+  // Initialize with experience data prop when the component mounts or the prop changes
+  useEffect(() => {
+    setExperienceForm(props.data); 
+  }, [props.data]);
+
+  // Handle changes to the input fields
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    let updated = {
+        ...experienceForm,
+        [name]: value,
+    }
+    setExperienceForm(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+    props.onUpdate(updated);
+  };
+
+  // Handle changes to the dropdowns
+  const handleAutoCompleteChange = (e, name) => {
+    const { innerText } = e.target;
+    let updated = {
+        ...experienceForm,
+        [name]: innerText,
+    }
+    setExperienceForm(updated)
+    props.onUpdate(updated);
+  };
+
 
   return (
       <>
@@ -64,7 +88,7 @@ const ExperienceForm = (props) => {
                 style={{marginBottom:"2vh"}}
             >
                 <Typography variant="h5" className={classes.sub_title} style={{color:"#40739e", marginTop:"2vh"}}>
-                    {`Experience ${props.indexValue}`}
+                    {`Experience ${props.indexValue+1}`}
                 </Typography>
             </Grid>
 
@@ -96,19 +120,57 @@ const ExperienceForm = (props) => {
                         label="Employer"
                         InputLabelProps={{ shrink: true }}
                         placeholder="Employer Name"
-                        value={experienceForm.employer_name}
-                        onChange={(e) => {
-                            setExperienceForm({
-                                ...experienceForm,
-                                employer_name: e.target.value,
-                            });
-                        }}
+                        value={experienceForm.employer}
+                        // onChange={(e) => {
+                        //     setExperienceForm({
+                        //         ...experienceForm,
+                        //         employer_name: e.target.value,
+                        //     });
+                        // }}
+                        name="employer"
+                        onChange={handleChange}
                         style={{ width: "100%", paddingTop: "5px"}}
                     />
                 </Grid>
             </Grid>
 
-            {/* -------- Row 2 - Job Title------------- */}
+            {/* -------- Row 2 - Employer Link ------------- */}
+            <Grid
+                container
+                xl={12}
+                lg={12}
+                md={12}
+                sm={12}
+                xs={12}
+                className={classes.basic_details_row}
+                display="flex"
+                justifyContent="center"
+            >
+                <Grid
+                    item
+                    xl={12}
+                    lg={12}
+                    md={12}
+                    sm={12}
+                    xs={12}
+                //   className={classes.basic_details_row}
+                >
+                    <MyTextField
+                        variant="outlined"
+                        type="text"
+                        id="employer_link"
+                        label="Employer Link"
+                        InputLabelProps={{ shrink: true }}
+                        placeholder="Employer Link"
+                        value={experienceForm.employer_link}
+                        name="employer_link"
+                        onChange={handleChange}
+                        style={{ width: "100%", paddingTop: "5px"}}
+                    />
+                </Grid>
+            </Grid>
+
+            {/* -------- Row 3 - Job Title------------- */}
             <Grid
                 container
                 xl={12}
@@ -135,18 +197,20 @@ const ExperienceForm = (props) => {
                         label="Job Title"
                         placeholder="Job Title"
                         value={experienceForm.job_title}
-                        onChange={(e) => {
-                            setExperienceForm({
-                                ...experienceForm,
-                                job_title: e.target.value,
-                            });
-                        }}
+                        // onChange={(e) => {
+                        //     setExperienceForm({
+                        //         ...experienceForm,
+                        //         job_title: e.target.value,
+                        //     });
+                        // }}
+                        name="job_title"
+                        onChange={handleChange}
                         style={{ width: "100%", paddingTop: "5px", color:"#000" }}
                     />
                 </Grid>
             </Grid>
 
-            {/* -------- Row 3 - City & Country------------- */}
+            {/* -------- Row 4 - City & Country------------- */}
             <Grid
                 container
                 xl={12}
@@ -173,13 +237,14 @@ const ExperienceForm = (props) => {
                         label="City"
                         placeholder="City"
                         value={experienceForm.city}
-                        onChange={(e) => {
-                            setExperienceForm({
-                            ...experienceForm,
-                            city: e.target.value,
-                            });
-                        }}
-                        // onChange={(e) => setStreetAddress(e.target.value)}
+                        // onChange={(e) => {
+                        //     setExperienceForm({
+                        //     ...experienceForm,
+                        //     city: e.target.value,
+                        //     });
+                        // }}
+                        name="city"
+                        onChange={handleChange}
                         style={{ width: "100%", paddingTop: "5px" }}
                     />
                 </Grid>
@@ -199,19 +264,20 @@ const ExperienceForm = (props) => {
                         label="Country"
                         placeholder="Country"
                         value={experienceForm.country}
-                        onChange={(e) => {
-                            setExperienceForm({
-                            ...experienceForm,
-                            country: e.target.value,
-                            });
-                        }}
-                        // onChange={(e) => setCity(e.target.value)}
+                        // onChange={(e) => {
+                        //     setExperienceForm({
+                        //     ...experienceForm,
+                        //     country: e.target.value,
+                        //     });
+                        // }}
+                        name="country"
+                        onChange={handleChange}
                         style={{ width: "100%", paddingTop: "5px" }}
                     />
                 </Grid>
             </Grid>
 
-            {/* -------- Row 4 - Start Date------------- */}
+            {/* -------- Row 5 - Start Date------------- */}
             <Grid
                 container
                 xl={12}
@@ -249,30 +315,30 @@ const ExperienceForm = (props) => {
                     xs={12}
                 >
                         <Autocomplete
-                        // className={classes.category_dropdown}
-                        disablePortal
-                        id="start_month"
-                        options={months}
-                        value={selectedMonth}
-                        // getOptionLabel={(option) => option.categoryTitle}
-                        // inputValue={categoryName}
-                        // sx={{ width: 600 }}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Month"
-                                styles={{ color: "red" }}
-                            />
-                        )}
-                        size="small"
-                        disabledItemsFocusable
-                        onChange={(e)=>{
-                            setExperienceForm({
-                                ...experienceForm,
-                                start_month: e.target.value,
-                            });
-                        }}
-                    />
+                            id="start_month"
+                            name="start_month"
+                            options={months}
+                            getOptionLabel={(option) => option}
+                            value={experienceForm.start_month}
+                            disablePortal
+                            size="small"
+                            disabledItemsFocusable
+                            // onChange={(e)=>{
+                            //     setExperienceForm({
+                            //         ...experienceForm,
+                            //         start_month: e.target.value,
+                            //     });
+                            // }}
+                            onChange={(e,v)=>{handleAutoCompleteChange(e, "start_month")}}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Month"
+                                    styles={{ color: "red" }}
+                                    value={experienceForm.start_month}
+                                />
+                            )}
+                        />
                 </Grid>
 
                 <Grid
@@ -283,27 +349,25 @@ const ExperienceForm = (props) => {
                     sm={12}
                     xs={12}
                 >
-                        <Autocomplete
-                        disablePortal
-                        id="start_year"
-                        options={years.map(year => year.toString())}
-                        value={selectedYear}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Year"
-                                styles={{ color: "red" }}
-                            />
-                        )}
-                        size="small"
-                        disabledItemsFocusable
-                        onChange={(e)=>{
-                            setExperienceForm({
-                                ...experienceForm,
-                                start_year: e.target.value,
-                            });
-                        }}
-                    />
+                       <Autocomplete
+                            id="start_year"
+                            name="start_year"
+                            options={years.map(year => year.toString())}
+                            getOptionLabel={(option) => option}
+                            value={experienceForm.start_year}
+                            disablePortal
+                            size="small"
+                            disabledItemsFocusable
+                            onChange={(e,v)=>{handleAutoCompleteChange(e, "start_year")}}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Month"
+                                    styles={{ color: "red" }}
+                                    value={experienceForm.start_year}
+                                />
+                            )}
+                        />
                 </Grid>
 
                 <Grid
@@ -316,7 +380,7 @@ const ExperienceForm = (props) => {
                 ></Grid>
             </Grid>
 
-            {/* -------- Row 5 - End Date------------- */}
+            {/* -------- Row 6 - End Date------------- */}
             <Grid
                 container
                 xl={12}
@@ -354,26 +418,25 @@ const ExperienceForm = (props) => {
                     sm={12}
                     xs={12}
                 >
-                        <Autocomplete
-                        disablePortal
-                        id="end_month"
-                        options={months}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Month"
-                                styles={{ color: "red" }}
-                            />
-                        )}
-                        size="small"
-                        disabledItemsFocusable
-                        onChange={(e)=>{
-                            setExperienceForm({
-                                ...experienceForm,
-                                end_month: e.target.value,
-                            });
-                        }}
-                    />
+                       <Autocomplete
+                            id="end_month"
+                            name="end_month"
+                            options={months}
+                            getOptionLabel={(option) => option}
+                            value={experienceForm.end_month}
+                            disablePortal
+                            size="small"
+                            disabledItemsFocusable
+                            onChange={(e,v)=>{handleAutoCompleteChange(e, "end_month")}}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Month"
+                                    styles={{ color: "red" }}
+                                    value={experienceForm.end_month}
+                                />
+                            )}
+                        />
                 </Grid>
 
                 <Grid
@@ -384,29 +447,28 @@ const ExperienceForm = (props) => {
                     sm={12}
                     xs={12}
                 >
-                        <Autocomplete
-                        disablePortal
-                        id="end_year"
-                        options={years.map(year => year.toString())}
-                        value={selectedYear}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Year"
-                                styles={{ color: "red" }}
-                            />
-                        )}
-                        size="small"
-                        disabledItemsFocusable
-                        onChange={(e)=>{
-                            setExperienceForm({
-                                ...experienceForm,
-                                end_year: e.target.value,
-                            });
-                        }}
-                    />
+                         <Autocomplete
+                            id="end_year"
+                            name="end_year"
+                            options={years.map(year => year.toString())}
+                            getOptionLabel={(option) => option}
+                            value={experienceForm.end_year}
+                            disablePortal
+                            size="small"
+                            disabledItemsFocusable
+                            onChange={(e,v)=>{handleAutoCompleteChange(e, "end_year")}}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Month"
+                                    styles={{ color: "red" }}
+                                    value={experienceForm.end_year}
+                                />
+                            )}
+                        />
                 </Grid>
 
+                {/*  Add / Delete Icons */}
                 <Grid
                     item
                     container
@@ -433,9 +495,7 @@ const ExperienceForm = (props) => {
                             <DeleteIcon
                                 style={{color:"#e74c3c"}}
                                 fontSize="large"
-                                onClick={() => {
-                                    console.log("delete education");
-                                }}
+                                onClick={props.removeForm}
                             />
                         </IconButton>
                     </Tooltip>

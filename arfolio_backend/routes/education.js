@@ -224,7 +224,7 @@ router.put("/update/bulk", cors(), authenticateCustomerToken, async (req, res) =
         return res.status(200).send({
             status: 200,
             data: educationFound,
-            message: "Education updated successfully!",
+            message: "Education details updated successfully!",
         });
     } catch (err) {
       return res.status(400).send({ status: 400, message: err.message });

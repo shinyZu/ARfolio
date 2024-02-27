@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useRef } from "react";
 import { Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -28,7 +28,8 @@ import { withStyles } from "@mui/styles";
 
 import {jwtDecode} from "jwt-decode";
 
-import upload_bg from "../../../assets/images/Portfolio/choose_image.jpg";
+import UserService from "../../../services/UserService";
+import ExperienceService from "../../../services/ExperienceService";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -37,42 +38,12 @@ const ExperienceDetails = (props) => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const receivedData = location.state; // The data sent from the previous page
 
-//   const addEducationForm = () => {
-//     console.log("function addEducationForm")
-//     console.log(educationForms)
-//     console.log(educationForms[educationForms.length - 1].props.indexValue)
-//     const newIndexValue = educationForms[educationForms.length - 1].props.indexValue + 1;
-    
-//     const newForms = [...educationForms, <EducationForm indexValue={newIndexValue} addForm={addEducationForm} />];
-//     console.log(newForms)
-//     setEducationForms(newForms);
-//   };
+  // Create a ref to hold the child component reference
+  const childRef = useRef();
 
-//   const [educationForms, setEducationForms] = useState([<EducationForm indexValue={1} addForm={addEducationForm} />]);
-
-const [currentIndex, setCurrentIndex] = useState(1);
-
-const addEducationForm = () => {
-    const newIndexValue = currentIndex + 1;
-    setCurrentIndex(newIndexValue);
-
-    const newForms = [
-        ...experienceForms,
-        <ExperienceForm key={newIndexValue} indexValue={newIndexValue} addForm={addEducationForm} />
-    ];
-
-    setExperienceForms(newForms);
-};
-
-const [experienceForms, setExperienceForms] = useState([<ExperienceForm key={1} indexValue={1} addForm={addEducationForm} />]);
-
-
-const [isDisabled, setIsDisabled] = useState(false);
-
-  // Alerts & Confirmation dialog boxes
-  const [openAlert, setOpenAlert] = useState({
+   // Alerts & Confirmation dialog boxes
+   const [openAlert, setOpenAlert] = useState({
     open: "",
     alert: "",
     severity: "",
@@ -87,6 +58,16 @@ const [isDisabled, setIsDisabled] = useState(false);
     action: "",
   });
 
+  const [experienceForms, setExperienceForms] =  useState([{id:0,}]);
+
+  const [user, setUser] = useState([]);
+  const [updatedExperienceList, setUpdatedExperienceList] = useState([{id:0,}]);
+  const [decodedToken, setDecodedToken] = useState({});
+
+  useEffect(()=>{
+    getSingleUserById();
+  },[])
+
   // Function to decode the JWT token
   const decodeToken = () => {
     try {
@@ -99,6 +80,98 @@ const [isDisabled, setIsDisabled] = useState(false);
       return null;
     }
   };
+
+  const getSingleUserById = async (i) => {
+
+    let decodedToken = decodeToken();
+    let res = await UserService.getUserById(decodedToken.user_id);
+
+    if (res.status == 200) {
+      if (res.data.data != []) {
+        console.log(res.data.data);
+        setUser(res.data.data);
+        setUpdatedExperienceList(res.data.data[0].Experiences);
+        const experienceWithIds = res.data.data[0].Experiences.map((item, index) => ({
+          ...item,
+          id: index
+        }));
+
+        setExperienceForms(experienceWithIds);
+      }
+    }
+  }
+
+  // Add button in child component - ExperienceForm
+  const addExperienceForm = () => {
+    const newExperience = {
+      id: experienceForms.length,
+      job_title: "",
+      employer: "",
+      employer_link: "",
+      city: "",
+      country: "",
+      start_month: "",
+      start_year: "",
+      end_month: "",
+      end_year: "",
+    };
+    setExperienceForms([...experienceForms, newExperience]);
+  };
+
+  // Delete button in child component - ExperienceForm
+  const removeExperienceForm = async (id) => {
+    setExperienceForms(experienceForms.filter(experience => experience.experience_id !== id));
+    await deleteExperience(id);
+  };
+
+  // Handler to update individual experience items
+  const handleUpdateExperience = (updatedExperience) => {
+    console.log("==================updatedExperience============", updatedExperience);
+    setExperienceForms(currentList =>
+      currentList.map( experience =>
+        experience.experience_id === updatedExperience.experience_id ? updatedExperience : experience
+      )
+    );
+  };
+
+  // trigger on clicking Next button
+  const updateAllExperiences = async () => {
+    console.log('Updated experience list:', experienceForms);
+    await updateExperienceDetails(experienceForms);
+  };
+
+  // API call to update exisiting & newly created experiences
+  const updateExperienceDetails = async (experienceForms) => {
+    let res = await ExperienceService.updateExperiencesAsBulk(experienceForms);
+
+    if (res.status === 200) {
+        console.log("Experience details updated successfully!")
+    } else {
+        setOpenAlert({
+            open: true,
+            alert: "Error",
+            severity: "error",
+            variant: "standard",
+        });
+    }
+  }
+
+  // API call to delete experience
+  const deleteExperience = async(id) => {
+    let res = await ExperienceService.deleteExperience(id);
+
+    if (res.status === 200) {
+        console.log("Experience deleted successfully!")
+    } else {
+        setOpenAlert({
+            open: true,
+            alert: "Error",
+            severity: "error",
+            variant: "standard",
+        });
+    }
+
+  }
 
   return (
     <div id="portfolio-form">
@@ -132,7 +205,7 @@ const [isDisabled, setIsDisabled] = useState(false);
                 </Typography>
             </Grid>
 
-            {/* ----------Education--------------------- */}
+            {/* ----------Experience--------------------- */}
 
             <Grid
                 container
@@ -146,7 +219,7 @@ const [isDisabled, setIsDisabled] = useState(false);
                 display="flex"
                 justifyContent="center"
             >
-                {/* ------------------ Education Details ----------------------- */}
+                {/* ------------------ Experience Details ----------------------- */}
 
                 <Grid
                     container
@@ -177,9 +250,15 @@ const [isDisabled, setIsDisabled] = useState(false);
                     {/* <ExperienceForm /> */}
 
                     {experienceForms.map((form, index) => (
-                        <Fragment key={form.key}>
-                            {form}
-                        </Fragment>
+                         <ExperienceForm
+                            ref={childRef}
+                            key={form.experience_id}
+                            indexValue={form.id}
+                            addForm={addExperienceForm}
+                            removeForm={() => removeExperienceForm(form.experience_id)}
+                            onUpdate={handleUpdateExperience}
+                            data={form}
+                        />
                     ))}
 
                 </Grid>
@@ -204,7 +283,7 @@ const [isDisabled, setIsDisabled] = useState(false);
                         style={{ width: "20%", height: "100%", marginRight:"2vw" }}
                         className={classes.btn_back}
                         onClick={() => {
-                            navigate("/education", { state: { proceedUpdateEducation: false } });
+                            navigate("/education");
                         }}
                     />
 
@@ -216,7 +295,10 @@ const [isDisabled, setIsDisabled] = useState(false);
                         style={{ width: "20%", height: "100%" }}
                         className={classes.btn_next}
                         onClick={() => {
+                          updateAllExperiences();
+                          setTimeout(() => {
                             navigate("/projects");
+                          }, 500);
                         }}
                     />
                 </Grid>

@@ -39,17 +39,6 @@ const BasicDetails = (props) => {
   const location = useLocation();
   console.log(location)
 
-  // Call updateUser API only if Next button is clicked, if back button(of EducationDetails.js) is clicked, dont call the API.
-  const [isUpdateUser, setIsUpdateUser] = useState(()=>{
-    if(location.state && !location.state.proceedUpdateUser || location.state == null){
-        console.log("Don't update user==============")
-        return false;
-    } else {
-        console.log("Do update user==============")
-        return true;
-    }
-  });
-
   const [gender, setGender] = useState("Male");
 
   const [mediaImage, setMediaImage] = useState(upload_bg);
@@ -91,15 +80,6 @@ const BasicDetails = (props) => {
     console.log(location)
     getSingleUserById(); 
   },[])
-
- /*  useEffect(() => {
-    // localStorage.setItem("payload", JSON.stringify(updatedUser));
-    if (!isUpdateUser && updatedUser.user_id == undefined) {
-        console.log("Dont call the  API");
-        return;
-    }
-    updateBasicDetails();
-  }, [updatedUser]);  */
   
   const getSingleUserById = async (i) => {
     console.log("=======get single user details========")
@@ -198,9 +178,9 @@ const BasicDetails = (props) => {
 
     setUpdatedUser(obj);
     await updateBasicDetails(obj);
-    setIsUpdateUser(true);
   }
 
+  // Calling API
   const updateBasicDetails = async (updatedUser) => {
     console.log("------------------updating BasicDetails-----------------")
     let decodedToken = decodeToken();
