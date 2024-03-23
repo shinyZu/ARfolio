@@ -1,4 +1,5 @@
-import login_background from "../../assets/images/Login/bg_login_gradient_2.jpeg";
+// import login_background from "../../assets/images/Login/bg_login_gradient_2.jpeg";
+import login_background from "../../assets/images/Login/bg_login_gradient_6.jpg";
 
 export const styleSheet = {
   login_container_1: {

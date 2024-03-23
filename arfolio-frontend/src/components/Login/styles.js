@@ -14,7 +14,8 @@ export const styleSheet = {
   login_text: {
     display: "flex",
     justifyContent:"center",
-    color: "#fff",
+    // color: "#fff",
+    color: "#164f70",
   },
 
   btn_login: {
@@ -43,7 +44,8 @@ export const styleSheet = {
   },
 
   login_footer_text: {
-    color:"#fff",
+    // color:"#fff",
+    color: "#164f70",
     textAlign: "center",
     paddingTop: "10px",
   },

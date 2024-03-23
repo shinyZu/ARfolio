@@ -50,18 +50,17 @@ body {
 } */
 
 input[type="text"]:not(#f_login):not(#f_pwd) {
-  /* color: white; */
-  border: white;
+  /* border: white; */
   font-family: "Acme", sans-serif !important;
 }
 
-.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus {
+/* .css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus {
   color: white;
-}
+} */
 
-.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:invalid {
+/* .css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:invalid {
   color: white;
-}
+} */
 
 .css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input {
   /* color: black !important; */

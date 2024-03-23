@@ -76,10 +76,17 @@ const BasicDetails = (props) => {
   const [user, setUser] = useState([]);
   const [updatedUser, setUpdatedUser] = useState({});
 
+  const [imageFileToUpload, setImageFileToUpload] = useState(null);
+
   useEffect(()=>{
     console.log(location)
+    // setMediaImage(null);
     getSingleUserById(); 
   },[])
+
+//   useEffect(()=>{
+//     console.log(mediaImage)
+//   },[mediaImage])
   
   const getSingleUserById = async (i) => {
     console.log("=======get single user details========")
@@ -106,6 +113,8 @@ const BasicDetails = (props) => {
                         contact_no: user.contact_no,
                         gender: user.gender,
                         user_role: user.user_role,
+                        image_url: user.image_url,
+                        image_name: user.image_name,
                         Education: user.Education,
                         Experiences: user.Experiences,
                         Projects: user.Projects,
@@ -123,8 +132,15 @@ const BasicDetails = (props) => {
                 isMale: user.gender === "Male" ? true : false,
                 isFemale: user.gender === "Female" ? true : false,
                 isOther: user.gender != "Female" || user.gender != "Male"  ? true : false,
+                image_url: user.image_url,
             });
             setGender((user.gender).toLowerCase());
+
+            setMediaImage(upload_bg)
+            let image_id = user.image_url.split("id=")[1];
+            // let preview_base_url = `https://drive.google.com/thumbnail?id=${image_id}&sz=s4000`
+            let preview_base_url = `https://drive.google.com/thumbnail?id=${image_id}`
+            setMediaImage(preview_base_url)
         });
       }
     }
@@ -187,7 +203,28 @@ const BasicDetails = (props) => {
     let res = await UserService.updateUser(updatedUser, updatedUser.user_id);
 
     if (res.status === 200) {
-        console.log("User details updated successfully!")
+
+        console.log(imageFileToUpload)
+
+        if (imageFileToUpload) {
+            // Update image only (users/drive/url/db/:user_id)
+            let formData = new FormData();
+            formData.append("user_image", imageFileToUpload);
+
+            let res1 = await UserService.updateUserImage(formData, updatedUser.user_id);
+
+            if (res1.status === 200) {
+                console.log("User details updated successfully!")
+            } else {
+                setOpenAlert({
+                    open: true,
+                    alert: "Error while saving image.",
+                    severity: "error",
+                    variant: "standard",
+                });
+            }
+        }
+        
     } else {
         setOpenAlert({
             open: true,
@@ -197,6 +234,22 @@ const BasicDetails = (props) => {
         });
     }
   }
+
+  const handleMediaUpload = (e) => {
+    // handleImageUpload(e);
+    const { files } = e.target;
+    setImageFileToUpload(files[0]);
+
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      const { result } = e.target;
+      console.log(result);
+      if (result) {
+        setMediaImage(result);
+      }
+    };
+    fileReader.readAsDataURL(files[0]);
+  };
 
   return (
     <div id="portfolio-form">
@@ -611,6 +664,16 @@ const BasicDetails = (props) => {
                                     marginTop:"2vh"
                                 }}
                             />
+
+                            <Grid
+                                item
+                                xl={12}
+                                lg={12}
+                                md={12}
+                                sm={12}
+                                xs={12}
+                            >
+                            </Grid>
                         </Grid>
                         
                         {/* -------------------- Video Upload --------------------- */}
@@ -672,12 +735,12 @@ const BasicDetails = (props) => {
                                     text="Upload"
                                     multiple={false}
                                     onUpload={(e) => {
-                                    // handleImageUpload(e);
-                                    // handleMediaUpload(e);
-                                    // setNewProductFormData({
-                                    //     ...newProductFormData,
-                                    //     product_image: e.target.files[0],
-                                    // });
+                                    handleMediaUpload(e);
+                                    console.log( e.target.files[0])
+                                    setBasicInfoForm({
+                                        ...basicInfoForm,
+                                        user_image: e.target.files[0],
+                                    });
                                     setMediaImage(e.target.files[0]);
                                     }}
                                     // displayFileName={true}
@@ -737,7 +800,7 @@ const BasicDetails = (props) => {
                                 processPayload();
                                 setTimeout(() => {
                                     navigate("/education"/* , { state: { basicData: user } } */);
-                                }, 500);
+                                }, 1000);
                             }}
                         />
                     </Grid>

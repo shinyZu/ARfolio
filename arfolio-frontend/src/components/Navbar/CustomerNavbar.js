@@ -117,7 +117,7 @@ const CustomerNavbar = (props) => {
         });
       } else {
         // setIsCustomer(true);
-        console.log("--------update with Order History-------------");
+        console.log("--------update with Card History-------------");
         setSettings((prevSettings) => {
           const updatedSettings = [...prevSettings];
           updatedSettings[1] = "My Cards";

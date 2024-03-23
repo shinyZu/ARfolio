@@ -574,6 +574,10 @@ router.put(
           .json({ status: 404, message: "User not found." });
       }
 
+      console.log(req)
+      // console.log(req.file)
+
+
       // resize image
       const buffer = await sharp(req.file.buffer)
         .resize({ height: 1920, width: 1080, fit: "contain" })

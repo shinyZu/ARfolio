@@ -2,8 +2,15 @@
 <html>
     <head>
 
-        <title> Barcode </title>
-        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <title> Barcode - In Progress</title>
+        <!-- <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"> -->
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,height=device-height">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="stylesheet" href="styles.css">
+
         <!-- <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
         <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
         <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script> -->
@@ -21,40 +28,126 @@
         <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
         
         <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-        <!-- <script src="gesture-detector.js"></script> -->
-        <!-- <script src="gesture-handler.js"></script> -->
+        <script src="gesture-detector.js"></script>
+        <script src="gesture-handler.js"></script>
     </head>
 
+    <script>
+
+        // Birthday Video Handler
+        AFRAME.registerComponent('video-vidhandler-birthday', {
+                init: function() {
+		        console.log('video init entered');
+                    this.toggle = false;
+                    this.vid = document.querySelector("#birthday");
+                    this.vid.pause();
+                },
+                tick: function() {
+                    if (this.el.object3D.visible == true) {
+                        if (!this.toggle) {
+                            this.toggle = true;
+                            this.vid.play();
+                        }
+                    } else {
+                        this.toggle = false;
+                        this.vid.pause();
+                    }
+                }
+            });
+
+    </script>
+
     <body style='margin : 0px; overflow: hidden;'>
+    <!-- <body> -->
         <!-- we add detectionMode and matrixCodeType to tell AR.js to recognize barcode markers -->
-        <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'>
+        <!-- arjs -->
+        <!-- arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;' -->
+        <a-scene 
+            arjs='detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
+            embedded 
+            renderer="logarithmicDepthBuffer: true;"
+            vr-mode-ui="enabled: true"
+            gesture-detector
+            id="scene"
+        >
             <a-assets>
+                <!-- Profile Image -->
                 <img id="profile-img" src="images/profile.jpg">
+
+                <!-- Birthday  Video -->
+                <video  preload="none"  id="birthday" response-type="arraybuffer" loop="true" crossorigin webkit-playsinline playsinline controls>
+                    <source  src="videos/birthday.mp4">
+                </video>
+
+                <!-- Business card Image -->
+                <img id="arfolio-img" src="images/ARfolio.jpg">
+
+                <!-- loading 3d models -->
+                <a-asset-item
+                  id="lady"
+                  response-type="arraybuffer"
+                src="https://cdn.glitch.global/7c3b587b-34f5-4b52-8c91-3a879ecf89d8/office_lady.glb?v=1697707080101"
+                ></a-asset-item>
+
+                <a-asset-item
+                  id="narrator"
+                  response-type="arraybuffer"
+                src="https://cdn.glitch.global/7c3b587b-34f5-4b52-8c91-3a879ecf89d8/narrator.glb?v=1697710065881"
+                ></a-asset-item>
+                
             </a-assets>
 
-        <a-marker type='barcode' value='1'>
-            <!-- <a-box position='0 0.5 0' color="yellow"></a-box> -->
-            <a-plane scale="3 3 1"  rotation="-90 0 0" material="transparent: true; src: #profile-img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-plane>
-        </a-marker>
+            <a-marker type='barcode' value='1'>
+                <!-- <a-box position='0 0.5 0' color="yellow"></a-box> -->
 
-        <!-- <a-marker id="animated-marker" type='barcode' value='6'>
-            <a-entity
-                gltf-model="#animated-asset"
-                scale="2">
-            </a-entity>
-        </a-marker> -->
+                <!-- Profile Image -->
+                <a-plane scale="3 3 1" rotation="-55.217088632347696 -5.9455830400725524 12.982077722074193" material="transparent: true; src: #profile-img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" position="-0.888 0.03357 -2.61821"></a-plane>
 
-        <!-- use this <a-entity camera> to support multiple-markers, otherwise use <a-marker-camera> instead of </a-marker> -->
-        <a-entity camera></a-entity>
-        <!-- <a-camera-static/> -->
-        <!-- <a-camera/> -->
+                <!-- Birthday Video Marker -->
+                <a-plane video-vidhandler-birthday="" scale="4.884 2.846 1" position="-5.0512 -0.56819 -2.30793" rotation="-55.731604732375175 -6.0412669918594 12.27103709831684" material="transparent: true; src: #birthday" controls="" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" visible=""></a-plane>
+
+                <!-- ARfolio Card -->
+                <!-- <a-plane scale="3 3 1" position="0.07472 0.62013 0.09543" rotation="-90 0 0" material="transparent: true; src: #arfolio-img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-plane> -->
+
+                <!-- 3D Model -->
+                <a-gltf-model id="narrator" src="#narrator" animation-mixer="" position="-3 1 1.64771" rotation="-90 90 -90" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" gltf-model="#narrator"></a-gltf-model>
+                <!-- <a-gltf-model id="lady" src="#lady" animation-mixer="" position="-4.33034 2 1.64771" rotation="-90 90 -90" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" gltf-model="#lady"></a-gltf-model> -->
+            
+                <a-entity
+                    gltf-model="#lady"
+                    scale="1"
+                    position="-4.33034 2 1.64771" rotation="-90 90 -90"
+                    animation-mixer="" 
+                >
+                </a-entity>
+
+                <!-- Fonts -->
+                <!-- https://cdn.aframe.io/fonts/Roboto-msdf.json -->
+                <!-- https://cdn.aframe.io/fonts/DejaVu-sdf.fnt -->
+                <!-- https://cdn.aframe.io/fonts/KelsonSans.fnt -->
+                <!-- https://cdn.aframe.io/fonts/Exo2Bold.fnt -->
+                <!-- https://cdn.aframe.io/fonts/Exo2SemiBold.fnt -->
+
+                <a-entity position="2.72378 3.94667 0.79098" rotation="-57.950097315121724 -5.05291479525873 12.721381925289668">
+                    <!-- Associate Software Engineer -->
+                    <a-text value="Associate Software Engineer" color="black" position="-2 2.5 -5" scale="1.6 1.6 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                    
+                    <!-- Loons Lab (Pvt) Ltd -->
+                    <a-text value="Loons Lab (Pvt) Ltd" color="black" position="-2 2 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                    
+                    <!-- Dates -->
+                    <a-text value="08/2023 - Present" color="black" position="-2 1.5 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                    
+                    <!-- Location -->
+                    <a-text value="Colombo 01, Sri Lanka." color="black" position="-2 1 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                </a-entity>
+            </a-marker>
+
+
+            <!-- use this <a-entity camera> to support multiple-markers, otherwise use <a-marker-camera> instead of </a-marker> -->
+            <!-- <a-entity camera></a-entity> -->
+            <!-- <a-camera-static/> -->
+            <a-camera/>
         </a-scene>
-
-        <script>
-                window.addEventListener("arjs-nft-loaded", (event) => {
-                 // Hide loading overlay
-                 console.log("Marker identifieddddddd")
-                });
-        </script>
     </body>
 </html>

@@ -33,7 +33,7 @@ label {
   padding: 8px;
   border: 0px solid #ccc;
   border-radius: 4px;
-  color: #fff !important;
+  /* color: #fff !important; */
   font-family: "Acme", sans-serif !important;
 }
 

@@ -1,0 +1,43 @@
+<!doctype HTML>
+<html>
+    <head>
+        <title>AR Resume - ChatGpt</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script> -->
+        <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/3.3.0/aframe/build/aframe-ar.js"></script> -->
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+     
+        <!-- <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script> -->
+        <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.5.5/aframe/build/aframe-ar.js"></script>
+
+        <!-- gltf model -->
+        <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
+    </head>
+    <body style='margin: 0; overflow: hidden;'>
+        <a-scene  
+            arjs='detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
+            embedded 
+            renderer="logarithmicDepthBuffer: true;"
+            vr-mode-ui="enabled: true"
+            gesture-detector
+            id="scene"
+        >
+            <!-- AR Content goes here -->
+
+            <a-marker type='barcode' value='1'>
+                <a-entity position="0 0 0" text="value: John Doe; color: black;"></a-entity>
+                <a-entity position="0 -0.5 0" text="value: Associate Software Engineer at Loons Lab; width: 2; color: black;"></a-entity>
+                <a-entity position="0 -1 0" text="value: Skills: JavaScript, A-Frame, AR.js; width: 2; color: black;"></a-entity>
+                
+                <!-- Optionally add a 3D model -->
+                <!-- <a-entity position="0 0.5 0" scale="0.5 0.5 0.5" gltf-model="url(to/your/model.gltf)"></a-entity> -->
+            </a-marker>
+            <a-camera/>
+        </a-scene>
+    </body>
+</html>

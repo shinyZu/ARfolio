@@ -8,9 +8,28 @@ import Typography from "@mui/material/Typography";
 
 import Header from "../../components/Header/Header";
 import MyButton from "../../components/common/MyButton/MyButton";
+import Footer from "../../components/Footer/Footer";
+import MySnackBar from "../../components/common/MySnackBar/MySnackbar";
+import ConfirmDialog from "../../components/common/ConfirmDialog/ConfirmDialog";
 
 const Process = (props) => {
   const { classes} = props;
+
+    // Alerts & Confirmation dialog boxes
+    const [openAlert, setOpenAlert] = useState({
+        open: "",
+        alert: "",
+        severity: "",
+        variant: "",
+    });
+    
+    const [confirmDialog, setConfirmDialog] = useState({
+        isOpen: false,
+        title: "",
+        subTitle: "",
+        confirmBtnStyle: {},
+        action: "",
+    });
 
   return (
     <div >
@@ -100,6 +119,24 @@ const Process = (props) => {
             </Grid>
         </Grid>
       </Box>
+
+      {/* ------------- Footer -------------- */}
+      <Footer />
+
+      <MySnackBar
+        open={openAlert.open}
+        alert={openAlert.alert}
+        severity={openAlert.severity}
+        variant={openAlert.variant}
+        onClose={() => {
+          setOpenAlert({ open: false });
+        }}
+      />
+      <ConfirmDialog
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+      />
+
     </div>
   );
 };

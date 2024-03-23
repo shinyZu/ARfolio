@@ -12,7 +12,8 @@ export const styleSheet = {
   login_text: {
     display: "flex",
     justifyContent:"center",
-    color: "#fff",
+    // color: "#fff",
+    color: "#164f70",
   },
 
   btn_register: {
@@ -38,6 +39,7 @@ export const styleSheet = {
   },
 
   register_footer_text: {
+    color: "#164f70",
     textAlign: "center",
     paddingTop: "10px",
   },
