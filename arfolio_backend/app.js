@@ -21,6 +21,7 @@ const education = require("./routes/education");
 const experience = require("./routes/experience");
 const project = require("./routes/project");
 const linkhub = require("./routes/linkhub");
+const qrcode = require("./routes/qrcode");
 
 app.use(`${baseURL}token`, token);
 app.use(`${baseURL}login`, login.router);
@@ -29,6 +30,7 @@ app.use(`${baseURL}education`, education.router);
 app.use(`${baseURL}experience`, experience.router);
 app.use(`${baseURL}project`, project.router);
 app.use(`${baseURL}linkhub`, linkhub.router);
+app.use(`${baseURL}qrcode`, qrcode);
 
 app.get(`${baseURL}/`, (req, res) => {
   console.log(req);

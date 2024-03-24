@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QR Code Styling</title>
+    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-with-logos@1.0.5/lib/qrcode-with-logos.min.js"></script>
+</head>
+<body>
+    <!-- <div id="canvas"></div> -->
+
+    <canvas id="canvas"></canvas>
+    <img src="" alt="" id="image" />
+    <img id="image" alt="">
+
+    <img id="img" src="https://au.gmented.com/app/marker/marker.php?genImage&marker_type=matrix&gen_single_number=3&marker_size=80&marker_image_resolution=300&ecc_type=none&border_size=0.25&border_is_white=false&border_quiet_zone=false&barcode_dimensions=3" width="100px"/>
+
+
+    <script type="text/javascript">
+
+
+        // const qrCode = new QRCodeStyling({
+        //     width: 300,
+        //     height: 300,
+        //     type: "svg",
+        //     data: "https://www.facebook.com/",
+        //     // image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+        //     image: "https://au.gmented.com/app/marker/marker.php?genImage&marker_type=matrix&gen_single_number=3&marker_size=80&marker_image_resolution=300&ecc_type=none&border_size=0.25&border_is_white=false&border_quiet_zone=false&barcode_dimensions=3",
+        //     dotsOptions: {
+        //         color: "#4267b2",
+        //         type: "rounded"
+        //     },
+        //     backgroundOptions: {
+        //         color: "#e9ebee",
+        //     },
+        //     imageOptions: {
+        //         crossOrigin: "anonymous",
+        //         margin: 20
+        //     }
+        // });
+
+        // qrCode.append(document.getElementById("canvas"));
+        // qrCode.download({ name: "qr", extension: "png" });
+
+
+        let qrcode = new QrCodeWithLogo({
+            canvas: document.getElementById("canvas"),
+            content: "https://github.com/shinyZu/SchoolMart/tree/master",
+            width: 300,
+            // download: true,
+            image: document.getElementById("img"),
+            logo: {
+                src: "https://au.gmented.com/app/marker/marker.php?genImage&marker_type=matrix&gen_single_number=3&marker_size=80&marker_image_resolution=300&ecc_type=none&border_size=0.25&border_is_white=false&border_quiet_zone=false&barcode_dimensions=3",
+                crossOrigin: "",
+                logoSize:0.15
+            }
+        });
+
+        qrcode.downloadImage("hello-world.png").then(() => {
+            console.log("downloaded")
+        })
+        // qrcode.toCanvas().then(() => {
+        //     qrcode.toImage().then(() => {
+        //         qrcode.downloadImage("hello world");
+        //     });
+        // });
+    
+    </script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Easy QR Code - NodeJS</title>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/easyqrcodejs@4.6.1/dist/easy.qrcode.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" type="text/javascript" charset="utf-8"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+
+</head>
+<body>
+    <script type="text/javascript">
+
+        const generateBarcodeURL = (user_id) => {
+            console.log("=========generateBarcodeURL============")
+
+            const baseUrl = "https://au.gmented.com/app/marker/marker.php?genImage&";
+
+            const options = {
+                marker_type : "matrix",
+                gen_single_number : user_id,
+                marker_size : 80,
+                marker_image_resolution : 300,
+                ecc_type : "none",
+                border_size : 0.25,
+                border_is_white : false,
+                border_quiet_zone : false,
+                barcode_dimensions : 3
+            };
+
+            // Construct query parameters from options
+            const queryParams = new URLSearchParams(options).toString();
+
+            // Return the full URL
+            return `${baseUrl}${queryParams}`;
+        }
+
+        function  createQRCode() {
+            console.log("=========createQRCode============")
+
+            let barcodeLogoURL = generateBarcodeURL(3);
+
+            // Options
+            var options = {
+                // ====== Basic ========
+                text: "https://github.com/shinyZu/SchoolMart/tree/master",
+                width: 360,
+                // height: 256,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H, // L, M, Q, H
+
+                // ====== Dot Scale ========
+                dotScale: 0.5, // For body block, must be greater than 0, less than or equal to 1. default is 1
+
+                dotScaleTiming: 0.5, // Dafault for timing block , must be greater than 0, less than or equal to 1. default is 1
+                // dotScaleTiming_H: 0.5, // For horizontal timing block, must be greater than 0, less than or equal to 1. default is 1
+                // dotScaleTiming_V: 0.5, // For vertical timing block, must be greater than 0, less than or equal to 1. default is 1
+
+                dotScaleA: 0.5, // Dafault for alignment block, must be greater than 0, less than or equal to 1. default is 1
+                // dotScaleAO: 0.5, // For alignment outer block, must be greater than 0, less than or equal to 1. default is 1
+                // dotScaleAI: 0.5, // For alignment inner block, must be greater than 0, less than or equal to 1. default is 1
+
+                // ====== Quiet Zone ========
+                quietZone: 10,
+                quietZoneColor: "rgba(255,255,255,255)",
+
+                // ====== Logo ========
+                // logo: "../demo/logo.png", // Relative address, relative to `easy.qrcode.min.js`
+                logo: barcodeLogoURL, 
+                logoWidth: 100, // fixed logo width. default is `width/3.5`
+                logoHeight: 100, // fixed logo height. default is `heigth/3.5`
+                // logoMaxWidth: undefined, // Maximum logo width. if set will ignore `logoWidth` value
+                // logoMaxHeight: undefined, // Maximum logo height. if set will ignore `logoHeight` value
+                logoBackgroundColor: '#fffff', // Logo backgroud color, Invalid when `logBgTransparent` is true; default is '#ffffff'
+                logoBackgroundTransparent: false, // Whether use transparent image, default is false
+
+                // ====== Backgroud Image =========    
+                // backgroundImage: '', // Background Image
+                // backgroundImageAlpha: 1, // Background image transparency, value between 0 and 1. default is 1. 
+                // autoColor: false, // Automatic color adjustment(for data block)
+                // autoColorDark: "rgba(0, 0, 0, .6)", // Automatic color: dark CSS color
+                // autoColorLight: "rgba(255, 255, 255, .7)", // Automatic color: light CSS color
+
+                // ====== Colorful Posotion Pattern(Eye) Color ========
+                PO: '', // Global Posotion Outer color. if not set, the defaut is `colorDark`
+                PI: '', // Global Posotion Inner color. if not set, the defaut is `colorDark`
+                PO_TL:'', // Posotion Outer color - Top Left 
+                PI_TL:'', // Posotion Inner color - Top Left 
+                PO_TR:'', // Posotion Outer color - Top Right 
+                PI_TR:'', // Posotion Inner color - Top Right 
+                PO_BL:'', // Posotion Outer color - Bottom Left 
+                PI_BL:'', // Posotion Inner color - Bottom Left 
+
+                // === Alignment Color =============
+                AO: '', // Alignment Outer. if not set, the defaut is `colorDark`
+                AI: '', // Alignment Inner. if not set, the defaut is `colorDark`
+                
+                // === Timing Pattern Color ========
+                timing: '', // Global Timing color. if not set, the defaut is `colorDark`
+                timing_H: '', // Horizontal timing color
+                timing_V: '', // Vertical timing color
+
+                // ==== Images format ======
+                format: 'JPG', // 'PNG', 'JPG'
+                compressionLevel: 6, // ZLIB compression level (0-9). default is 6
+                quality: 0.75, // An object specifying the quality (0 to 1). default is 0.75. (JPGs only) 
+
+            };
+
+            // New instance with options
+            var qrcode = new QRCode(options);
+
+            // Save QRCode image
+            qrcode.saveImage({
+                path: 'q.png' // save path
+            });
+        }
+
+
+        createQRCode()
+    
+    </script>
+</body>
+</html>

@@ -251,7 +251,7 @@ const ProjectDetails = (props) => {
                         // justifyContent="center"
                     >
                         <Typography variant="h4" className={classes.sub_title}>
-                            Work Projects
+                            Projects
                         </Typography>
                     </Grid>
                     
