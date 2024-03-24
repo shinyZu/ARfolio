@@ -89,7 +89,7 @@ const Process = (props) => {
         let options = {
           width: 490,
           height: 490,
-          data: "https://qr-code-styling.com",
+          data: "https://shinyzu.github.io/MyProfile/",
           margin: 2,
           qrOptions: {
             typeNumber: "0",
@@ -98,11 +98,12 @@ const Process = (props) => {
           },
           imageOptions: {
             hideBackgroundDots: true,
-            imageSize: 1,
-            margin: 5
+            imageSize: 0.8,
+            margin: 3
           },
           dotsOptions: {
-            type: "dots",
+            // type: "dots",
+            type: "extra-rounded",
             color: "#000000"
           },
           backgroundOptions: {
@@ -123,7 +124,8 @@ const Process = (props) => {
             }
           },
           cornersSquareOptions: {
-            type: "square",
+            // type: "square",
+            type: "extra-rounded",
             color: "#000000"
           },
           cornersSquareOptionsHelper: {
@@ -402,7 +404,7 @@ const Process = (props) => {
             >
                 <Typography variant="h6" className={classes.txt_qr_description}>
                     Use this QR code to launch the AR application.<br></br>
-                    You can also use this same QR code to experience your the AR-enabled Portfolio. 
+                    You can also use this same QR code to experience your AR-enabled Portfolio. 
                 </Typography>
             </Grid>
         </Grid>
