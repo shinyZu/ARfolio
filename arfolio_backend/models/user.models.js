@@ -98,6 +98,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     // required: true,
   },
+  
+  video_name: {
+    type: String,
+    // required: true,
+  },
+
+  video_url: {
+    type: String,
+    // required: true,
+  },
 });
 
 // userSchema.pre("deleteOne", async function (next) {

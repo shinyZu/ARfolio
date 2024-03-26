@@ -42,7 +42,9 @@ const BasicDetails = (props) => {
   const [gender, setGender] = useState("Male");
 
   const [mediaImage, setMediaImage] = useState(upload_bg);
-  const [mediaVideo, setMediaVideo] = useState(upload_bg);
+  const [mediaVideo, setMediaVideo] = useState(null);
+  const [mediaVideoForIframe, setMediaVideoForIframe] = useState(null);
+
 
   const [basicInfoForm, setBasicInfoForm] = useState({
     title: "",
@@ -77,6 +79,7 @@ const BasicDetails = (props) => {
   const [updatedUser, setUpdatedUser] = useState({});
 
   const [imageFileToUpload, setImageFileToUpload] = useState(null);
+  const [videoFileToUpload, setVideoFileToUpload] = useState(null);
 
   useEffect(()=>{
     console.log(location)
@@ -115,6 +118,8 @@ const BasicDetails = (props) => {
                         user_role: user.user_role,
                         image_url: user.image_url,
                         image_name: user.image_name,
+                        video_url: user.video_url,
+                        video_name: user.video_name,
                         Education: user.Education,
                         Experiences: user.Experiences,
                         Projects: user.Projects,
@@ -133,6 +138,7 @@ const BasicDetails = (props) => {
                 isFemale: user.gender === "Female" ? true : false,
                 isOther: user.gender != "Female" || user.gender != "Male"  ? true : false,
                 image_url: user.image_url,
+                video_url: user.video_url,
             });
             setGender((user.gender).toLowerCase());
 
@@ -140,11 +146,27 @@ const BasicDetails = (props) => {
             let image_id = user.image_url.split("id=")[1];
             // let preview_base_url = `https://drive.google.com/thumbnail?id=${image_id}&sz=s4000`
             let preview_base_url = `https://drive.google.com/thumbnail?id=${image_id}`
+            console.log(preview_base_url)
             setMediaImage(preview_base_url)
+            
+
+            // console.log(mediaVideo)
+            // console.log(mediaVideoForIframe)
+
+            // setMediaVideo(upload_bg)
+            let video_id = user.video_url.split("id=")[1];
+            // preview_base_url = `https://drive.google.com/file/d/1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z/preview`
+            let preview_video_base_url = `https://drive.google.com/file/d/${video_id}/preview`
+            console.log(preview_video_base_url)
+            setMediaVideoForIframe(preview_video_base_url)
         });
       }
     }
   }
+//   https://drive.google.com/file/d/1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z/view?t=8
+//   https://drive.google.com/uc?id=1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z
+
+//   https://drive.google.com/uc?id=1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z
 
   // Function to decode the JWT token
   const decodeToken = () => {
@@ -206,19 +228,80 @@ const BasicDetails = (props) => {
 
         console.log(imageFileToUpload)
 
-        if (imageFileToUpload) {
+        if (imageFileToUpload && videoFileToUpload){
+            console.log("==============updating both image & video")
+
             // Update image only (users/drive/url/db/:user_id)
-            let formData = new FormData();
-            formData.append("user_image", imageFileToUpload);
+            let imageFormData = new FormData();
+            imageFormData.append("user_image", imageFileToUpload);
 
-            let res1 = await UserService.updateUserImage(formData, updatedUser.user_id);
+            let res2 = await UserService.updateUserImage(imageFormData, updatedUser.user_id);
 
-            if (res1.status === 200) {
-                console.log("User details updated successfully!")
+            if (res2.status === 200) {
+                console.log("Image uploaded - User details updated successfully!")
+
+                // Update video only (users/drive/url/db/video/:user_id)
+                let videoFormData = new FormData();
+                videoFormData.append("user_video", videoFileToUpload);
+
+                let res3 = await UserService.updateUserVideo(videoFormData, updatedUser.user_id);
+                if (res3.status === 200) {
+                    console.log("Video uploaded - User details updated successfully!")
+
+                } else {
+                    setOpenAlert({
+                        open: true,
+                        alert: "Error while saving video.",
+                        severity: "error",
+                        variant: "standard",
+                    });
+                }
+
             } else {
                 setOpenAlert({
                     open: true,
                     alert: "Error while saving image.",
+                    severity: "error",
+                    variant: "standard",
+                });
+            }
+
+
+        } else if (imageFileToUpload) {
+            console.log("==============updating only image")
+
+            // Update image only (users/drive/url/db/:user_id)
+            let imageFormData = new FormData();
+            imageFormData.append("user_image", imageFileToUpload);
+
+            let res2 = await UserService.updateUserImage(imageFormData, updatedUser.user_id);
+
+            if (res2.status === 200) {
+                console.log("Image uploaded - User details updated successfully!")
+
+            } else {
+                setOpenAlert({
+                    open: true,
+                    alert: "Error while saving image.",
+                    severity: "error",
+                    variant: "standard",
+                });
+            }
+        } else if(videoFileToUpload) {
+            console.log("==============updating only video")
+
+            // Update video only (users/drive/url/db/video/:user_id)
+            let videoFormData = new FormData();
+            videoFormData.append("user_video", videoFileToUpload);
+
+            let res3 = await UserService.updateUserVideo(videoFormData, updatedUser.user_id);
+            if (res3.status === 200) {
+                console.log("Video uploaded - User details updated successfully!")
+
+            } else {
+                setOpenAlert({
+                    open: true,
+                    alert: "Error while saving video.",
                     severity: "error",
                     variant: "standard",
                 });
@@ -250,6 +333,31 @@ const BasicDetails = (props) => {
     };
     fileReader.readAsDataURL(files[0]);
   };
+  
+//   const handleVideoUpload = (e) => {
+//     const { files } = e.target;
+//     setVideoFileToUpload(files[0]);
+
+//     const fileReader = new FileReader();
+//     fileReader.onload = (e) => {
+//       const { result } = e.target;
+//       console.log(result);
+//       if (result) {
+//         setMediaVideo(result);
+//       }
+//     };
+//     fileReader.readAsDataURL(files[0]);
+//   };
+
+    const handleVideoUpload = (e) => {
+        const file = e.target.files[0];
+        setVideoFileToUpload(file);
+
+        if (file) {
+            const url = URL.createObjectURL(file);
+            setMediaVideo(url);
+        }
+    };
 
   return (
     <div id="portfolio-form">
@@ -687,7 +795,8 @@ const BasicDetails = (props) => {
                             mt={2}
                             className={classes.video_upload_container}
                             style={{
-                                backgroundImage: `url${mediaVideo}`,
+                                // backgroundImage: `url${mediaVideo}`,
+                                backgroundImage: `url${'https://drive.google.com/uc?id=1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z'}`,
                                 backgroundSize: "cover",
                                 backgroundPosition: "center",
                             }}
@@ -696,15 +805,18 @@ const BasicDetails = (props) => {
                                 Video Biography
                             </Typography>
 
-                            <img
-                                src={mediaVideo}
-                                loading="lazy"
-                                style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    marginTop:"2vh"
-                                }}
-                            />
+                            {mediaVideo ? (
+                                <video width="100%" height="auto" controls src={mediaVideo} autoPlay />
+                            ) : (
+                                <iframe
+                                    width="100%"
+                                    height="auto"
+                                    // src="https://drive.google.com/file/d/1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z/preview"
+                                    src={mediaVideoForIframe}
+                                    allow="autoplay; encrypted-media"
+                                    allowFullScreen
+                                ></iframe>
+                            )}
                         </Grid>
 
                         {/* -------------------- Upload Buttons --------------------- */}
@@ -735,13 +847,13 @@ const BasicDetails = (props) => {
                                     text="Upload"
                                     multiple={false}
                                     onUpload={(e) => {
-                                    handleMediaUpload(e);
-                                    console.log( e.target.files[0])
-                                    setBasicInfoForm({
-                                        ...basicInfoForm,
-                                        user_image: e.target.files[0],
-                                    });
-                                    setMediaImage(e.target.files[0]);
+                                        handleMediaUpload(e);
+                                        console.log( e.target.files[0])
+                                        setBasicInfoForm({
+                                            ...basicInfoForm,
+                                            user_image: e.target.files[0],
+                                        });
+                                        setMediaImage(e.target.files[0]);
                                     }}
                                     // displayFileName={true}
                                     
@@ -763,13 +875,13 @@ const BasicDetails = (props) => {
                                     text="Upload"
                                     multiple={false}
                                     onUpload={(e) => {
-                                    // handleImageUpload(e);
-                                    // handleMediaUpload(e);
-                                    // setNewProductFormData({
-                                    //     ...newProductFormData,
-                                    //     product_image: e.target.files[0],
-                                    // });
-                                    setMediaVideo(e.target.files[0]);
+                                        handleVideoUpload(e);
+                                        // console.log(e.target.files[0])
+                                        setBasicInfoForm({
+                                            ...basicInfoForm,
+                                            user_video: e.target.files[0],
+                                        });
+                                        // setMediaVideo(e.target.files[0]);
                                     }}
                                     // displayFileName={true}
                                 />

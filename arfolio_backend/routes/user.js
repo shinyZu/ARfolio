@@ -384,7 +384,7 @@ router.get("/image/:id", cors(), authenticateCustomerToken, async (req, res) => 
   }
 });
 
-// --------------Upload images usin Google Drive API -------------
+// --------------Upload images using Google Drive API -------------
 
 // Get all images
 router.get("/images/all", cors(), async (req, res) => {
@@ -761,6 +761,104 @@ router.get("/generate/public/url/:id", async (req, res) => {
   }
 });
 
+// ------------------- Video Upload -----------------
+
+// testing API
+router.put('/upload/video', upload.single('user_video'), (req, res) => {
+  try {
+    // You can access the file using req.file
+    console.log(req.file);
+    res.send('Video uploaded successfully');
+  } catch (error) {
+    res.status(400).send('Error uploading video');
+  }
+});
+
+// Upload Video only - post(/drive/url/db/video) - in use
+router.put(
+  "/drive/url/db/video/:user_id",
+  cors(),
+  upload.single("user_video"),
+  authenticateCustomerToken,
+  async (req, res) => {
+    try {
+      const userExist = await checkUserExist(req.params.user_id);
+      if (!userExist) {
+        return res
+          .status(404)
+          .json({ status: 404, message: "User not found." });
+      }
+
+      console.log(req.file)
+
+      // resize image
+      
+
+      // Get current video url
+      const current_url = userExist.video_url;
+      console.log("current_url: " + current_url);
+     
+      let current_fileId = "";
+
+      // Upload new video
+      const upload_response = await uploadFile(req.file);
+      console.log("\nupload_response: " + upload_response);
+
+      const new_fileId = upload_response.data.id;
+      const new_videoName = req.file.originalname;
+
+      // Create new video url
+      const new_public_video_url = `${drive_base_url}?id=${new_fileId}`;
+      console.log("new_public_video_url: " + new_public_video_url);
+
+      // Update the user in the database
+      userExist.video_name = new_videoName;
+      userExist.video_url = new_public_video_url;
+
+      const updatedUser = await userExist.save();
+
+      let del_response = null;
+      if (current_url != "" /* && userExist.image_url != "" */) {
+        // Extract the current file id from the url
+        current_fileId = current_url.split("id=")[1];
+        console.log("current_fileId: " + current_fileId);
+
+        // Delete current video from drive
+        del_response = await deleteFile(current_fileId);
+
+        if (!del_response && del_response.status == 204) {
+          return res.status(200).send({
+            status: 200,
+            data: {
+              file_id: upload_response.data.id,
+            },
+            message: "Video updated successfully!",
+          });
+        }
+      } else if (current_url == "") {
+        return res.status(200).send({
+          status: 200,
+          data: {
+            file_id: upload_response.data.id,
+          },
+          message: "Video updated successfully!",
+        });
+      }
+      // else {
+      return res.status(200).send({
+        status: 200,
+        data: {
+          file_id: upload_response.data.id,
+        },
+        message: "Video updated successfully!",
+      });
+      // }
+    } catch (err) {
+      return res.status(400).send({ status: 400, message: err.message });
+    }
+  }
+);
+
 const checkUserExist = async (id, res) => {
   const userExist = await User.findOne({
     user_id: id,
@@ -772,7 +870,6 @@ const checkUserExist = async (id, res) => {
     return userExist;
   }
 };
-
 
 async function getAllDetails(user_id,res) {
   try{

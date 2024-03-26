@@ -82,6 +82,28 @@ class UserService {
       });
       return await promise;
     };
+    
+    updateUserVideo = async (data, id) => {
+      const token = JSON.parse(localStorage.getItem("token"));
+      // let id = token.user_id;
+      console.log(id)
+      const promise = new Promise((resolve, reject) => {
+        axios
+          .put("users/drive/url/db/video/" + id, data, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((res) => {
+            return resolve(res);
+          })
+          .catch((er) => {
+            return resolve(er);
+          });
+      });
+      return await promise;
+    };
       
 
 }
