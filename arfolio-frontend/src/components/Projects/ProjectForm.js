@@ -36,13 +36,14 @@ const ProjectForm = (props) => {
     const years = Array.from({ length: currentYear - 1989 }, (_, index) => currentYear - index);
   
     useEffect(() => {
-      setSelectedYear(new Date().getFullYear().toString());
-      setProjectForm(props.data);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setSelectedYear(new Date().getFullYear().toString());
+        setProjectForm(props.data);
     },[]);
   
     // Initialize with experience data prop when the component mounts or the prop changes
     useEffect(() => {
-      setProjectForm(props.data); 
+        setProjectForm(props.data); 
     }, [props.data]);
   
     // Handle changes to the input fields
@@ -276,7 +277,7 @@ const ProjectForm = (props) => {
                               renderInput={(params) => (
                                   <TextField
                                       {...params}
-                                      label="Month"
+                                      label="Year"
                                       styles={{ color: "red" }}
                                       value={projectForm.start_year}
                                   />
@@ -374,7 +375,7 @@ const ProjectForm = (props) => {
                               renderInput={(params) => (
                                   <TextField
                                       {...params}
-                                      label="Month"
+                                      label="Year"
                                       styles={{ color: "red" }}
                                       value={projectForm.end_year}
                                   />

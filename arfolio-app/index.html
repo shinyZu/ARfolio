@@ -1,19 +1,31 @@
-<!DOCTYPE html>
+<!doctype HTML>
 <html>
     <head>
-        
-        <title> ARfolio </title>
+
+        <title> Barcode - In Progress</title>
+        <!-- <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"> -->
+
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,height=device-height">
-	      <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <link rel="stylesheet" href="styles.css">
+
+        <!-- <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
+        <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+        <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script> -->
+
+        <!-- //------------- -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
      
         <!-- <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script> -->
-        <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.5.5/aframe/build/aframe-ar.js"></script>
+        <!-- <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.5.5/aframe/build/aframe-ar.js"></script> -->
+
+        <!-- <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script> -->
+        <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+
 
         <!-- gltf model -->
         <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
@@ -23,77 +35,239 @@
         <script src="gesture-detector.js"></script>
         <script src="gesture-handler.js"></script>
 
-        <script>
-            // Profile Video Handler
-            AFRAME.registerComponent('video-vidhandler-biography', {
-                init: function() {
-		        console.log('video init entered');
-                    this.toggle = false;
-                    this.vid = document.querySelector("#profile_vid");
-                    this.vid.pause();
-                },
-                tick: function() {
-                    if (this.el.object3D.visible == true) {
-                        if (!this.toggle) {
-                            this.toggle = true;
-                            this.vid.play();
-                        }
-                    } else {
-                        this.toggle = false;
-                        this.vid.pause();
-                    }
-                }
-            });
-        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/quagga@latest"></script>
+        <script type="text/javascript" src="https://unpkg.com/@zxing/library@latest"></script>
+
+
     </head>
-    <body>
 
-          <a-scene >
+   
 
+    <body style='margin : 0px; overflow: hidden;'>
+    <!-- <body> -->
+        <!-- we add detectionMode and matrixCodeType to tell AR.js to recognize barcode markers -->
+        <!-- arjs -->
+        <!-- arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;' -->
+        <a-scene 
+            arjs='sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
+            embedded 
+            renderer="logarithmicDepthBuffer: true;"
+            vr-mode-ui="enabled: true"
+            gesture-detector
+            id="scene"
+        >
             <a-assets>
+                <!-- Profile Image -->
+                <img id="profile-img" src="images/profile.jpg">
 
-                <!-- Biography Video -->
-                <video  preload="none"  id="profile_vid" response-type="arraybuffer" loop="true" crossorigin webkit-playsinline playsinline controls>
-                    <source  src="assets/videos/biography.mp4">
+                <!-- Birthday  Video -->
+                <!-- <video  preload="auto" id="birthday" response-type="arraybuffer" loop="true" autoplay crossorigin webkit-playsinline playsinline controls> -->
+                <video  preload="auto" id="birthday" response-type="arraybuffer" loop="true" autoplay>
+                    <source  src="videos/birthday.mp4">
                 </video>
 
-                <!-- Profile Image -->
-                <img id="profile_img" src="assets/images/profile_img.jpg">
-                <!-- <a-image id="profile-img" src="images/profile.jpg" position="0 0.5 0" scale="0.4 0.4 0.4"></a-image> -->
+                <!-- Business card Image -->
+                <img id="arfolio-img" src="images/ARfolio.jpg">
 
-                <!-- Business Card Image -->
-                <img id="card_img" src="assets/images/card.jpg">
+                <!-- loading 3d models -->
+                <a-asset-item
+                  id="lady"
+                  response-type="arraybuffer"
+                src="https://cdn.glitch.global/7c3b587b-34f5-4b52-8c91-3a879ecf89d8/office_lady.glb?v=1697707080101"
+                ></a-asset-item>
+
+                <a-asset-item
+                  id="narrator"
+                  response-type="arraybuffer"
+                src="https://cdn.glitch.global/7c3b587b-34f5-4b52-8c91-3a879ecf89d8/narrator.glb?v=1697710065881"
+                ></a-asset-item>
                 
-                <!-- QR Image -->
-                <img id="qr_img" src="assets/images/markers/pattern-qr-code.png">
-
             </a-assets>
 
-            <!-- Profile Video Marker -->
-            <a-marker id="marker1" type='pattern' url='assets/images/patterns/pattern-qr-code.patt' video-vidhandler-biography>
-              <a-plane scale="4.884 2.846 1" position="-5.11471 1.59569 -3.17426" rotation="-70.669760367026 126.20713240685181 -126.04154760405902" material="transparent: true; src: #birthday" controls="" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" visible=""></a-plane>
+            <a-marker type='barcode' value='3' id="barcode-marker">
+            <!-- <a-marker-camera type='barcode' value='3'> -->
+                <!-- <a-box position='0 0.5 0' color="yellow"></a-box> -->
+
+                <!-- Profile Image -->
+                <a-plane scale="3 3 1" rotation="-55.217088632347696 -5.9455830400725524 12.982077722074193" material="transparent: true; src: #profile-img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" position="-0.888 0.03357 -2.61821"></a-plane>
+
+                <!-- Birthday Video Marker -->
+                <a-video video-vidhandler-birthday="" scale="4.884 2.846 1" position="-5.0512 -0.56819 -2.30793" rotation="-55.731604732375175 -6.0412669918594 12.27103709831684" material="transparent: true; src: #birthday" controls="" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" visible=""></a-video>
+
+                <!-- ARfolio Card -->
+                <!-- <a-plane scale="3 3 1" position="0.07472 0.62013 0.09543" rotation="-90 0 0" material="transparent: true; src: #arfolio-img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-plane> -->
+
+                <!-- 3D Model -->
+                <a-gltf-model id="narrator" src="#narrator" animation-mixer="" position="-3 1 1.64771" rotation="-90 90 -90" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" gltf-model="#narrator"></a-gltf-model>
+                <!-- <a-gltf-model id="lady" src="#lady" animation-mixer="" position="-4.33034 2 1.64771" rotation="-90 90 -90" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" gltf-model="#lady"></a-gltf-model> -->
+            
+                <a-entity
+                    gltf-model="#lady"
+                    scale="1"
+                    position="-4.33034 2 1.64771" rotation="-90 90 -90"
+                    animation-mixer="" 
+                >
+                </a-entity>
+
+                <!-- Fonts -->
+                <!-- https://cdn.aframe.io/fonts/Roboto-msdf.json -->
+                <!-- https://cdn.aframe.io/fonts/DejaVu-sdf.fnt -->
+                <!-- https://cdn.aframe.io/fonts/KelsonSans.fnt -->
+                <!-- https://cdn.aframe.io/fonts/Exo2Bold.fnt -->
+                <!-- https://cdn.aframe.io/fonts/Exo2SemiBold.fnt -->
+
+                <a-entity position="2.72378 3.94667 0.79098" rotation="-57.950097315121724 -5.05291479525873 12.721381925289668">
+                    <!-- Associate Software Engineer -->
+                    <a-text value="Associate Software Engineer" color="black" position="-2 2.5 -5" scale="1.6 1.6 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                    
+                    <!-- Loons Lab (Pvt) Ltd -->
+                    <a-text value="Loons Lab (Pvt) Ltd" color="black" position="-2 2 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                    
+                    <!-- Dates -->
+                    <a-text value="08/2023 - Present" color="black" position="-2 1.5 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                    
+                    <!-- Location -->
+                    <a-text value="Colombo 01, Sri Lanka." color="black" position="-2 1 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                </a-entity>
             </a-marker>
+            <!-- </a-marker-camera> -->
 
-            <a-marker-camera id="marker1" type='pattern' url='assets/images/patterns/pattern-qr-code.patt' >
-              
-              <!-- Profile Video -->
-              <a-plane scale="4.884 2.846 1" position="-4.05674 0.657 -3.04515" rotation="-90 0 0" material="transparent: true; src: #profile_vid" controls="" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" visible=""></a-plane>
 
-              <!-- Profile Box -->
-              <a-box position="-0.252 2.7176 -4.65454" color="white" material="transparent: true; src: #profile_img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-box>
-
-              <!-- Profile Image -->
-              <a-plane scale="3 3 1" position="0.02957 0.59161 -2.97096" rotation="-90 0 0" material="transparent: true; src: #profile_img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-plane>
-
-              <!-- ARfolio Card -->
-              <a-plane scale="3 3 1" position="0.07472 0.62013 0.09543" rotation="-90 0 0" material="transparent: true; src: #qr_img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-plane>
-
-            </a-marker-camera> 
-
-          <!-- Camera -->
-          <!-- <a-entity camera></a-entity> -->
-          <!-- <a-camera-static/> -->
-          <a-camera/>
+            <!-- use this <a-entity camera> to support multiple-markers, otherwise use <a-marker-camera> instead of </a-marker> -->
+            <!-- <a-entity camera></a-entity> -->
+            <!-- <a-camera-static/> -->
+            <a-camera/>
         </a-scene>
+
+        <script>
+
+            // Birthday Video Handler
+            AFRAME.registerComponent('video-vidhandler-birthday', {
+                    init: function() {
+                    console.log('video init entered');
+                        this.toggle = false;
+                        this.vid = document.querySelector("#birthday");
+                        this.vid.pause();
+                    },
+                    tick: function() {
+                        if (this.el.object3D.visible == true) {
+                            if (!this.toggle) {
+                                this.toggle = true;
+                                this.vid.play();
+                            }
+                        } else {
+                            this.toggle = false;
+                            this.vid.pause();
+                        }
+                    }
+                });
+    
+    
+            // using QuaggaJS - only 1D barcodes
+            /* document.addEventListener('DOMContentLoaded', function () {
+                var marker = document.querySelector("#barcode-marker");
+                console.log(marker)
+                // Capture snapshot for barcode detection
+                function captureSnapshot() {
+                    const video = document.querySelector('video');
+                    if (!video) {
+                        console.error('Video element not found!');
+                        return;
+                    } else {
+                        console.log("Video found")
+                    }
+    
+                    const canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const context = canvas.getContext('2d');
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+                    // Process the captured image with QuaggaJS
+                    Quagga.decodeSingle({
+                        decoder: {
+                            // readers: ["code_128_reader"] // Add barcode formats here
+                            readers: ["qr_reader"] // Add barcode formats here
+                        },
+                        locate: true, // Try to locate the barcode in the image
+                        src: canvas.toDataURL() // Use the captured image as source
+                    }, function(result){
+                        console.log(result)
+                        if(result.codeResult) {
+                            console.log("Barcode detected and decoded:", result.codeResult.code);
+                            updateMarker(result.codeResult.code); // Update the marker value
+                        } else {
+                            console.log("No barcode detected.");
+                        }
+                    });
+                }
+
+                // Function to update the marker value
+                function updateMarker(barcodeValue) {
+                    console.log("inside updateMarker")
+                    var marker = document.querySelector("#barcode-marker");
+                    if (marker) {
+                        marker.setAttribute('value', barcodeValue);
+                        console.log('Marker updated with value:', barcodeValue);
+                    }
+                }
+    
+                // Set an interval for capturing snapshots from the video stream
+                setInterval(captureSnapshot, 5000); // Adjust interval as needed
+            }); */
+    
+            document.addEventListener('DOMContentLoaded', function () {
+                var marker = document.querySelector("#barcode-marker");
+                marker.addEventListener('markerFound', function() {
+                    var markerValue = this.getAttribute('value');
+                    console.log('Barcode detected:', markerValue);
+                });
+    
+                marker.addEventListener('markerLost', function() {
+                    console.log('Barcode lost');
+                });
+    
+            });
+
+            // Using Zxing
+            /* document.addEventListener('DOMContentLoaded', function () {
+                const video = document.querySelector('video');
+                const codeReader = new ZXing.BrowserDatamatrixCodeReader();
+                
+                // Update the marker with the barcode value
+                function updateMarker(barcodeValue) {
+                    const marker = document.querySelector("#barcode-marker");
+                    if (marker) {
+                        marker.textContent = barcodeValue; // Update the text content or value of your marker
+                    }
+                }
+
+                // Function to start decoding from the video stream
+                async function decodeFromVideo() {
+                    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                        try {
+                            const result = await codeReader.decodeFromVideoElement(video);
+                            console.log(result);
+                            updateMarker(result.text); // Use the decoded text
+                        } catch (err) {
+                            console.error('Error decoding barcode:', err);
+                        }
+                    } else {
+                        console.log('Video not ready for decoding');
+                    }
+                }
+
+                // Attach event listener to the video element to start decoding when the video is playing
+                video.addEventListener('playing', () => {
+                    setInterval(decodeFromVideo, 9000);
+                });
+
+                // Make sure to handle the video stream setup before this point
+            }); */
+
+    
+    
+        </script>
     </body>
 </html>

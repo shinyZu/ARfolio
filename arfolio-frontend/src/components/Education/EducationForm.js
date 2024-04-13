@@ -40,6 +40,7 @@ const EducationForm = forwardRef((props, ref) => {
   const years = Array.from({ length: currentYear - 1989 }, (_, index) => currentYear - index);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
     setSelectedYear(new Date().getFullYear().toString());
     setEducationForm(props.data);
   },[]);
@@ -373,7 +374,7 @@ const EducationForm = forwardRef((props, ref) => {
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                label="Month"
+                                label="Year"
                                 styles={{ color: "red" }}
                                 value={educationForm.start_year}
                             />
@@ -489,7 +490,7 @@ const EducationForm = forwardRef((props, ref) => {
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                label="Month"
+                                label="Year"
                                 styles={{ color: "red" }}
                                 value={educationForm.end_year}
                             />

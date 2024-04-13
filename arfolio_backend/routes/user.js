@@ -532,7 +532,7 @@ const saveUserToDB = async (body, res, imageName, fileId) => {
   }
 };
 
-// Update image url in db - for testing - working
+// Update image url in db (updateImageInfo) - for testing - working
 router.put(
   "/image/details/:id",
   cors(),
@@ -855,6 +855,60 @@ router.put(
       // }
     } catch (err) {
       return res.status(400).send({ status: 400, message: err.message });
+    }
+  }
+);
+
+// Update video url in db (updateVideoInfo) - for testing - working
+router.put(
+  "/video/details/:id",
+  cors(),
+  // upload.single("product_image"),
+  authenticateCustomerToken,
+  async (req, res) => {
+    try {
+      const userExsit = await checkUserExist(req.params.id, res);
+      const body = req.body;
+
+      // Update the stationery in the database
+      userExsit.video_name = body.video_url;
+      userExsit.video_url = body.video_url;
+
+      const updatedUser = await userExsit.save();
+      return res.send({
+        status: 200,
+        user: updatedUser,
+        message: "Video details updated successfully!",
+      });
+    } catch (err) {
+      return res.status(400).send({ status: 400, message: err.message });
+    }
+  }
+);
+
+// Delete video from Google Drive - Customer
+router.delete(
+  "/drive/video/:id",
+  cors(),
+  authenticateCustomerToken,
+  async (req, res) => {
+    try {
+      const fileId = req.params.id;
+
+      const response = await deleteFile(fileId);
+
+      return res.send({
+        status: 200,
+        message: "File deleted successfully!",
+        data: {
+          status: response.status,
+          data: response.data,
+        },
+        // data: response,
+      });
+    } catch (error) {
+      console.error("Error deleting file:", error.message);
+      return res.status(500).send({ status: 500, message: error.message });
     }
   }
 );

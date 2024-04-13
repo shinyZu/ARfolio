@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -26,7 +26,9 @@ import { withStyles } from "@mui/styles";
 
 import {jwtDecode} from "jwt-decode";
 
-import upload_bg from "../../../assets/images/Portfolio/choose_image.jpg";
+// import upload_bg from "../../../assets/images/Portfolio/choose_image.jpg";
+import upload_bg from "../../../assets/images/Portfolio/add_image_2_rz.jpg";
+import upload_video_bg from "../../../assets/images/Portfolio/add_video_3_rz.jpg";
 
 import UserService from "../../../services/UserService";
 
@@ -44,6 +46,9 @@ const BasicDetails = (props) => {
   const [mediaImage, setMediaImage] = useState(upload_bg);
   const [mediaVideo, setMediaVideo] = useState(null);
   const [mediaVideoForIframe, setMediaVideoForIframe] = useState(null);
+
+  const iframeRef = useRef(null);
+  const [contentStatus, setContentStatus] = useState('loading'); // 'loading', 'loaded', 'error'
 
 
   const [basicInfoForm, setBasicInfoForm] = useState({
@@ -81,11 +86,35 @@ const BasicDetails = (props) => {
   const [imageFileToUpload, setImageFileToUpload] = useState(null);
   const [videoFileToUpload, setVideoFileToUpload] = useState(null);
 
-  useEffect(()=>{
+//   const [isVideoAvaiable, setIsVideoAvaiable] = useState(false);
+//   const [contentLoaded, setContentLoaded] = useState(false);
+//   const [showFallback, setShowFallback] = useState(false);
+  
+window.scrollTo({ top: 0, behavior: "smooth" });
+
+useEffect(()=>{
     console.log(location)
     // setMediaImage(null);
     getSingleUserById(); 
   },[])
+
+  useEffect(() => {
+    const handleLoad = () => {
+      setContentStatus('loaded');
+    };
+
+    const iframe = iframeRef.current;
+    if (iframe) {
+      iframe.addEventListener('load', handleLoad);
+      // No direct way to handle "error" event on iframe due to cross-origin restrictions
+    }
+
+    return () => {
+      if (iframe) {
+        iframe.removeEventListener('load', handleLoad);
+      }
+    };
+  }, [mediaVideoForIframe]); // Re-run effect if the iframe src changes
 
 //   useEffect(()=>{
 //     console.log(mediaImage)
@@ -140,33 +169,35 @@ const BasicDetails = (props) => {
                 image_url: user.image_url,
                 video_url: user.video_url,
             });
+            // setGender((user.gender).toLowerCase());
             setGender((user.gender).toLowerCase());
 
             setMediaImage(upload_bg)
-            let image_id = user.image_url.split("id=")[1];
-            // let preview_base_url = `https://drive.google.com/thumbnail?id=${image_id}&sz=s4000`
-            let preview_base_url = `https://drive.google.com/thumbnail?id=${image_id}`
-            console.log(preview_base_url)
-            setMediaImage(preview_base_url)
-            
-
-            // console.log(mediaVideo)
-            // console.log(mediaVideoForIframe)
+            if (user.image_url) {
+                let image_id = user.image_url.split("id=")[1];
+                // let preview_base_url = `https://drive.google.com/thumbnail?id=${image_id}&sz=s4000`
+                let preview_base_url = `https://drive.google.com/thumbnail?id=${image_id}`
+                console.log(preview_base_url)
+                setMediaImage(preview_base_url)
+            }
 
             // setMediaVideo(upload_bg)
-            let video_id = user.video_url.split("id=")[1];
-            // preview_base_url = `https://drive.google.com/file/d/1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z/preview`
-            let preview_video_base_url = `https://drive.google.com/file/d/${video_id}/preview`
-            console.log(preview_video_base_url)
-            setMediaVideoForIframe(preview_video_base_url)
+            if ( user.video_url) {
+                // setIsVideoAvaiable(true)
+
+                let video_id = user.video_url.split("id=")[1];
+                // preview_base_url = `https://drive.google.com/file/d/1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z/preview`
+                let preview_video_base_url = `https://drive.google.com/file/d/${video_id}/preview`
+                console.log(preview_video_base_url)
+
+                setMediaVideoForIframe(preview_video_base_url)
+            } else {
+                // setIsVideoAvaiable(false)
+            }
         });
       }
     }
   }
-//   https://drive.google.com/file/d/1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z/view?t=8
-//   https://drive.google.com/uc?id=1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z
-
-//   https://drive.google.com/uc?id=1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z
 
   // Function to decode the JWT token
   const decodeToken = () => {
@@ -660,6 +691,7 @@ const BasicDetails = (props) => {
                                         // setGender("Male")
                                         setBasicInfoForm({
                                             ...basicInfoForm,
+                                            gender:"Male",
                                             isMale: true,
                                             isFemale:false,
                                             isOther:false
@@ -668,6 +700,7 @@ const BasicDetails = (props) => {
                                         // setGender("Female")
                                         setBasicInfoForm({
                                             ...basicInfoForm,
+                                            gender: "Female",
                                             isMale: false,
                                             isFemale:true,
                                             isOther:false
@@ -676,6 +709,7 @@ const BasicDetails = (props) => {
                                         // setGender("Other")
                                         setBasicInfoForm({
                                             ...basicInfoForm,
+                                            gender:"Other",
                                             isMale: false,
                                             isFemale:false,
                                             isOther:true
@@ -771,6 +805,7 @@ const BasicDetails = (props) => {
                                     height: "100%",
                                     marginTop:"2vh"
                                 }}
+                                alt="User Image"
                             />
 
                             <Grid
@@ -800,23 +835,64 @@ const BasicDetails = (props) => {
                                 backgroundSize: "cover",
                                 backgroundPosition: "center",
                             }}
+                            
                         >
                             <Typography variant="h6" className={classes.sub_title}>
                                 Video Biography
                             </Typography>
 
-                            {mediaVideo ? (
+                            {mediaVideoForIframe == null && mediaVideo == null ? (
+                                <img
+                                    src={upload_video_bg}
+                                    loading="lazy"
+                                    style={{
+                                        width: "100%",
+                                        height: "100%",
+                                        marginTop:"2vh"
+                                    }}
+                                    alt="User Video Not Found"
+                                />
+                            ) : mediaVideo ? (//if file choosen from the file chooser - loads to a video tag
                                 <video width="100%" height="auto" controls src={mediaVideo} autoPlay />
-                            ) : (
-                                <iframe
-                                    width="100%"
-                                    height="auto"
-                                    // src="https://drive.google.com/file/d/1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z/preview"
-                                    src={mediaVideoForIframe}
-                                    allow="autoplay; encrypted-media"
-                                    allowFullScreen
-                                ></iframe>
+
+                            ) : ( // if loaded from backend - loads to a iframe tag
+                                <>
+                                    {contentStatus === 'loading' && (
+                                        <div 
+                                            style={{
+                                                position: 'absolute', // Use absolute positioning to overlay on top of the Grid
+                                                top: 0,
+                                                left: 0,
+                                                right: 0,
+                                                bottom: 0,
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                background: 'rgba(255, 255, 255, 0.5)', // Optional: Add a semi-transparent overlay
+                                            }}
+                                          >
+                                            <Typography variant="h5" className={classes.sub_title}>
+                                              Loading...
+                                            </Typography>
+                                          </div>
+                                    )}
+                                    {contentStatus === 'error' && <img src={upload_video_bg} alt="Content not available" />}            
+
+                                    <iframe
+                                        ref={iframeRef}
+                                        width="100%"
+                                        height="auto"
+                                        src={mediaVideoForIframe}
+                                        allow="autoplay; encrypted-media"
+                                        allowFullScreen
+                                        style={{ display: contentStatus === 'loaded' ? 'block' : 'none' }}
+                                        // src="https://drive.google.com/file/d/1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z/preview"
+                                        // onLoad={() => setContentLoaded(true)}
+                                        // style={{ display: contentLoaded ? 'block' : 'none' }}
+                                    ></iframe>
+                                </>
                             )}
+
                         </Grid>
 
                         {/* -------------------- Upload Buttons --------------------- */}

@@ -70,6 +70,7 @@ const ImportantLinks = (props) => {
   const [updatedExperienceList, setUpdatedExperienceList] = useState([{id:0,}]);
 
   useEffect(()=>{
+    window.scrollTo({ top: 0, behavior: "smooth" });
     getSingleUserById();
   },[])
 
@@ -84,17 +85,18 @@ const ImportantLinks = (props) => {
         setUser(res.data.data);
 
         let userLinks = res.data.data[0].Links[0]
-        
-        setLinksForm({
-            linkedin: userLinks.linkedin,
-            website: userLinks.website,
-            github: userLinks.github,
-            twitter: userLinks.twitter,
-            instagram: userLinks.instagram,
-            spotify: userLinks.spotify,
-            facebook: userLinks.facebook,
-        });
 
+        if (userLinks) {
+            setLinksForm({
+                linkedin: userLinks.linkedin,
+                website: userLinks.website,
+                github: userLinks.github,
+                twitter: userLinks.twitter,
+                instagram: userLinks.instagram,
+                spotify: userLinks.spotify,
+                facebook: userLinks.facebook,
+            });
+        }
       }
     }
   }
@@ -111,6 +113,41 @@ const ImportantLinks = (props) => {
       return null;
     }
   };
+
+  // API call to delete education
+  const updateLinks = async() => {
+    console.log("------------------updating Links-----------------")
+    console.log(linksForm)
+    console.log(user[0]?.Links)
+
+    if (user[0]?.Links.length > 0) { // if already Links are there update
+        let res = await LinkHubService.updateLinks(linksForm, user[0]?.Links[0].linkhub_id);
+    
+        if (res.status === 200) {
+            console.log(res.message)
+        } else {
+            setOpenAlert({
+                open: true,
+                alert: "Error",
+                severity: "error",
+                variant: "standard",
+            });
+        }
+    } else { // if adding the links for the first time - POST request
+        let res = await LinkHubService.saveLinks(linksForm);
+    
+        if (res.status === 201) {
+            console.log(res.message)
+        } else {
+            setOpenAlert({
+                open: true,
+                alert: "Error",
+                severity: "error",
+                variant: "standard",
+            });
+        }
+    }
+  }
 
   console.log(linksForm)
 
@@ -495,6 +532,10 @@ const ImportantLinks = (props) => {
                         className={classes.btn_process}
                         onClick={() => {
                             navigate("/process-arfolio");
+                            updateLinks();
+                            setTimeout(() => {
+                                navigate("/process-arfolio");
+                            }, 500);
                         }}
                     />
                 </Grid>

@@ -36,6 +36,7 @@ const ExperienceForm = (props) => {
   const years = Array.from({ length: currentYear - 1989 }, (_, index) => currentYear - index);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setSelectedYear(new Date().getFullYear().toString());
     setExperienceForm(props.data);
   },[]);
@@ -362,7 +363,7 @@ const ExperienceForm = (props) => {
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
-                                    label="Month"
+                                    label="Year"
                                     styles={{ color: "red" }}
                                     value={experienceForm.start_year}
                                 />
@@ -460,7 +461,7 @@ const ExperienceForm = (props) => {
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
-                                    label="Month"
+                                    label="Year"
                                     styles={{ color: "red" }}
                                     value={experienceForm.end_year}
                                 />

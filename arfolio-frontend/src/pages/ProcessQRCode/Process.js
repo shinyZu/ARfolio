@@ -71,6 +71,7 @@ const Process = (props) => {
     }
 
     const generateQR = async () => {
+      let decodedToken = decodeToken();
       let base64 = await generateBase64();
 
       if (canvasRef.current) { 
@@ -89,7 +90,8 @@ const Process = (props) => {
         let options = {
           width: 490,
           height: 490,
-          data: "https://shinyzu.github.io/MyProfile/",
+          // data: "https://shinyzu.github.io/MyProfile/",
+          data: "http://127.0.0.1:8080/"+decodedToken.user_id,
           margin: 2,
           qrOptions: {
             typeNumber: "0",
@@ -98,7 +100,7 @@ const Process = (props) => {
           },
           imageOptions: {
             hideBackgroundDots: true,
-            imageSize: 0.8,
+            imageSize: 0.6, // 0.8
             margin: 3
           },
           dotsOptions: {
