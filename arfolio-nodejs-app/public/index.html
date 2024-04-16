@@ -4,7 +4,6 @@
     <head>
 
         <title> Barcode Node JS - In Progress</title>
-        <!-- <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"> -->
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,height=device-height">
@@ -12,32 +11,24 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <link rel="stylesheet" href="styles.css">
 
-        <!-- <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
-        <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
-        <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script> -->
-
         <!-- //------------- -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
      
-        <!-- <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script> -->
-        <!-- <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.5.5/aframe/build/aframe-ar.js"></script> -->
-
-        <!-- <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script> -->
         <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
 
         <!-- gltf model -->
         <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
         
-        <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-        <script src="gesture-detector.js"></script>
-        <script src="gesture-handler.js"></script>
-
         <script src="https://cdn.jsdelivr.net/npm/quagga@latest"></script>
         <script type="text/javascript" src="https://unpkg.com/@zxing/library@latest"></script>
 
+        <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+        <script src="gesture-detector.js"></script>
+        <script src="gesture-handler.js"></script>
     </head>
 
     <body style='margin : 0px; overflow: hidden;'>
@@ -113,19 +104,26 @@
                 <!-- https://cdn.aframe.io/fonts/Exo2Bold.fnt -->
                 <!-- https://cdn.aframe.io/fonts/Exo2SemiBold.fnt -->
 
-                <a-entity position="2.72378 3.94667 0.79098" rotation="-57.950097315121724 -5.05291479525873 12.721381925289668">
-                    <!-- Associate Software Engineer -->
-                    <a-text value="Associate Software Engineer" color="black" position="-2 2.5 -5" scale="1.6 1.6 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                <!-- <a-entity position="2.72378 3.94667 0.79098" rotation="-57.950097315121724 -5.05291479525873 12.721381925289668">
+                    <a-text id="jobTitle" value="Loading..." color="black" position="-2 2.5 -5" scale="1.6 1.6 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
                     
-                    <!-- Loons Lab (Pvt) Ltd -->
-                    <a-text value="Loons Lab (Pvt) Ltd" color="black" position="-2 2 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                    <a-text id="employerName" value="Loading..." color="black" position="-2 2 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
                     
-                    <!-- Dates -->
-                    <a-text value="08/2023 - Present" color="black" position="-2 1.5 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                    <a-text id="employmentDates" value="Loading..." color="black" position="-2 1.5 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
                     
-                    <!-- Location -->
-                    <a-text value="Colombo 01, Sri Lanka." color="black" position="-2 1 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                    <a-text id="location" value="Loading..." color="black" position="-2 1 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                </a-entity> -->
+
+
+                <!-- Background plane for the experiences container -->
+                <!-- <a-plane id="experiencesBackground" color="white" position="2 3.5" rotation="-45 0 0" width="4" height="2"></a-plane> -->
+                
+                <!-- Container for Experience Entries -->
+                <!-- <a-entity id="experiencesContainer" position="1 1 -2.61821" rotation="0 0 0"> -->
+                <a-entity id="experiencesContainer" position="2.72378 3.94667 0.79098" rotation="-57.950097315121724 -5.05291479525873 12.721381925289668"></a-entity>
+                    <!-- Dynamic text entities will be appended here -->
                 </a-entity>
+
             </a-marker>
             <!-- </a-marker-camera> -->
 
@@ -136,60 +134,9 @@
             <a-camera/>
         </a-scene>
 
-        <script>
-
-            // Birthday Video Handler
-            AFRAME.registerComponent('video-vidhandler-birthday', {
-                    init: function() {
-                    console.log('video init entered');
-                        this.toggle = false;
-                        this.vid = document.querySelector("#birthday");
-                        this.vid.pause();
-                    },
-                    tick: function() {
-                        if (this.el.object3D.visible == true) {
-                            if (!this.toggle) {
-                                this.toggle = true;
-                                this.vid.play();
-                            }
-                        } else {
-                            this.toggle = false;
-                            this.vid.pause();
-                        }
-                    }
-                });
-    
-
-            /* window.onload = function() {
-                console.log("==========1===========")
-                console.log(window.location.pathname)
-                // Extract the user ID from the URL
-                var userId = window.location.pathname.substring(1); // Remove the first slash
-                console.log(userId)
-                document.getElementById('barcode-marker').value = userId;
-                console.log(document.getElementById('barcode-marker'))
-            }; */
-
-            document.addEventListener('DOMContentLoaded', function () {
-                console.log("==========1===========");
-
-                // Get the user ID from the URL's pathname
-                var userId = window.location.pathname.substring(1); // Remove the first slash
-                console.log("UserID from URL Path:", userId);
-
-                // Get the <a-marker> element
-                var marker = document.getElementById('barcode-marker');
-
-                // Check if marker exists before trying to set an attribute
-                if (marker) {
-                    // Set the 'value' attribute of the marker to the userId
-                    marker.setAttribute('value', userId);
-                    console.log("Marker after setting value:", marker);
-                } else {
-                    console.log("Marker element not found.");
-                }
-            });
-
-        </script>
+        <script src="js/ar_handlers.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/api.js"></script>
+      
     </body>
 </html>

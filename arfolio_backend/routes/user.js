@@ -116,7 +116,7 @@ router.get("/admin/:id", cors(), authenticateAdminToken, async (req, res) => {
 
 // Search user by Id
 // Authorized only for Customers to get their own details
-router.get("/:id", cors(), authenticateCustomerToken, async (req, res) => {
+router.get("/:id", cors(), /* authenticateCustomerToken, */ async (req, res) => {
   try {
     const user = await getAllDetails(req.params.id,res);
 
@@ -363,18 +363,19 @@ router.delete("/:id", cors(), authenticateCustomerToken, async (req, res) => {
 
 //----------------------------------------------
 
-// Get Image By Id
-router.get("/image/:id", cors(), authenticateCustomerToken, async (req, res) => {
+// Get Image By Id - in use
+router.get("/image/:id", cors(), /* authenticateCustomerToken, */ async (req, res) => {
   try {
     const userExist = await checkUserExist(req.params.id, res);
 
     const users = await User.find();
-
+    
     for (const user of users) {
       if (user.user_id == req.params.id) {
+        console.log(user)
         return res.send({
           status: 200,
-          user_id: user.st_code,
+          user_id: user.user_id,
           image_url: user.image_url,
         });
       }
