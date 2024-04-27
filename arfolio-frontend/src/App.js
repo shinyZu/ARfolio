@@ -104,7 +104,14 @@ const App = () => {
         
         <Route
           path="/register"
-          element={<Register onLogin={handleLogin} />}
+          element={
+            // loggedIn ? (
+            isCustomer || isAdmin ? (
+              <Navigate replace to="/home" />
+            ) : (
+              <Register onLogin={handleLogin} />
+            )
+          }
         />
         
         <Route

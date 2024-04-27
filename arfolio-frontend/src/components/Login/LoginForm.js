@@ -68,6 +68,10 @@ const LoginForm = (props) => {
           "token",
           JSON.stringify(res.data.data.access_token)
         );
+        localStorage.setItem(
+          "refresh_token",
+          JSON.stringify(res.data.data.refresh_token)
+        );
         // alert(res.data.message);
         checkIfCustomerOrAdmin(res.data.data.access_token);
         // props.onLogin(isEmailValid && isPasswordValid);

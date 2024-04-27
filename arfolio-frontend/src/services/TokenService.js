@@ -1,11 +1,11 @@
 import axios from "../axios"
 import qs from "qs";
 
-class LoginService {
-    login = async (data) => {
+class TokenService {
+    refreshToken = async (data) => {
         const promise = new Promise((resolve, reject) => {
           axios
-            .post("login", data)
+            .post("token/refresh", data)
             .then((res) => {
               return resolve(res);
             })
@@ -16,13 +16,11 @@ class LoginService {
         return await promise;
       };
 
-      logout = async (email) => {
+      generateToken = async (data) => {
         const promise = new Promise((resolve, reject) => {
           axios
-            .delete("login/logout/" + email)
+            .post("token/generateToken", data)
             .then((res) => {
-              localStorage.removeItem("token");
-              localStorage.removeItem("refresh_token");
               return resolve(res);
             })
             .catch((er) => {
@@ -34,4 +32,4 @@ class LoginService {
     
 }
 
-export default new LoginService();
+export default new TokenService();

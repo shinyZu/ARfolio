@@ -27,10 +27,11 @@ function getUserIDFromURL() {
 
 //---------------Render Profile Image-----------------------------
 
-function displayProfileImage() {
+function displayProfileImage(userId) {
     const imgElement = document.getElementById('profile-img');
     // imgElement.crossOrigin = "anonymous";
-    imagePath = "../images/profile_image.jpg"
+    // const imagePath = "../images/profile_image.jpg"
+    const imagePath = "../images/profile_image_"+userId+".jpg";
     
     if (imgElement) {
         imgElement.src = imagePath; // Update the image source
@@ -45,24 +46,37 @@ function displayProfileImage() {
     }
 }
 
+//---------------Render Profile Video-----------------------------
+
+function displayProfileVideo(userId) {
+    console.log(userId + " is being displayed");
+    const videoPath = "../videos/profile_video_"+userId+".mp4";
+    console.log(videoPath);
+
+    // Update the A-Frame video source
+    const aframeVideoAsset = document.getElementById('profile-vid');
+    if (aframeVideoAsset) {
+        console.log(aframeVideoAsset)
+        aframeVideoAsset.setAttribute('src', videoPath);
+        aframeVideoAsset.load();  // Ensure the A-Frame asset video reloads the new source
+        aframeVideoAsset.play();  
+        console.log('Updated A-Frame video asset:', aframeVideoAsset);
+    } else {
+        console.error('A-Frame video asset not found');
+    }
+    
+}
+
 //---------------Render Experiences-----------------------------
 
 function displayUserData(data) {
     console.log(data);
-    let experiences = data.Experiences[0];
-    console.log(experiences);
 
     // Assuming data is the object with the experience details
-    const jobTitle = document.getElementById('jobTitle');
-    const employerName = document.getElementById('employerName');
-    const employmentDates = document.getElementById('employmentDates');
-    const location = document.getElementById('location');
+    const user_name = document.getElementById('user_name');
 
-    if (jobTitle && employerName && employmentDates && location) {
-        jobTitle.setAttribute('value', experiences.job_title || 'N/A');
-        employerName.setAttribute('value', experiences.employer || 'N/A');
-        employmentDates.setAttribute('value', `${experiences.start_month}/${experiences.start_year} - ${experiences.end_month}/${experiences.end_year}`);
-        location.setAttribute('value', `${experiences.city}, ${experiences.country}`);
+    if (user_name) {
+        user_name.setAttribute('value', `${data.title} ${data.first_name} ${data.last_name}`);
     } else {
         console.error('One or more A-Frame text elements not found.');
     }
@@ -82,6 +96,15 @@ function displayExperiences(experiences) {
     while (container.firstChild) {
         container.removeChild(container.firstChild);
     }
+    
+    const title = document.createElement('a-text');
+    title.setAttribute('value', 'Work Experience');
+    title.setAttribute('color', 'black');
+    title.setAttribute('position', `-2 3 -5`);
+    title.setAttribute('scale', '1.8 1.8 1');
+    title.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
+
+    container.appendChild(title);
 
     // Generate a new set of entries
     experiences.forEach((exp, index) => {

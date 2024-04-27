@@ -14,6 +14,11 @@ import { blue } from "@mui/material/colors";
 import TextField from "@mui/material/TextField";
 import Checkbox from "@mui/material/Checkbox";
 
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 import Header from "../../../components/Header/Header";
 import MyTextField from "../../../components/common/MyTextField/MyTextField";
 import MyButton from "../../../components/common/MyButton/MyButton";
@@ -241,11 +246,11 @@ const ProjectDetails = (props) => {
                 >
                     <Grid
                         container
-                        xl={12}
-                        lg={12}
-                        md={12}
-                        sm={12}
-                        xs={12}
+                        xl={9}
+                        lg={9}
+                        md={9}
+                        sm={9}
+                        xs={9}
                         className={classes.basic_details_title_container}
                         display="flex"
                         // justifyContent="center"
@@ -255,7 +260,40 @@ const ProjectDetails = (props) => {
                         </Typography>
                     </Grid>
                     
-                    {/* <ProjectForm /> */}
+                    {/*  Add / Delete Icons */}
+                    {projectForms.length == 0 && (
+                      <Grid
+                          item
+                          container
+                          xl={3}
+                          lg={3}
+                          md={3}
+                          sm={12}
+                          xs={12}
+                          style={{marginTop:"-1vh"}}
+                          display="flex"
+                          justifyContent="flex-end"
+                      >
+                          <Tooltip title="Add">
+                              <IconButton>
+                                  <AddCircleIcon
+                                      style={{color:"#1abc9c"}}
+                                      fontSize="large"
+                                      onClick={()=>{addProjectForm()}}
+                                  />
+                              </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Delete">
+                              <IconButton>
+                                  <DeleteIcon
+                                      style={{color:"#e74c3c"}}
+                                      fontSize="large"
+                                      onClick={()=>{removeProjectForm(0)}}
+                                  />
+                              </IconButton>
+                          </Tooltip>
+                      </Grid> 
+                    )}
 
                     {projectForms.map((form, index) => (
                          <ProjectForm

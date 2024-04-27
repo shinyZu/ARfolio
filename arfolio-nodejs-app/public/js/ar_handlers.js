@@ -1,8 +1,8 @@
-AFRAME.registerComponent('video-vidhandler-birthday', {
+AFRAME.registerComponent('video-vidhandler-biography', {
     init: function() {
         console.log('video init entered');
         this.toggle = false;
-        this.vid = document.querySelector("#birthday");
+        this.vid = document.querySelector("#profile-vid");
         this.vid.pause();
     },
     tick: function() {

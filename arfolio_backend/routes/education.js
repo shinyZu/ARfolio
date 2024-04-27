@@ -36,15 +36,16 @@ router.get("/next/id", cors(), authenticateCustomerToken, async (req, res) => {
 // Search education by Id
 // Authorized for Customers
 router.get(
-    "/search/:id",
+    "/search/:education_id",
     cors(),
     authenticateCustomerToken,
     async (req, res) => {
       try {
         const verified = verifyToken(req.headers.authorization, res);
+        console.log("verified---", verified)
   
         const educationFound = await Education.findOne({
-          education_id: req.params.id,
+          education_id: req.params.education_id,
           user_id: verified.user_id,
         });
   
@@ -153,13 +154,13 @@ router.post("/", cors(), authenticateCustomerToken, async (req, res) => {
 
 // Update education (as a single object)- in use
 // Authorized for Customers
-router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
+router.put("/education_id", cors(), authenticateCustomerToken, async (req, res) => {
     try {
         const verified = verifyToken(req.headers.authorization, res);
 
         const body = req.body;
         const educationExist = await Education.findOne({
-            education_id: req.params.id,
+            education_id: req.params.education_id,
         });
     
         if (educationExist == null) {
@@ -194,11 +195,12 @@ router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
 router.put("/update/bulk", cors(), authenticateCustomerToken, async (req, res) => {
     try {
         const verified = verifyToken(req.headers.authorization, res);
+        console.log("verified---", verified);
 
         const educationList = req.body;
         let updatedEducation;
 
-        if (educationList.length > 0) {
+        if (verified && educationList.length > 0) {
           for (let i = 0; i < educationList.length; i++) {
             let education = educationList[i];
 
@@ -214,7 +216,9 @@ router.put("/update/bulk", cors(), authenticateCustomerToken, async (req, res) =
               updatedEducation = await newEducation.save();
             }
           }
-        } 
+        }  else {
+          return res.status(406).send({ status: 400, message: "user not verified" });
+        }
 
         const educationFound = await Education.find({
           user_id: verified.user_id,
@@ -279,12 +283,12 @@ router.put("/update/bulk", cors(), authenticateCustomerToken, async (req, res) =
 
 // Delete education - in use
 // Authorized for Customers
-router.delete("/:id", cors(), authenticateCustomerToken, async (req, res) => {
+router.delete("/:education_id", cors(), authenticateCustomerToken, async (req, res) => {
     try {
         const verified = verifyToken(req.headers.authorization, res);
 
         const educationExist = await Education.findOne({
-            education_id: req.params.id,
+            education_id: req.params.education_id,
             user_id: verified.user_id,
         });
         if (educationExist == null) {

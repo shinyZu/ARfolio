@@ -82,13 +82,13 @@ router.post("/", cors(), authenticateCustomerToken, async (req, res) => {
 
 // Update links - in use
 // Authorized for Customers
-router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
+router.put("/:linkhub_id", cors(), authenticateCustomerToken, async (req, res) => {
     try {
         const verified = verifyToken(req.headers.authorization, res);
 
         const body = req.body;
         const hubExist = await LinkHub.findOne({
-            linkhub_id: req.params.id,
+            linkhub_id: req.params.linkhub_id,
         });
     
         if (hubExist == null) {
@@ -119,12 +119,12 @@ router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
 
 // Delete links - in use
 // Authorized for Customers
-router.delete("/:id", cors(), authenticateCustomerToken, async (req, res) => {
+router.delete("/:linkhub_id", cors(), authenticateCustomerToken, async (req, res) => {
     try {
         const verified = verifyToken(req.headers.authorization, res);
 
         const linkhubExist = await LinkHub.findOne({
-            linkhub_id: req.params.id,
+            linkhub_id: req.params.linkhub_id,
             user_id: verified.user_id,
         });
         if (linkhubExist == null) {

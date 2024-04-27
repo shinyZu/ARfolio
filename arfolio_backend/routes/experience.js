@@ -35,7 +35,7 @@ router.get("/next/id", cors(), authenticateCustomerToken, async (req, res) => {
 // Search experience by Id
 // Authorized for Customers
 router.get(
-    "/search/:id",
+    "/search/:experience_id",
     cors(),
     authenticateCustomerToken,
     async (req, res) => {
@@ -43,7 +43,7 @@ router.get(
         const verified = verifyToken(req.headers.authorization, res);
   
         const experienceFound = await Experience.findOne({
-            experience_id: req.params.id,
+            experience_id: req.params.experience_id,
             user_id: verified.user_id,
         });
   
@@ -123,13 +123,13 @@ router.post("/", cors(), authenticateCustomerToken, async (req, res) => {
 
 // Update experience (as a single object) - in use
 // Authorized for Customers
-router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
+router.put("/:experience_id", cors(), authenticateCustomerToken, async (req, res) => {
     try {
         const verified = verifyToken(req.headers.authorization, res);
 
         const body = req.body;
         const experienceExist = await Experience.findOne({
-            experience_id: req.params.id,
+            experience_id: req.params.experience_id,
         });
     
         if (experienceExist == null) {
@@ -204,12 +204,12 @@ router.put("/update/bulk", cors(), authenticateCustomerToken, async (req, res) =
 
 // Delete experience - in use
 // Authorized for Customers
-router.delete("/:id", cors(), authenticateCustomerToken, async (req, res) => {
+router.delete("/:experience_id", cors(), authenticateCustomerToken, async (req, res) => {
     try {
         const verified = verifyToken(req.headers.authorization, res);
 
         const experienceExist = await Experience.findOne({
-            experience_id: req.params.id,
+            experience_id: req.params.experience_id,
             user_id: verified.user_id,
         });
         if (experienceExist == null) {

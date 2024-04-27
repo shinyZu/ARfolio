@@ -54,6 +54,8 @@ const BasicDetails = (props) => {
   const [basicInfoForm, setBasicInfoForm] = useState({
     title: "",
     full_name: "",
+    first_name:"",
+    last_name:"",
     job_title: "",
     email: "",
     contact_no: "",
@@ -158,6 +160,8 @@ useEffect(()=>{
             });
             setBasicInfoForm({
                 full_name: user.title + user.first_name + " " + user.last_name,
+                first_name: user.first_name,
+                last_name: user.last_name,
                 job_title: user.job_title,
                 email: user.email,
                 contact_no: user.contact_no,

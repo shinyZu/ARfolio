@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
+const User = require("../models/user.models");
+
 const authenticateAdminToken = async (req, res, next) => {
   const verified = verifyToken(req.headers.authorization, res);
   if (verified) {
@@ -16,11 +18,23 @@ const authenticateAdminToken = async (req, res, next) => {
 
 const authenticateCustomerToken = async (req, res, next) => {
   const verified = verifyToken(req.headers.authorization, res);
+
   if (verified) {
-    if (verified.user_role == "Customer") {
+    if (verified.user_role == "Customer" && req.params.user_id && req.params.user_id == verified.user_id) {
+      console.log("------1---------")
       req.email = verified.email;
       req.user_role = verified.user_role;
       next();
+    } else if (!req.params.user_id && verified.user_role == "Customer") {
+      console.log("------2---------")
+      const user = await User.findOne({user_id:verified.user_id});
+      console.log("user---", user)
+      if (user.user_id == verified.user_id) {
+        console.log("------3---------")
+        req.email = verified.email;
+        req.user_role = verified.user_role;
+        next();
+      }
     } else {
       return res.status(403).send({ status: 403, messge: "Access denied." });
     }

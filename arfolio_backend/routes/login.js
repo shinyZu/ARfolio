@@ -13,6 +13,12 @@ const router = express.Router();
 const Login = require("../models/login.models");
 const User = require("../models/user.models");
 
+const accessToken_expiresIn = '60s'; //1800s = 30 mins
+const accessToken_expires_in = "60 seconds"
+
+const refreshToken_expiresIn = '24h'; 
+const refreshToken_expires_in = "24 hours"
+
 // Get all signed in users - Admin
 router.get("/", cors(), authenticateAdminToken, async (req, res) => {
     try {
@@ -61,16 +67,6 @@ router.post("/", cors(), async (req, res) => {
     console.log(tokenData);
 
     if (tokenData) {
-      // return res.send({
-      //   status: 200,
-      //   message: "User signed in successfully!",
-      //   user_id: userExist.user_id,
-      //   user_role: userExist.user_role,
-      //   access_token: bearer_accessToken,
-      //   // expires_in: 3600 / 60 + " min",
-      //   // expires_in: "2m",
-      //   refresh_token: bearer_refreshToken,
-      // });
       return res.status(200).send({
         status: 200,
         message: "User signed in successfully!",
@@ -139,6 +135,8 @@ const generateToken = async (
       email: email,
       password: hashedPassword,
       user_role: user_role,
+      accessToken_expires_in: accessToken_expires_in, 
+      refreshoken_expires_in: refreshToken_expires_in, 
     };
 
     console.log(data);
@@ -146,8 +144,8 @@ const generateToken = async (
     // const accessToken = jwt.sign(data, jwtSecretKey, { expiresIn: "1800s" });
     // const refreshToken = jwt.sign(data, jwtRefreshKey, { expiresIn: "3600s" });
 
-    const accessToken = jwt.sign(data, jwtSecretKey);
-    const refreshToken = jwt.sign(data, jwtRefreshKey);
+    const accessToken = jwt.sign(data, jwtSecretKey, {expiresIn: accessToken_expiresIn});
+    const refreshToken = jwt.sign(data, jwtRefreshKey, {expiresIn: refreshToken_expiresIn}); 
 
     // Format the tokens as Bearer token
     const bearer_accessToken = `${accessToken}`;
@@ -167,13 +165,14 @@ const generateToken = async (
       user_role: user_role,
       token_type: "Bearer",
       access_token: bearer_accessToken,
-      refresh_token: bearer_refreshToken,
       // expires_in: 3600 / 60 + " min",
-      // expires_in: "2m",
+      access_token_expires_in: accessToken_expires_in,
+      refresh_token: bearer_refreshToken,
+      refresh_token_expires_in: refreshToken_expires_in,
     };
     return tokenObj;
   } catch (err) {
-    return res.status(400).send({ statusss: 400, message: err.message });
+    return res.status(400).send({ status: 400, message: err.message });
   }
 };
 

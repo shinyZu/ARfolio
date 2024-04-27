@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
 
   title: {
     type: String,
-    required: true,
+    // required: true,
   },
 
   first_name: {
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
 
   job_title: {
     type: String,
-    required: true,
+    // required: true,
   },
 
   email: {

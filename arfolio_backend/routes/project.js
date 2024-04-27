@@ -35,7 +35,7 @@ router.get("/next/id", cors(), authenticateCustomerToken, async (req, res) => {
 // Search project by Id
 // Authorized for Customers
 router.get(
-    "/search/:id",
+    "/search/:project_id",
     cors(),
     authenticateCustomerToken,
     async (req, res) => {
@@ -43,7 +43,7 @@ router.get(
         const verified = verifyToken(req.headers.authorization, res);
   
         const projectFound = await Project.findOne({
-            project_id: req.params.id,
+            project_id: req.params.project_id,
             user_id: verified.user_id,
         });
   
@@ -121,13 +121,13 @@ router.post("/", cors(), authenticateCustomerToken, async (req, res) => {
 
 // Update project (as a single object) - in use
 // Authorized for Customers
-router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
+router.put("/:project_id", cors(), authenticateCustomerToken, async (req, res) => {
     try {
         const verified = verifyToken(req.headers.authorization, res);
 
         const body = req.body;
         const projectExist = await Project.findOne({
-            project_id: req.params.id,
+            project_id: req.params.project_id,
         });
     
         if (projectExist == null) {
@@ -200,12 +200,12 @@ router.put("/update/bulk", cors(), authenticateCustomerToken, async (req, res) =
 
 // Delete project - in use
 // Authorized for Customers
-router.delete("/:id", cors(), authenticateCustomerToken, async (req, res) => {
+router.delete("/:project_id", cors(), authenticateCustomerToken, async (req, res) => {
     try {
         const verified = verifyToken(req.headers.authorization, res);
 
         const projectExist = await Project.findOne({
-            project_id: req.params.id,
+            project_id: req.params.project_id,
             user_id: verified.user_id,
         });
         if (projectExist == null) {

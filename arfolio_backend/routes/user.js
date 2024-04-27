@@ -9,6 +9,16 @@ const {
 const crypto = require("crypto");
 const sharp = require("sharp");
 
+const {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+  UploadPartOutputFilterSensitiveLog,
+} = require("@aws-sdk/client-s3");
+
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+
 require("dotenv").config();
 
 const app = express();
@@ -39,6 +49,21 @@ const {generateNextEducationId} = require("../routes/education");
 const {generateNextExperienceId} = require("../routes/experience");
 const {generateNextProjectId} = require("../routes/project");
 const {generateNextLinkHubId} = require("../routes/linkhub");
+
+// -----------S3 related variables ------------------
+
+const bucketName = process.env.BUCKET_NAME;
+const bucketRegion = process.env.BUCKET_REGION;
+const accessKey = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKey,
+    secretAccessKey: secretAccessKey,
+  },
+  region: bucketRegion,
+});
 
 // -------------Generate Random Unique Image Name---------------------
 
@@ -100,9 +125,9 @@ router.get("/getAll", cors(), authenticateAdminToken, async (req, res) => {
 
 // Search user by Id
 // Authorized only for Admins
-router.get("/admin/:id", cors(), authenticateAdminToken, async (req, res) => {
+router.get("/admin/:user_id", cors(), authenticateAdminToken, async (req, res) => {
   try {
-    const user = await getAllDetails(req.params.id,res);
+    const user = await getAllDetails(req.params.user_id,res);
 
     if (user.length === 0) {
         return res.status(404).send({ status: 404, message: "User not found." });
@@ -116,9 +141,9 @@ router.get("/admin/:id", cors(), authenticateAdminToken, async (req, res) => {
 
 // Search user by Id
 // Authorized only for Customers to get their own details
-router.get("/:id", cors(), /* authenticateCustomerToken, */ async (req, res) => {
+router.get("/:user_id", cors(), authenticateCustomerToken, async (req, res) => {
   try {
-    const user = await getAllDetails(req.params.id,res);
+    const user = await getAllDetails(req.params.user_id,res);
 
     if (user.length === 0) {
         return res.status(404).send({ status: 404, message: "User not found." });
@@ -211,10 +236,10 @@ router.post("/register", cors(), async (req, res) => {
 
 // Update only User (no image) - in use
 // Authorized only for Customers to get their own details
-router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
+router.put("/:user_id", cors(), authenticateCustomerToken, async (req, res) => {
   try {
     const body = req.body;
-    const user = await User.findOne({ user_id: req.params.id });
+    const user = await User.findOne({ user_id: req.params.user_id });
 
     if (!user) {
       return res.status(404).send({ status: 404, message: "User not found." });
@@ -335,10 +360,10 @@ router.put("/:id", cors(), authenticateCustomerToken, async (req, res) => {
 
 // Delete Customer Account
 // Authorized only for Customers to delete their own account
-router.delete("/:id", cors(), authenticateCustomerToken, async (req, res) => {
+router.delete("/:user_id", cors(), authenticateCustomerToken, async (req, res) => {
   try {
     const userExist = await User.findOne({
-      user_id: req.params.id,
+      user_id: req.params.user_id,
     });
     if (req.email == userExist.email) {
       if (userExist == null) {
@@ -364,9 +389,9 @@ router.delete("/:id", cors(), authenticateCustomerToken, async (req, res) => {
 //----------------------------------------------
 
 // Get Image By Id - in use
-router.get("/image/:id", cors(), /* authenticateCustomerToken, */ async (req, res) => {
+router.get("/image/:user_id", cors(), /* authenticateCustomerToken, */ async (req, res) => {
   try {
-    const userExist = await checkUserExist(req.params.id, res);
+    const userExist = await checkUserExist(req.params.user_id, res);
 
     const users = await User.find();
     
@@ -535,13 +560,13 @@ const saveUserToDB = async (body, res, imageName, fileId) => {
 
 // Update image url in db (updateImageInfo) - for testing - working
 router.put(
-  "/image/details/:id",
+  "/image/details/:user_id",
   cors(),
   // upload.single("product_image"),
   authenticateCustomerToken,
   async (req, res) => {
     try {
-      const userExsit = await checkUserExist(req.params.id, res);
+      const userExsit = await checkUserExist(req.params.user_id, res);
       const body = req.body;
 
       // Update the stationery in the database
@@ -677,12 +702,12 @@ router.delete(
 
 // Delete User (with image in drive)- Customer - in use
 router.delete(
-  "/drive/:id",
+  "/drive/:user_id",
   cors(),
   authenticateCustomerToken,
   async (req, res) => {
     try {
-      const userExist = await checkUserExist(req.params.id, res);
+      const userExist = await checkUserExist(req.params.user_id, res);
 
       if (!userExist) {
         return res
@@ -716,9 +741,9 @@ router.delete(
 );
 
 // Delete User (without image) - Customer
-router.delete("/only/:id", cors(), authenticateCustomerToken, async (req, res) => {
+router.delete("/only/:user_id", cors(), authenticateCustomerToken, async (req, res) => {
   try {
-    const userExist = await checkUserExist(req.params.id, res);
+    const userExist = await checkUserExist(req.params.user_id, res);
 
     if (!userExist) {
       return res
@@ -763,6 +788,28 @@ router.get("/generate/public/url/:id", async (req, res) => {
 });
 
 // ------------------- Video Upload -----------------
+
+// Get Video By Id - in use
+router.get("/video/:user_id", cors(), /* authenticateCustomerToken, */ async (req, res) => {
+  try {
+    const userExist = await checkUserExist(req.params.user_id, res);
+
+    const users = await User.find();
+    
+    for (const user of users) {
+      if (user.user_id == req.params.user_id) {
+        console.log(user)
+        return res.send({
+          status: 200,
+          user_id: user.user_id,
+          video_url: user.video_url,
+        });
+      }
+    }
+  } catch (err) {
+    return res.status(400).send({ status: 400, message: err.message });
+  }
+});
 
 // testing API
 router.put('/upload/video', upload.single('user_video'), (req, res) => {
@@ -862,13 +909,13 @@ router.put(
 
 // Update video url in db (updateVideoInfo) - for testing - working
 router.put(
-  "/video/details/:id",
+  "/video/details/:user_id",
   cors(),
   // upload.single("product_image"),
   authenticateCustomerToken,
   async (req, res) => {
     try {
-      const userExsit = await checkUserExist(req.params.id, res);
+      const userExsit = await checkUserExist(req.params.user_id, res);
       const body = req.body;
 
       // Update the stationery in the database
@@ -913,6 +960,9 @@ router.delete(
     }
   }
 );
+
+// --------------Upload images using S3 Buckets -------------
+
 
 const checkUserExist = async (id, res) => {
   const userExist = await User.findOne({

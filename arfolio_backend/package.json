@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "nodemon": "nodemon app.js",
-    "stop": "npx kill-port 4000",
+    "stop": "npx kill-port 4001",
+    "kill": "kill -9 <PID>",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "shinyZu",

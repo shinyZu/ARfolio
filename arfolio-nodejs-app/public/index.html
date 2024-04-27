@@ -48,11 +48,9 @@
                 <!-- Profile Image -->
                 <img id="profile-img" src="images/profile.jpg">
 
-                <!-- Birthday  Video -->
-                <!-- <video  preload="auto" id="birthday" response-type="arraybuffer" loop="true" autoplay crossorigin webkit-playsinline playsinline controls> -->
-                <video  preload="auto" id="birthday" response-type="arraybuffer" loop="true" autoplay>
-                    <source  src="videos/birthday.mp4">
-                </video>
+                <!-- Define the video asset -->
+                <!-- <video id="profile-vid" autoplay loop="true" muted="false" playsinline response-type="arraybuffer" src="videos/birthday.mp4"></video> -->
+                <video id="profile-vid" muted autoplay loop playsinline controls src="videos/birthday.mp4"></video>
 
                 <!-- Business card Image -->
                 <img id="arfolio-img" src="images/ARfolio.jpg">
@@ -73,17 +71,18 @@
             </a-assets>
 
             <a-marker type='barcode' id="barcode-marker">
-            <!-- <a-marker-camera type='barcode' value='3'> -->
-                <!-- <a-box position='0 0.5 0' color="yellow"></a-box> -->
+
+                <!-- User Name -->
+                <a-entity id="userName" position="-2.000 3.78238 0.5174" rotation="-57.950097315121724 -5.05291479525873 12.721381925289668">
+                    <a-text id="user_name" value="Mr. Lewis Wilson" color="black" position="-2 2.5 -5" scale="1.6 1.6 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                </a-entity>
 
                 <!-- Profile Image -->
                 <a-plane scale="3 3 1" rotation="-55.217088632347696 -5.9455830400725524 12.982077722074193" material="transparent: true; src: #profile-img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" position="-0.888 0.03357 -2.61821"></a-plane>
 
-                <!-- Birthday Video Marker -->
-                <a-video video-vidhandler-birthday="" scale="4.884 2.846 1" position="-5.0512 -0.56819 -2.30793" rotation="-55.731604732375175 -6.0412669918594 12.27103709831684" material="transparent: true; src: #birthday" controls="" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" visible=""></a-video>
-
-                <!-- ARfolio Card -->
-                <!-- <a-plane scale="3 3 1" position="0.07472 0.62013 0.09543" rotation="-90 0 0" material="transparent: true; src: #arfolio-img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px"></a-plane> -->
+                <!-- Biography Marker -->
+                <!-- <a-video video-vidhandler-biography="" scale="4.884 2.846 1" position="-5.0512 -0.56819 -2.30793" rotation="-55.731604732375175 -6.0412669918594 12.27103709831684" material="transparent: true; src: #profile-vid" controls="" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" visible=""></a-video> -->
+                <a-video src="#profile-vid" scale="4.884 2.846 1" position="-5.0512 -0.56819 -2.30793" rotation="-55.731604732375175 -6.0412669918594 12.27103709831684" geometry="" visible=""></a-video>
 
                 <!-- 3D Model -->
                 <a-gltf-model id="narrator" src="#narrator" animation-mixer="" position="-3 1 1.64771" rotation="-90 90 -90" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" gltf-model="#narrator"></a-gltf-model>
@@ -104,29 +103,15 @@
                 <!-- https://cdn.aframe.io/fonts/Exo2Bold.fnt -->
                 <!-- https://cdn.aframe.io/fonts/Exo2SemiBold.fnt -->
 
-                <!-- <a-entity position="2.72378 3.94667 0.79098" rotation="-57.950097315121724 -5.05291479525873 12.721381925289668">
-                    <a-text id="jobTitle" value="Loading..." color="black" position="-2 2.5 -5" scale="1.6 1.6 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
-                    
-                    <a-text id="employerName" value="Loading..." color="black" position="-2 2 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
-                    
-                    <a-text id="employmentDates" value="Loading..." color="black" position="-2 1.5 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
-                    
-                    <a-text id="location" value="Loading..." color="black" position="-2 1 -5" scale="1.2 1.2 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
-                </a-entity> -->
-
-
                 <!-- Background plane for the experiences container -->
                 <!-- <a-plane id="experiencesBackground" color="white" position="2 3.5" rotation="-45 0 0" width="4" height="2"></a-plane> -->
                 
                 <!-- Container for Experience Entries -->
-                <!-- <a-entity id="experiencesContainer" position="1 1 -2.61821" rotation="0 0 0"> -->
                 <a-entity id="experiencesContainer" position="2.72378 3.94667 0.79098" rotation="-57.950097315121724 -5.05291479525873 12.721381925289668"></a-entity>
                     <!-- Dynamic text entities will be appended here -->
                 </a-entity>
 
             </a-marker>
-            <!-- </a-marker-camera> -->
-
 
             <!-- use this <a-entity camera> to support multiple-markers, otherwise use <a-marker-camera> instead of </a-marker> -->
             <!-- <a-entity camera></a-entity> -->

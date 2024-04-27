@@ -13,10 +13,11 @@ function getSingleUserBtId() {
             let resData = data.data[0];
             console.log('Success:', resData);
             // Here you can handle the data as needed, e.g., display it in the HTML
-            // displayUserData(resData);
+            displayUserData(resData);
 
             displayExperiences(resData.Experiences); 
-            displayProfileImage();
+            displayProfileImage(userId);
+            displayProfileVideo(userId);
         })
         .catch(error => {
             console.error('There has been a problem with your fetch operation:', error);

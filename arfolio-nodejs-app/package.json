@@ -7,6 +7,7 @@
     "start": "node server.js",
     "nodemon": "nodemon server.js",
     "stop": "npx kill-port 8080",
+    "kill": "kill -9 139149",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "shinyZu",
