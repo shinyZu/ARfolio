@@ -10,11 +10,11 @@ const router = express.Router();
 const User = require("../models/user.models");
 const Login = require("../models/login.models");
 
-const accessToken_expiresIn = '60s'; //1800s = 30 mins
-const accessToken_expires_in = "60 seconds"
+const accessToken_expiresIn = '1800s'; //1800s = 30 mins
+const accessToken_expires_in = "1800 seconds"
 
-const refreshToken_expiresIn = '180s'; 
-const refreshToken_expires_in = "180 seconds"
+const refreshToken_expiresIn = '24h'; 
+const refreshToken_expires_in = "24 hours"
 
 // Generate Token - test
 router.post("/generateToken", cors(), async (req, res) => {

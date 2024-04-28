@@ -961,9 +961,6 @@ router.delete(
   }
 );
 
-// --------------Upload images using S3 Buckets -------------
-
-
 const checkUserExist = async (id, res) => {
   const userExist = await User.findOne({
     user_id: id,
@@ -1025,5 +1022,301 @@ async function getAllDetails(user_id,res) {
     return res.status(500).send({ status: 500, message: error.message });
   }
 }
+
+
+// --------------Upload images using S3 Buckets -------------
+
+// Upload Video only - post(/drive/url/db/video) - in use
+router.put(
+  "/drive/url/db/video/:user_id",
+  cors(),
+  upload.single("user_video"),
+  authenticateCustomerToken,
+  async (req, res) => {
+    try {
+      const userExist = await checkUserExist(req.params.user_id);
+      if (!userExist) {
+        return res
+          .status(404)
+          .json({ status: 404, message: "User not found." });
+      }
+
+      console.log(req.file)
+
+      // resize image
+      
+
+      // Get current video url
+      const current_url = userExist.video_url;
+      console.log("current_url: " + current_url);
+     
+      let current_fileId = "";
+
+      // Upload new video
+      const upload_response = await uploadFile(req.file);
+      console.log("\nupload_response: " + upload_response);
+
+      const new_fileId = upload_response.data.id;
+      const new_videoName = req.file.originalname;
+
+      // Create new video url
+      const new_public_video_url = `${drive_base_url}?id=${new_fileId}`;
+      console.log("new_public_video_url: " + new_public_video_url);
+
+      // Update the user in the database
+      userExist.video_name = new_videoName;
+      userExist.video_url = new_public_video_url;
+
+      const updatedUser = await userExist.save();
+
+      let del_response = null;
+      if (current_url != "" /* && userExist.image_url != "" */) {
+        // Extract the current file id from the url
+        current_fileId = current_url.split("id=")[1];
+        console.log("current_fileId: " + current_fileId);
+
+        // Delete current video from drive
+        del_response = await deleteFile(current_fileId);
+
+        if (!del_response && del_response.status == 204) {
+          return res.status(200).send({
+            status: 200,
+            data: {
+              file_id: upload_response.data.id,
+            },
+            message: "Video updated successfully!",
+          });
+        }
+      } else if (current_url == "") {
+        return res.status(200).send({
+          status: 200,
+          data: {
+            file_id: upload_response.data.id,
+          },
+          message: "Video updated successfully!",
+        });
+      }
+      // else {
+      return res.status(200).send({
+        status: 200,
+        data: {
+          file_id: upload_response.data.id,
+        },
+        message: "Video updated successfully!",
+      });
+      // }
+    } catch (err) {
+      return res.status(400).send({ status: 400, message: err.message });
+    }
+  }
+);
+
+// Upload Image only - S3
+router.put(
+  "/image/:user_id",
+  cors(),
+  upload.single("user_image"),
+  authenticateCustomerToken,
+  async (req, res) => {
+    try {
+      const userExist = await checkUserExist(req.params.user_id);
+      if (!userExist) {
+        return res
+          .status(404)
+          .json({ status: 404, message: "User not found." });
+      }
+
+      console.log(req)
+
+      if(userExist.image_name != null || userExist.image_name != ""){
+        deleteImage(userExist.image_name);
+      }
+
+      // resize image
+      const buffer = await sharp(req.file.buffer)
+        .resize({ height: 1920, width: 1080, fit: "contain" })
+        .toBuffer();
+
+      // create put command
+      const put_params = {
+        Bucket: bucketName,
+        Key: `Images/${randomImageName()}`,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+      };
+
+      const put_command = new PutObjectCommand(put_params);
+
+      // Send the image to S3 bucket & save
+      await s3.send(put_command);
+
+      // Create image url
+      const getObjectParams = {
+        Bucket: bucketName,
+        Key: put_params.Key,
+      };
+      const get_command = new GetObjectCommand(getObjectParams);
+      const url = await getSignedUrl(s3, get_command, { expiresIn: 3600 });
+
+      // Update the user in the database
+      userExist.image_name = put_params.Key;
+      userExist.image_url = url;
+
+      const updatedUser = await userExist.save();
+
+      return res.send({
+        status: 200,
+        data: updatedUser,
+        message: "Image updated successfully!",
+      });
+    } catch (err) {
+      return res.status(400).send({ status: 400, message: err.message });
+    }
+  }
+);
+
+// Delete Image from s3
+router.delete(
+  "/image/:id",
+  cors(),
+  authenticateCustomerToken,
+  async (req, res) => {
+    try {
+      const userExist = await checkUserExist(req.params.id, res);
+      console.log(userExist)
+
+      // delete image from s3 bucket
+      deleteImage(userExist.image_name);
+
+      // Update the user in the database
+      userExist.image_name = null;
+      userExist.image_url = null;
+
+      const updatedUser = await userExist.save();
+      return res.send({
+        status: 200,
+        data: updatedUser,
+        message: "Image deleted successfully!",
+      });
+    } catch (err) {
+      return res.status(400).send({ status: 400, message: err.message });
+    }
+  }
+);
+
+const deleteImage = async (imageName) => {
+  // delete image from s3 bucket
+  if (imageName) {
+
+    const delete_params = {
+      Bucket: bucketName,
+      Key: imageName,
+    };
+    
+    const delete_command = new DeleteObjectCommand(delete_params);
+    await s3.send(delete_command);
+  }
+};
+
+// Upload Video only - S3
+router.put(
+  "/video/:user_id",
+  cors(),
+  upload.single("user_video"),
+  authenticateCustomerToken,
+  async (req, res) => {
+    try {
+      const userExist = await checkUserExist(req.params.user_id);
+      if (!userExist) {
+        return res
+          .status(404)
+          .json({ status: 404, message: "User not found." });
+      }
+
+      // console.log(req)
+
+      if(userExist.video_name != null || userExist.video_name != ""){
+        deleteVideo(userExist.video_name);
+      }
+
+      // create put command
+      const put_params = {
+        Bucket: bucketName,
+        Key: `Videos/${randomImageName()}`,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+      };
+
+      const put_command = new PutObjectCommand(put_params);
+
+      // Send the image to S3 bucket & save
+      await s3.send(put_command);
+
+      // Create image url
+      const getObjectParams = {
+        Bucket: bucketName,
+        Key: put_params.Key,
+      };
+      const get_command = new GetObjectCommand(getObjectParams);
+      const url = await getSignedUrl(s3, get_command, { expiresIn: 3600 });
+
+      // Update the user in the database
+      userExist.video_name = put_params.Key;
+      userExist.video_url = url;
+
+      const updatedUser = await userExist.save();
+
+      return res.send({
+        status: 200,
+        data: updatedUser,
+        message: "Image updated successfully!",
+      });
+    } catch (err) {
+      return res.status(400).send({ status: 400, message: err.message });
+    }
+  }
+);
+
+// Delete Video from s3
+router.delete(
+  "/video/:id",
+  cors(),
+  authenticateCustomerToken,
+  async (req, res) => {
+    try {
+      const userExist = await checkUserExist(req.params.id, res);
+      console.log(userExist)
+
+      // delete image from s3 bucket
+      deleteVideo(userExist.video_name);
+
+      // Update the user in the database
+      userExist.video_name = null;
+      userExist.video_url = null;
+
+      const updatedUser = await userExist.save();
+      return res.send({
+        status: 200,
+        data: updatedUser,
+        message: "Video deleted successfully!",
+      });
+    } catch (err) {
+      return res.status(400).send({ status: 400, message: err.message });
+    }
+  }
+);
+
+const deleteVideo = async (videoName) => {
+  if(videoName) {
+    // delete image from s3 bucket
+    const delete_params = {
+      Bucket: bucketName,
+      Key: videoName,
+    };
+    
+    const delete_command = new DeleteObjectCommand(delete_params);
+    await s3.send(delete_command);
+  }
+};
 
 module.exports = router;

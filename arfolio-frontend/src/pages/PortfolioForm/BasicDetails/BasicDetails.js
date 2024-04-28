@@ -47,9 +47,10 @@ const BasicDetails = (props) => {
   const [mediaVideo, setMediaVideo] = useState(null);
   const [mediaVideoForIframe, setMediaVideoForIframe] = useState(null);
 
+  const [muted, setMuted] = useState(true);
+
   const iframeRef = useRef(null);
   const [contentStatus, setContentStatus] = useState('loading'); // 'loading', 'loaded', 'error'
-
 
   const [basicInfoForm, setBasicInfoForm] = useState({
     title: "",
@@ -178,23 +179,31 @@ useEffect(()=>{
 
             setMediaImage(upload_bg)
             if (user.image_url) {
-                let image_id = user.image_url.split("id=")[1];
+                // ---------if from Drive----------
+                /* let image_id = user.image_url.split("id=")[1];
                 // let preview_base_url = `https://drive.google.com/thumbnail?id=${image_id}&sz=s4000`
                 let preview_base_url = `https://drive.google.com/thumbnail?id=${image_id}`
                 console.log(preview_base_url)
-                setMediaImage(preview_base_url)
+                setMediaImage(preview_base_url) */
+
+                // ---------if from S3-----------
+                setMediaImage(user.image_url)
             }
 
             // setMediaVideo(upload_bg)
             if ( user.video_url) {
                 // setIsVideoAvaiable(true)
 
-                let video_id = user.video_url.split("id=")[1];
+                // ---------if from Drive----------
+                /* let video_id = user.video_url.split("id=")[1];
                 // preview_base_url = `https://drive.google.com/file/d/1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z/preview`
                 let preview_video_base_url = `https://drive.google.com/file/d/${video_id}/preview`
                 console.log(preview_video_base_url)
 
-                setMediaVideoForIframe(preview_video_base_url)
+                setMediaVideoForIframe(preview_video_base_url) */
+
+                // ---------if from S3-----------
+                setMediaVideoForIframe(user.video_url)
             } else {
                 // setIsVideoAvaiable(false)
             }
@@ -857,7 +866,7 @@ useEffect(()=>{
                                     alt="User Video Not Found"
                                 />
                             ) : mediaVideo ? (//if file choosen from the file chooser - loads to a video tag
-                                <video width="100%" height="auto" controls src={mediaVideo} autoPlay />
+                                <video width="100%" height="auto" controls src={mediaVideo} muted={true} />
 
                             ) : ( // if loaded from backend - loads to a iframe tag
                                 <>
@@ -887,7 +896,7 @@ useEffect(()=>{
                                         width="100%"
                                         height="auto"
                                         src={mediaVideoForIframe}
-                                        allow="autoplay; encrypted-media"
+                                        allow="encrypted-media"
                                         allowFullScreen
                                         style={{ display: contentStatus === 'loaded' ? 'block' : 'none' }}
                                         // src="https://drive.google.com/file/d/1lpdepP7c98c62NZPY2EsBGXRLQJVuy1z/preview"

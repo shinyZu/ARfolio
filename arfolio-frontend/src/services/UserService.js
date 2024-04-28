@@ -139,7 +139,8 @@ class UserService {
       console.log(id)
       const promise = new Promise((resolve, reject) => {
         axios
-          .put("users/drive/url/db/" + id, data, {
+          // .put("users/drive/url/db/" + id, data, { // to drive
+          .put("users/image/" + id, data, { // to S3 bucket
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "multipart/form-data",
@@ -161,7 +162,8 @@ class UserService {
       console.log(id)
       const promise = new Promise((resolve, reject) => {
         axios
-          .put("users/drive/url/db/video/" + id, data, {
+          // .put("users/drive/url/db/video/" + id, data, {
+          .put("users/video/" + id, data, {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "multipart/form-data",
