@@ -125,7 +125,7 @@ router.get("/getAll", cors(), authenticateAdminToken, async (req, res) => {
 
 // Search user by Id
 // Authorized only for Admins
-router.get("/admin/:user_id", cors(), authenticateAdminToken, async (req, res) => {
+router.get("/admin/:user_id", cors(), /* authenticateAdminToken, */ async (req, res) => {
   try {
     const user = await getAllDetails(req.params.user_id,res);
 
@@ -396,7 +396,7 @@ router.get("/image/:user_id", cors(), /* authenticateCustomerToken, */ async (re
     const users = await User.find();
     
     for (const user of users) {
-      if (user.user_id == req.params.id) {
+      if (user.user_id == req.params.user_id) {
         console.log(user)
         return res.send({
           status: 200,
@@ -1026,91 +1026,6 @@ async function getAllDetails(user_id,res) {
 
 // --------------Upload images using S3 Buckets -------------
 
-// Upload Video only - post(/drive/url/db/video) - in use
-router.put(
-  "/drive/url/db/video/:user_id",
-  cors(),
-  upload.single("user_video"),
-  authenticateCustomerToken,
-  async (req, res) => {
-    try {
-      const userExist = await checkUserExist(req.params.user_id);
-      if (!userExist) {
-        return res
-          .status(404)
-          .json({ status: 404, message: "User not found." });
-      }
-
-      console.log(req.file)
-
-      // resize image
-      
-
-      // Get current video url
-      const current_url = userExist.video_url;
-      console.log("current_url: " + current_url);
-     
-      let current_fileId = "";
-
-      // Upload new video
-      const upload_response = await uploadFile(req.file);
-      console.log("\nupload_response: " + upload_response);
-
-      const new_fileId = upload_response.data.id;
-      const new_videoName = req.file.originalname;
-
-      // Create new video url
-      const new_public_video_url = `${drive_base_url}?id=${new_fileId}`;
-      console.log("new_public_video_url: " + new_public_video_url);
-
-      // Update the user in the database
-      userExist.video_name = new_videoName;
-      userExist.video_url = new_public_video_url;
-
-      const updatedUser = await userExist.save();
-
-      let del_response = null;
-      if (current_url != "" /* && userExist.image_url != "" */) {
-        // Extract the current file id from the url
-        current_fileId = current_url.split("id=")[1];
-        console.log("current_fileId: " + current_fileId);
-
-        // Delete current video from drive
-        del_response = await deleteFile(current_fileId);
-
-        if (!del_response && del_response.status == 204) {
-          return res.status(200).send({
-            status: 200,
-            data: {
-              file_id: upload_response.data.id,
-            },
-            message: "Video updated successfully!",
-          });
-        }
-      } else if (current_url == "") {
-        return res.status(200).send({
-          status: 200,
-          data: {
-            file_id: upload_response.data.id,
-          },
-          message: "Video updated successfully!",
-        });
-      }
-      // else {
-      return res.status(200).send({
-        status: 200,
-        data: {
-          file_id: upload_response.data.id,
-        },
-        message: "Video updated successfully!",
-      });
-      // }
-    } catch (err) {
-      return res.status(400).send({ status: 400, message: err.message });
-    }
-  }
-);
-
 // Upload Image only - S3
 router.put(
   "/image/:user_id",
@@ -1156,7 +1071,7 @@ router.put(
         Key: put_params.Key,
       };
       const get_command = new GetObjectCommand(getObjectParams);
-      const url = await getSignedUrl(s3, get_command, { expiresIn: 3600 });
+      const url = await getSignedUrl(s3, get_command, { expiresIn: 172800 }); // 2 days
 
       // Update the user in the database
       userExist.image_name = put_params.Key;
@@ -1258,7 +1173,7 @@ router.put(
         Key: put_params.Key,
       };
       const get_command = new GetObjectCommand(getObjectParams);
-      const url = await getSignedUrl(s3, get_command, { expiresIn: 3600 });
+      const url = await getSignedUrl(s3, get_command, { expiresIn: 172800 });
 
       // Update the user in the database
       userExist.video_name = put_params.Key;
@@ -1269,7 +1184,7 @@ router.put(
       return res.send({
         status: 200,
         data: updatedUser,
-        message: "Image updated successfully!",
+        message: "Video updated successfully!",
       });
     } catch (err) {
       return res.status(400).send({ status: 400, message: err.message });

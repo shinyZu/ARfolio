@@ -2,7 +2,25 @@ const express = require('express');
 const fs = require('fs');
 const fetch = require('node-fetch');
 const path = require('path');
+
+// const { EventEmitter } = require('events');
+// const videoDownloadEmitter = new EventEmitter();
+
 const app = express();
+
+// import express from 'express';
+// import fs from 'fs';
+// import fetch from 'node-fetch';
+// import path from 'path';
+// import { EventEmitter } from 'events';
+// import { fileURLToPath } from 'url';
+// import { dirname } from 'path';
+
+// const videoDownloadEmitter = new EventEmitter();
+// const app = express();
+
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
 
 const PORT = 8080;
 
@@ -29,6 +47,7 @@ app.get('/:id(\\d+)', async(req, res) => {
 });
 
 app.listen(PORT, () => {
+    // console.log(`Server running on http://18.206.165.76:${PORT}`);
     console.log(`Server running on http://127.0.0.1:${PORT}`);
 });
 
@@ -122,86 +141,14 @@ async function downloadUserVideo(user_id, url) {
     }
 }
 
-async function downloadUserImageOld(url) {
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        if (response.ok && data.image_url) {
-            console.log("===========1============")
-            console.log("__dirname ", __dirname);
-            const imagePath = path.join(__dirname, 'public/images', 'profile_image.jpg');
-            console.log("imagePath ", imagePath);
+//             });
+//         } else {
+//             console.log('Failed to fetch video URL or bad response');
+//         }
+//     } catch (error) {
+//         console.error('Error handling video download and cleanup:', error);
+//     }
+// }
 
-            // Delete existing image if it exists
-            fs.unlink(imagePath, (err) => {
-                console.log("===========2============")
-                if (err && err.code === 'ENOENT') {
-                    console.log("===========3============")
-                    console.log("File doesn't exist, won't remove it.");
-                } else if (err) {
-                    console.log("===========4============")
-                    console.error('Error occurred while trying to remove file');
-                } else {
-                    console.log("===========5============")
-                    console.log('Removed old profile image.');
-                }
-                
-                // Fetch and write new image
-                fetch(data.image_url)
-                    .then(imageResponse => imageResponse.buffer())
-                    .then(buffer => {
-                        console.log("===========6============")
-                        fs.writeFile(imagePath, buffer, () => {
-                            console.log('New profile image downloaded and saved.');
-                            // res.send('Profile image updated successfully.');
-                        });
-                    });
-            });
-        } else {
-            console.log("===========7============")
-            // throw new Error('Failed to fetch image URL or bad response');
-            console.log('Failed to fetch image URL or bad response');
-        }
-        console.log("===========8============")
-        
-    } catch (error) {
-        console.log("===========9============")
-        console.error('Error fetching image:', error);
-        res.status(500).send('Error downloading the image');
-    }
-}
-
-async function downloadUserVideoOld(user_id,url) {
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        if (response.ok && data.video_url) {
-            const videoPath = path.join(__dirname, 'public/videos', `profile_video_${user_id}.mp4`);
-            console.log("videoPath ", videoPath);
-
-            // Delete existing video if it exists
-            fs.unlink(videoPath, async (err) => {
-                if (err && err.code === 'ENOENT') {
-                    console.log("Video file doesn't exist, won't remove it.");
-                } else if (err) {
-                    console.error('Error occurred while trying to remove video file');
-                } else {
-                    console.log('Removed old user video.');
-                }
-
-                // Fetch and write new video
-                const videoResponse = await fetch(data.video_url);
-                const buffer = await videoResponse.buffer();
-                fs.writeFile(videoPath, buffer, () => {
-                    console.log('New user video downloaded and saved.');
-                });
-            });
-        } else {
-            console.log('Failed to fetch video URL or bad response');
-        }
-    } catch (error) {
-        console.error('Error fetching video:', error);
-    }
-}
-
-
+// Export the videoDownloadEmitter and the downloadUserVideo function
+// export { videoDownloadEmitter, downloadUserVideo };

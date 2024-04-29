@@ -37,7 +37,7 @@ router.get('/generate/base64', async (req, res) => {
             .status(200)
             .send({ status: 200, message: "Base64 generated successfully!", data: imageStr });
     });
-  });
+});
 
 const generateBarcodeURL = (user_id) => {
     const baseUrl = "https://au.gmented.com/app/marker/marker.php?genImage&";

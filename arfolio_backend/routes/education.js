@@ -155,6 +155,7 @@ router.post("/", cors(), authenticateCustomerToken, async (req, res) => {
 // Update education (as a single object)- in use
 // Authorized for Customers
 router.put("/education_id", cors(), authenticateCustomerToken, async (req, res) => {
+  console.log("updating single education")
     try {
         const verified = verifyToken(req.headers.authorization, res);
 

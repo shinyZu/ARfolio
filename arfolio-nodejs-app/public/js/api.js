@@ -1,6 +1,6 @@
 function getSingleUserBtId() {
     const userId = getUserIDFromURL();
-    const url = `http://localhost:4001/arfolio/api/v1/users/${userId}`;
+    const url = `http://localhost:4001/arfolio/api/v1/users/admin/${userId}`;
 
     fetch(url)
         .then(response => {
@@ -16,6 +16,9 @@ function getSingleUserBtId() {
             displayUserData(resData);
 
             displayExperiences(resData.Experiences); 
+            displayEducation(resData.Education); 
+            displayProjects(resData.Projects); 
+            displayLinks(resData.Links); 
             displayProfileImage(userId);
             displayProfileVideo(userId);
         })

@@ -13,10 +13,12 @@
   "author": "shinyZu",
   "license": "ISC",
   "dependencies": {
+    "aframe-href-component": "^0.5.1",
     "cors": "^2.8.5",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "fs": "0.0.1-security",
+    "http-server": "^14.1.1",
     "node-fetch": "^2.7.0",
     "nodemon": "^3.1.0",
     "path": "^0.12.7"

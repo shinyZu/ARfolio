@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { styleSheet } from "./styles";
 import { withStyles } from "@mui/styles";
-import QRCodeStyling from "qr-code-styling";
-import QRCode from "easyqrcodejs";
+import QRCodeStyling from "qr-code-styling"; // in use
+import QRCode from "easyqrcodejs"; // not in use
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -70,6 +70,7 @@ const Process = (props) => {
       }
     }
 
+    // in use
     const generateQR = async () => {
       let decodedToken = decodeToken();
       let base64 = await generateBase64();
@@ -186,6 +187,7 @@ const Process = (props) => {
       }
     }
 
+    // in use 
     const downloadQRcode = () => {
       if (canvasRef.current) {
         const canvas = canvasRef.current.querySelector('canvas');
@@ -198,7 +200,7 @@ const Process = (props) => {
       }
     }
 
-    // testing easyqrcode.js - npm
+    // not in use - testing easyqrcode.js - npm
     const createQR = () => {
       try {
           let barcodeLogoURL = generateBarcodeURL(3);
@@ -298,6 +300,7 @@ const Process = (props) => {
       }
     }
 
+    // not in use
     const generateBarcodeURL = (user_id) => {
       const baseUrl = "https://au.gmented.com/app/marker/marker.php?genImage&";
   

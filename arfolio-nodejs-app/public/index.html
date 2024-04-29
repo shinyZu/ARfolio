@@ -3,7 +3,7 @@
 <html>
     <head>
 
-        <title> Barcode Node JS - In Progress</title>
+        <title> ARfolio WebAR App</title>
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,height=device-height">
@@ -29,20 +29,30 @@
 
         <script src="gesture-detector.js"></script>
         <script src="gesture-handler.js"></script>
+
+        <script src="https://unpkg.com/aframe-event-set-component@^4.0.0/dist/aframe-event-set-component.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/aframe-href-component@0.5.1/index.min.js"></script>
+
+        <script src="js/ar_handlers.js"></script>
+
     </head>
 
     <body style='margin : 0px; overflow: hidden;'>
-    <!-- <body> -->
-        <!-- we add detectionMode and matrixCodeType to tell AR.js to recognize barcode markers -->
-        <!-- arjs -->
-        <!-- arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;' -->
+            <!-- embedded  -->
+            <!-- renderer="logarithmicDepthBuffer: true;" -->
+            <!-- gesture-detector -->
+            <!-- ar-template -->
+            <!-- vr-mode-ui="enabled: true" -->
+            <!-- xr-mode-ui="enabled: true" -->
+            <!-- arjs='trackingMethod: best; debugUIEnabled: false; sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3;' -->
+             <!-- cursor="rayOrigin: mouse" -->
+            <!-- keyboard-shortcuts="enterVR: true" -->
+            <!-- loading-screen="dotsColor: red; backgroundColor: black" -->
         <a-scene 
-            arjs='sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
-            embedded 
-            renderer="logarithmicDepthBuffer: true;"
-            vr-mode-ui="enabled: true"
-            gesture-detector
             id="scene"
+            arjs='debugUIEnabled: false; sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
+            background="color: #fff"
         >
             <a-assets>
                 <!-- Profile Image -->
@@ -50,10 +60,31 @@
 
                 <!-- Define the video asset -->
                 <!-- <video id="profile-vid" autoplay loop="true" muted="false" playsinline response-type="arraybuffer" src="videos/birthday.mp4"></video> -->
-                <video id="profile-vid" muted autoplay loop playsinline controls src="videos/birthday.mp4"></video>
+                <video id="profile-vid"  autoplay loop playsinline controls src="videos/birthday.mp4"></video>
+                <!-- <video preload="none" id="profile-vid" response-type="arraybuffer" loop="false" crossorigin webkit-playsinline playsinline controls>
+                    <source  src="videos/birthday.mp4">
+                </video> -->
 
-                <!-- Business card Image -->
-                <img id="arfolio-img" src="images/ARfolio.jpg">
+                <!-- Linkedin Image -->
+                <img id="linkedin-img" src="images/links/linkedin.png">    
+                
+                <!-- Website Image -->
+                <img id="website-img" src="images/links/website.png">    
+                
+                <!-- GitHub Image -->
+                <img id="github-img" src="images/links/github1.png">    
+                
+                <!-- Instagram Image -->
+                <img id="instagram-img" src="images/links/instagram.png">    
+                
+                <!-- Twitter Image -->
+                <img id="twitter-img" src="images/links/twitter.png">    
+                
+                <!-- Spotify Image -->
+                <img id="spotify-img" src="images/links/spotify.png">    
+                
+                <!-- Facebook Image -->
+                <img id="facebook-img" src="images/links/facebook.png">    
 
                 <!-- loading 3d models -->
                 <a-asset-item
@@ -71,30 +102,28 @@
             </a-assets>
 
             <a-marker type='barcode' id="barcode-marker">
-
                 <!-- User Name -->
                 <a-entity id="userName" position="-2.000 3.78238 0.5174" rotation="-57.950097315121724 -5.05291479525873 12.721381925289668">
-                    <a-text id="user_name" value="Mr. Lewis Wilson" color="black" position="-2 2.5 -5" scale="1.6 1.6 1" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text=""></a-text>
+                    <a-text id="user_name" value="Mr. Don" color="black" position="-3 2.8 -5" scale="1.6 1.6 1.6" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" animation="property: scale; from: 1.6 1.6 1.6; to: 2.5 2.5 2.5; loop: true; dur: 10000; dir: alternate"></a-text>
                 </a-entity>
 
                 <!-- Profile Image -->
                 <a-plane scale="3 3 1" rotation="-55.217088632347696 -5.9455830400725524 12.982077722074193" material="transparent: true; src: #profile-img" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" position="-0.888 0.03357 -2.61821"></a-plane>
 
-                <!-- Biography Marker -->
-                <!-- <a-video video-vidhandler-biography="" scale="4.884 2.846 1" position="-5.0512 -0.56819 -2.30793" rotation="-55.731604732375175 -6.0412669918594 12.27103709831684" material="transparent: true; src: #profile-vid" controls="" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" visible=""></a-video> -->
-                <a-video src="#profile-vid" scale="4.884 2.846 1" position="-5.0512 -0.56819 -2.30793" rotation="-55.731604732375175 -6.0412669918594 12.27103709831684" geometry="" visible=""></a-video>
+                <!-- Biography -->
+                <!-- <a-video video-vidhandler-biography scale="4.884 2.846 1" position="-5.0512 -0.56819 -2.30793" rotation="-55.731604732375175 -6.0412669918594 12.27103709831684" material="transparent: true; src: #profile-vid" controls="" geometry="" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" visible=""></a-video> -->
+                <a-video  video-vidhandler-biography src="#profile-vid" scale="4.884 2.846 1" position="-5.0512 -0.56819 -2.30793" rotation="-55.731604732375175 -6.0412669918594 12.27103709831684" geometry="" visible=""></a-video>
 
                 <!-- 3D Model -->
-                <a-gltf-model id="narrator" src="#narrator" animation-mixer="" position="-3 1 1.64771" rotation="-90 90 -90" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" gltf-model="#narrator"></a-gltf-model>
-                <!-- <a-gltf-model id="lady" src="#lady" animation-mixer="" position="-4.33034 2 1.64771" rotation="-90 90 -90" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" gltf-model="#lady"></a-gltf-model> -->
+                <!-- <a-gltf-model id="narrator" src="#narrator" animation-mixer="" position="-3 1 1.64771" rotation="-90 90 -90" speechify-initial-font-family="&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif" speechify-initial-font-size="14px" gltf-model="#narrator"></a-gltf-model> -->
             
-                <a-entity
+                <!-- <a-entity
                     gltf-model="#lady"
                     scale="1"
                     position="-4.33034 2 1.64771" rotation="-90 90 -90"
                     animation-mixer="" 
                 >
-                </a-entity>
+                </a-entity> -->
 
                 <!-- Fonts -->
                 <!-- https://cdn.aframe.io/fonts/Roboto-msdf.json -->
@@ -103,11 +132,46 @@
                 <!-- https://cdn.aframe.io/fonts/Exo2Bold.fnt -->
                 <!-- https://cdn.aframe.io/fonts/Exo2SemiBold.fnt -->
 
-                <!-- Background plane for the experiences container -->
-                <!-- <a-plane id="experiencesBackground" color="white" position="2 3.5" rotation="-45 0 0" width="4" height="2"></a-plane> -->
+                <a-entity id="linkedinContainer" position="-6.71943 -0.49349 1.01674" rotation="37.55108093507903 6.168463622378443 1.74694831735388" animation="property: rotation; to: 0 90 0 ; loop: true; dur: 10000; dir: alternate;">
+                    <a-plane id="img-linkedin" class="linkedin-clickable" scale = "1 1" position="" rotation="-90 0 0" material='transparent:true;src:#linkedin-img' ></a-plane>
+                </a-entity>
+
+                <a-entity id="websiteContainer" position="-5.64186 -0.53393 0.87609" rotation="36.785609320784246 4.8191480148453545 0.15699043586584555" animation="property: rotation; to: 0 90 0; loop: true; dur: 10000; dir: alternate;">
+                    <a-plane id="img-website" class="clickable" scale = "1 1" position="" rotation="-90 0 0" material='transparent:true;src:#website-img'></a-plane>
+                </a-entity>
                 
+                <a-entity id="githubContainer" position="-4.44416 -0.5544 0.7552" rotation="38.13263309713681 7.772172490949616 -1.186595593715935" animation="property: rotation; to: 0 90 0; loop: true; dur: 10000; dir: alternate;">
+                    <a-plane id="img-github" class="clickable" scale = "1 1" position="" rotation="-90 0 0" material='transparent:true;src:#github-img'></a-plane>
+                </a-entity>
+                
+                <a-entity id="instagramContainer" position="-3.28027 -0.58737 0.6431" rotation="36.6194515601963 7.371674992153172 -1.2014924963893363" animation="property: rotation; to: 0 90 0 ; loop: true; dur: 10000; dir: alternate;">
+                    <a-plane id="img-instagram" class="clickable" scale = "1 1" position="" rotation="-90 0 0" material='transparent:true;src:#instagram-img'></a-plane>
+                </a-entity>
+                
+                <a-entity id="twitterContainer" position="-2.08242 -0.51106 0.50553" rotation="37.36945331402256 1.6283460537617997 -4.223844865704429" animation="property: rotation; to: 0 90 0; loop: true; dur: 10000; dir: alternate;">
+                    <a-plane id="img-twitter" class="clickable" scale = "1 1" position="" rotation="-90 0 0" material='transparent:true;src:#twitter-img'></a-plane>
+                </a-entity>
+                
+                <a-entity id="spotifyContainer" position="-0.87112 -0.59 0.32905" rotation="36.99588483159726 10.643836960145302 0.35867157975189534" animation="property: rotation; to: 0 90 0; loop: true; dur: 10000; dir: alternate;">
+                    <a-plane id="img-spotify" class="clickable" scale = "1 1" position="" rotation="-90 0 0" material='transparent:true;src:#spotify-img'></a-plane>
+                </a-entity>
+
+                <a-entity id="facebookContainer" position="0.37014 -0.5173 0.19347" rotation="39.07973233248806 9.294521352612215 -0.6955707632888194" animation="property: rotation; to: 0 90 0; loop: true; dur: 10000; dir: alternate;">
+                    <a-plane id="img-facebook" class="clickable" scale = "1 1" position="" rotation="-90 0 0" material='transparent:true;src:#facebook-img'></a-plane>
+                </a-entity>
+                
+                <!-- Container for Education Entries -->
+                <a-entity id="educaitonContainer" position="-13.27788 1.90233 2.34878" rotation="-57.950097315121724 -5.05291479525873 12.721381925289668"></a-entity>
+                    <!-- Dynamic text entities will be appended here -->
+                </a-entity>
+
                 <!-- Container for Experience Entries -->
-                <a-entity id="experiencesContainer" position="2.72378 3.94667 0.79098" rotation="-57.950097315121724 -5.05291479525873 12.721381925289668"></a-entity>
+                <a-entity id="experiencesContainer" position="4.27693 3.08781 3.02728" rotation="-57.950097315121724 -5.05291479525873 12.721381925289668"></a-entity>
+                    <!-- Dynamic text entities will be appended here -->
+                </a-entity>
+
+                <!-- Container for Project Entries -->
+                <a-entity id="projectsContainer"  position="10.24695 5.15942 0.5855" rotation="-57.950097315121724 -5.05291479525873 12.721381925289668"></a-entity>
                     <!-- Dynamic text entities will be appended here -->
                 </a-entity>
 
@@ -116,10 +180,14 @@
             <!-- use this <a-entity camera> to support multiple-markers, otherwise use <a-marker-camera> instead of </a-marker> -->
             <!-- <a-entity camera></a-entity> -->
             <!-- <a-camera-static/> -->
-            <a-camera/>
+            <!-- <a-camera/> -->
+
+            <a-camera position="0 1.8 4">
+                <a-cursor scale='0.5 1 0.5' color="#00ACC1"></a-cursor>
+            </a-camera>
         </a-scene>
 
-        <script src="js/ar_handlers.js"></script>
+        
         <script src="js/main.js"></script>
         <script src="js/api.js"></script>
       

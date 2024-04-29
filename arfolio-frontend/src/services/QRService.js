@@ -33,7 +33,7 @@ class QRService {
             });
         });
         return await promise;
-      };
+    };
 }
 
 export default new QRService();
