@@ -151,7 +151,6 @@ function displayExperiences(experiences) {
         
         dates.setAttribute('value', `${dateString}`);
         
-        
         dates.setAttribute('color', 'black');
         dates.setAttribute('position', `-2 ${yOffset - 1.0} -5`);
         dates.setAttribute('scale', '1.2 1.2 1');
