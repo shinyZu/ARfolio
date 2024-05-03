@@ -17,9 +17,9 @@
 
 ## Links :
 
-- [Demo](https://drive.google.com/file/d/1vZ0Vt_JIZGkhNQVcNTAKIoIYZxeUhzLT/view?usp=sharing)
+- [Demo](https://drive.google.com/file/d/1Uihue3btj9WNQ96Sz4uLQ1Gx67j_DLyu/view?usp=sharing)
 - [Postman Documentation](https://documenter.getpostman.com/view/21404145/2sA3JFBjUb)
-- [GitHub](https://documenter.getpostman.com/view/21404145/2sA3JFBjUb)
+- [GitHub](https://github.com/shinyZu/ARfolio)
 
 
 <br>
