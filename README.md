@@ -1,6 +1,20 @@
-# ARfolio
+# ARfolio - AR-enabled Portfolio Cards
 
-### Implementing Augmented Reality-Enabled Portfolio Cards
+<br>
+
+#### Description
+ARfolio is my final year research project that transforms traditional resumes into interactive AR experiences. Designed for the IT community, ARfolio enables professionals to showcase their qualifications using a WebAR-based portfolio triggered by a multi-functional QR code.
+
+The system includes a web platform for users to manage portfolio content and a WebAR application that launches directly in the browser, eliminating the need for installing third-party AR applications to view the AR content. It supports dynamic updates, allowing users to modify their portfolios without re-sharing the AR-enabled portfolio card. The QR code acts as an AR launcher, marker, and standalone portfolio card, making it highly versatile.
+
+#### Key Highlights
+
+- Dual interface: Web platform (to input portfolio details) + WebAR app (to view the AR portfolio).
+- No third-party app needed (app-less AR approach).
+- Dynamic portfolio updates in real time.
+- Dockerized microservices deployed on AWS EC2.
+
+<br>
 
 ## Technology Stack :
 
@@ -11,7 +25,10 @@
 - React JS
 - Node JS
 - A-Frame
-- Other - MUI Components
+- WebAR
+- Docker
+- AWS EC2 Instances
+- MUI Components
 
 <br>
 
